@@ -1025,7 +1025,7 @@ select:focus {
   .theme-toggle {
     flex: 1 1 auto;
     justify-content: center;
-    min-height: 40px;
+    min-height: 44px;
   }
 
   /* Tabs */
@@ -1121,7 +1121,21 @@ select:focus {
   }
   .filter-chip {
     padding: 8px 12px;
-    min-height: 40px;
+    min-height: 44px;
+  }
+  .btn.compact,
+  .btn.secondary {
+    min-height: 44px;
+    height: auto;
+  }
+  .info-tip-trigger {
+    width: 44px;
+    height: 44px;
+  }
+  .tool-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 12px;
   }
   .field-result .fr-compare {
     grid-template-columns: 1fr;

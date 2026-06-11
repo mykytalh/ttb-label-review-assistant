@@ -11,12 +11,15 @@ The tool assists review; it does not replace agent judgment.
 
 ## Documentation
 
-| Doc                                              | Scope                                                  |
-| ------------------------------------------------ | ------------------------------------------------------ |
-| [`docs/EVALUATION.md`](docs/EVALUATION.md)       | Dataset, harness, accuracy results, audit findings     |
-| [`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md) | Prompt iteration, hallucination avoidance, constraints |
-| [`docs/APPROACH.md`](docs/APPROACH.md)           | Architecture, validation rules, batch scope, UI/a11y   |
-| [`docs/SECURITY.md`](docs/SECURITY.md)           | Threat model and mitigations                           |
+| Doc | Read if… |
+| --- | --- |
+| [`docs/APPROACH.md`](docs/APPROACH.md) | **Start here** — brief design, trade-offs, architecture |
+| [`docs/EVALUATION.md`](docs/EVALUATION.md) | Accuracy evidence (88 real photos, harness, committed results) |
+| [`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md) | Prompt constraints and iteration summary |
+| [`docs/SECURITY.md`](docs/SECURITY.md) | Threat model |
+
+**Submitting?** Live app: [ttb-label-review-assistant.vercel.app](https://ttb-label-review-assistant.vercel.app/).
+Grant reviewers access to the private GitHub repo (or make it public for the review window).
 
 ## Setup
 
