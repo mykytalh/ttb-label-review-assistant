@@ -7,14 +7,16 @@ enters application details, uploads a label photo, and receives per-field
 
 The tool assists review; it does not replace agent judgment.
 
+**Live demo:** https://ttb-label-review-assistant.vercel.app/
+
 ## Documentation
 
-| Doc | Scope |
-|---|---|
-| [`docs/EVALUATION.md`](docs/EVALUATION.md) | Dataset, harness, accuracy results, audit findings |
+| Doc                                              | Scope                                                  |
+| ------------------------------------------------ | ------------------------------------------------------ |
+| [`docs/EVALUATION.md`](docs/EVALUATION.md)       | Dataset, harness, accuracy results, audit findings     |
 | [`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md) | Prompt iteration, hallucination avoidance, constraints |
-| [`docs/APPROACH.md`](docs/APPROACH.md) | Architecture, validation rules, batch scope, UI/a11y |
-| [`docs/SECURITY.md`](docs/SECURITY.md) | Threat model and mitigations |
+| [`docs/APPROACH.md`](docs/APPROACH.md)           | Architecture, validation rules, batch scope, UI/a11y   |
+| [`docs/SECURITY.md`](docs/SECURITY.md)           | Threat model and mitigations                           |
 
 ## Setup
 
@@ -79,4 +81,4 @@ docs/             APPROACH · EVALUATION · PROMPT_TUNING · SECURITY
 ## Tech
 
 Next.js 15 · React 19 · TypeScript · Claude Haiku 4.5 / Opus 4.8 · Vitest ·
-GitHub Actions CI · Vercel-ready (no hosted deployment in this repo).
+GitHub Actions CI · deployed on Vercel (see live demo above).

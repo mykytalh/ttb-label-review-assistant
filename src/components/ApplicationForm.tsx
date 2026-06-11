@@ -35,7 +35,7 @@ export default function ApplicationForm({
       <div className="row">
         <div className="field">
           <label htmlFor={`${idPrefix}-brand`}>
-            Brand name <span className="hint">(required)</span>
+            Brand name <span className="hint hint-required">(required)</span>
           </label>
           <input
             id={`${idPrefix}-brand`}
