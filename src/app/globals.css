@@ -90,7 +90,7 @@
   /* Solid verdict icon badges (count chips, sub-checks, list marks). */
   --verdict-icon-pass: var(--success-dark);
   --verdict-icon-warn: var(--warning-darker);
-  --verdict-icon-fail: var(--error-dark);
+  --verdict-icon-fail: var(--error-darker);
   --verdict-icon-na: var(--base);
   --verdict-icon-on: #ffffff;
 }
@@ -120,15 +120,17 @@
   --success-darker: #a3b5ab;
   --success-lighter: #121a15;
 
-  --warning: #e3b341;
-  --warning-dark: #f0c651;
-  --warning-darker: #f5d271;
-  --warning-lighter: #2a2113;
+  /* Muted amber — same restraint as the forest/sage pass greens. */
+  --warning: #8a7344;
+  --warning-dark: #9a8250;
+  --warning-darker: #c9b896;
+  --warning-lighter: #16140f;
 
-  --error: #f85149;
-  --error-dark: #ff6a61;
-  --error-darker: #ff938c;
-  --error-lighter: #2b1717;
+  /* Muted burgundy — same restraint as pass greens and warn amber. */
+  --error: #9e4a44;
+  --error-dark: #8a3f3a;
+  --error-darker: #d4a5a0;
+  --error-lighter: #160f0f;
 
   --gold: #e3b341;
   --on-dark: #c9d1d9; /* softer off-white on dark bands — easier on the eyes */
@@ -143,8 +145,8 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
 
   --verdict-icon-pass: #2d5440;
-  --verdict-icon-warn: var(--warning-dark);
-  --verdict-icon-fail: var(--error);
+  --verdict-icon-warn: #5c4e2e;
+  --verdict-icon-fail: #5c2e2e;
   --verdict-icon-na: var(--base-light);
   --verdict-icon-on: #d6e5dc;
 
@@ -158,9 +160,42 @@
   color: var(--verdict-icon-on);
   border-color: var(--verdict-icon-pass);
 }
-[data-theme="dark"] .pill.v-warn,
+[data-theme="dark"] .pill.v-warn {
+  background: var(--verdict-icon-warn);
+  color: var(--verdict-icon-on);
+  border-color: var(--verdict-icon-warn);
+}
 [data-theme="dark"] .pill.v-fail {
-  color: #0c0f14;
+  background: var(--verdict-icon-fail);
+  color: var(--verdict-icon-on);
+  border-color: var(--verdict-icon-fail);
+}
+[data-theme="dark"] .error-banner {
+  background: var(--fill);
+  color: var(--ink);
+  border-left-color: var(--error-dark);
+}
+[data-theme="dark"] .error-banner strong,
+[data-theme="dark"] .field-result.v-fail .fr-name {
+  color: var(--error-darker);
+}
+[data-theme="dark"] .quality-alert {
+  background: var(--fill);
+  color: var(--ink);
+  border-left-color: var(--warning-dark);
+}
+[data-theme="dark"] .quality-alert strong {
+  color: var(--base-dark);
+}
+[data-theme="dark"] .callout.important {
+  background: var(--fill);
+  border-color: var(--warning-dark);
+}
+[data-theme="dark"] .callout.important p {
+  color: var(--ink);
+}
+[data-theme="dark"] .callout.important .callout-title {
+  color: var(--warning-darker);
 }
 
 * {
@@ -1088,11 +1123,6 @@ select:focus {
     padding: 8px 12px;
     min-height: 40px;
   }
-  .field-result .fr-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
   .field-result .fr-compare {
     grid-template-columns: 1fr;
   }
@@ -1273,6 +1303,9 @@ select:focus {
   .pill {
     white-space: normal;
     text-align: left;
+  }
+  .field-result .fr-head .pill {
+    white-space: nowrap;
   }
 }
 
@@ -1875,6 +1908,11 @@ select:focus {
   font-weight: 600;
   font-size: var(--text-base);
   color: var(--ink);
+  min-width: 0;
+  flex: 1;
+}
+.field-result .fr-head .pill {
+  flex-shrink: 0;
 }
 .pill {
   display: inline-flex;
@@ -2164,6 +2202,16 @@ select:focus {
   border-radius: var(--radius);
   padding: 14px 16px;
   margin: 10px 0 0;
+}
+.quality-alert strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.quality-alert-icon,
+.callout.important .callout-icon {
+  color: #1b1b1b;
+  filter: grayscale(1) brightness(0);
 }
 
 .error-banner {

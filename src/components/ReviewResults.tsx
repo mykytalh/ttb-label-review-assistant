@@ -131,7 +131,11 @@ export default function ReviewResults({
 
         {result.imageQuality === "poor" && (
           <div className="quality-alert" role="alert">
-            <strong>⚠ This photo was hard to read.</strong> The results below may be
+            <strong>
+              <span className="quality-alert-icon" aria-hidden="true">⚠</span>
+              This photo was hard to read.
+            </strong>{" "}
+            The results below may be
             unreliable{result.notes ? ` — ${result.notes}` : ""}. Retake the photo
             (better lighting, straight-on, no glare) and review again before
             relying on this.
