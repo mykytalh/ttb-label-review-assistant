@@ -24,11 +24,11 @@
   --base-darkest: #1b1b1b;
   --ink: #1b1b1b;
 
-  --primary: #1a7fd4; /* primary blue (lighter than default USWDS navy) */
-  --primary-dark: #1567ad;
-  --primary-darker: #1d3a66; /* masthead/footer band — a softer navy, not near-black */
-  --primary-light: #8ec5ef;
-  --primary-lightest: #eff6fc;
+  --primary: #005ea2; /* USWDS primary — medium federal blue */
+  --primary-dark: #1a4480;
+  --primary-darker: #1d3a66; /* masthead/footer band */
+  --primary-light: #73b3e7;
+  --primary-lightest: #e8f1f8;
   --on-primary: #ffffff; /* text/icon color on a --primary fill (AA-safe) */
   --on-dark: #ffffff; /* strong text on the dark navy bands (masthead/footer) */
 
@@ -78,6 +78,21 @@
 
   --shadow-sm: 0 1px 2px rgba(27, 27, 27, 0.06);
   --shadow: 0 1px 3px rgba(27, 27, 27, 0.08), 0 4px 12px rgba(27, 27, 27, 0.06);
+
+  /* Typography scale — one rhythm for body, meta, labels, and chips. */
+  --text-2xs: 0.6875rem; /* 11px — micro labels (elapsed, extract headers) */
+  --text-xs: 0.75rem; /* 12px — pills, chips, mono field labels */
+  --text-sm: 0.875rem; /* 14px — secondary / meta copy */
+  --text-base: 1rem; /* 16px — body and inputs */
+  --text-lg: 1.2rem; /* ~19px — card and result section titles */
+  --text-xl: 1.5rem; /* 24px — page titles */
+
+  /* Solid verdict icon badges (count chips, sub-checks, list marks). */
+  --verdict-icon-pass: var(--success-dark);
+  --verdict-icon-warn: var(--warning-darker);
+  --verdict-icon-fail: var(--error-dark);
+  --verdict-icon-na: var(--base);
+  --verdict-icon-on: #ffffff;
 }
 
 /* ---------- Dark theme ----------
@@ -99,10 +114,11 @@
   --primary-lightest: #1d1409;
   --on-primary: #0c0f14; /* dark ink on the orange fill (AA-safe) */
 
-  --success: #3fb950;
-  --success-dark: #56d364;
-  --success-darker: #7ee787;
-  --success-lighter: #0f2417;
+  /* Muted forest/sage greens — less neon than the default GitHub palette. */
+  --success: #3a6b4f;
+  --success-dark: #4a7d5c;
+  --success-darker: #a3b5ab;
+  --success-lighter: #121a15;
 
   --warning: #e3b341;
   --warning-dark: #f0c651;
@@ -126,20 +142,24 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
 
+  --verdict-icon-pass: #2d5440;
+  --verdict-icon-warn: var(--warning-dark);
+  --verdict-icon-fail: var(--error);
+  --verdict-icon-na: var(--base-light);
+  --verdict-icon-on: #d6e5dc;
+
   color-scheme: dark;
 }
 
 /* In dark mode the filled status chips use a LIGHT semantic background, so their
    text must be dark ink (not white) to keep AA contrast. */
-[data-theme="dark"] .pill.v-pass,
+[data-theme="dark"] .pill.v-pass {
+  background: var(--verdict-icon-pass);
+  color: var(--verdict-icon-on);
+  border-color: var(--verdict-icon-pass);
+}
 [data-theme="dark"] .pill.v-warn,
-[data-theme="dark"] .pill.v-fail,
-[data-theme="dark"] .subcheck.v-pass .subcheck-icon,
-[data-theme="dark"] .subcheck.v-warn .subcheck-icon,
-[data-theme="dark"] .subcheck.v-fail .subcheck-icon,
-[data-theme="dark"] .count-chip-icon,
-[data-theme="dark"] .passes-list-icon,
-[data-theme="dark"] .vk-icon {
+[data-theme="dark"] .pill.v-fail {
   color: #0c0f14;
 }
 
@@ -161,7 +181,7 @@ body {
   color: var(--ink);
   font-family: var(--font-public-sans), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
-  font-size: 1.02rem; /* ~16.5px; comfortable but not heavy */
+  font-size: var(--text-base);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -776,6 +796,11 @@ a {
   list-style: none;
   padding: 4px 0;
 }
+.more-details > summary:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .more-details > summary::-webkit-details-marker {
   display: none;
 }
@@ -842,12 +867,12 @@ a {
 .card h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
   letter-spacing: -0.01em;
 }
 .step {
   font-family: var(--mono);
-  font-size: 0.74rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -862,7 +887,7 @@ a {
   display: block;
   font-family: var(--mono);
   font-weight: 700;
-  font-size: 0.74rem;
+  font-size: var(--text-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 7px;
@@ -874,7 +899,7 @@ a {
   text-transform: none;
   letter-spacing: 0;
   color: var(--base);
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
 }
 .field .hint-required {
   color: var(--base-dark);
@@ -888,7 +913,7 @@ select {
      matched side by side regardless of browser. */
   box-sizing: border-box;
   height: 44px;
-  font-size: 1rem;
+  font-size: var(--text-base);
   line-height: 1.2;
   padding: 0 13px;
   border: 1px solid var(--base); /* USWDS input border */
@@ -900,7 +925,7 @@ select {
 /* Data being entered reads as data. */
 input[type="text"] {
   font-family: var(--mono);
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
 }
 input[type="text"]::placeholder {
   color: var(--base-light);
@@ -1046,7 +1071,7 @@ select:focus {
     gap: 6px;
   }
   .count-chip {
-    font-size: 0.78rem;
+    font-size: var(--text-xs);
   }
   .info-tip-panel {
     right: 0;
@@ -1271,7 +1296,7 @@ select:focus {
   color: var(--base-dark);
 }
 .dropzone-hint {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--base);
 }
 /* Collapsed upload state — once the result shows the image, the input side
@@ -1283,7 +1308,7 @@ select:focus {
   padding: 10px 14px;
   background: var(--success-lighter);
   border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
 }
 .upload-chip-check {
   display: inline-flex;
@@ -1292,9 +1317,9 @@ select:focus {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--success-dark);
-  color: #fff;
-  font-size: 0.7rem;
+  background: var(--verdict-icon-pass);
+  color: var(--verdict-icon-on);
+  font-size: var(--text-2xs);
   flex-shrink: 0;
 }
 .upload-chip-name {
@@ -1330,7 +1355,7 @@ select:focus {
 }
 .preview-name {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--base-dark);
   word-break: break-all;
 }
@@ -1602,13 +1627,14 @@ select:focus {
 }
 .btn.secondary {
   background: var(--fill);
-  color: var(--primary-dark);
+  color: var(--ink);
   border-color: var(--base-lighter);
   box-shadow: none;
 }
 .btn.secondary:hover {
   background: var(--fill-hover);
-  border-color: var(--base-light);
+  border-color: var(--base);
+  color: var(--ink);
 }
 
 /* ---------- Verdict colors ----------
@@ -1640,7 +1666,7 @@ select:focus {
   border: 1px solid var(--hairline);
   border-left: 4px solid var(--base);
   border-radius: var(--radius);
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
   font-weight: 700;
   letter-spacing: -0.01em;
   margin-bottom: var(--space-3);
@@ -1648,7 +1674,7 @@ select:focus {
 /* Quiet advisory under the headline verdict — the tool advises, the agent decides. */
 .advisory-note {
   margin: 0 0 var(--space-4);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--base);
   font-style: italic;
 }
@@ -1667,33 +1693,57 @@ select:focus {
 
 /* Small verdict-icon chip — used in the How-to-use modal's "What the result
    means" key. (The inline result-view legend was removed as redundant.) */
+/* Solid verdict icon badges — shared sizing and fills across the UI. */
+.count-chip-icon,
+.subcheck-icon,
+.passes-list-icon,
 .vk-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  color: var(--verdict-icon-on);
+}
+.count-chip-icon,
+.passes-list-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.subcheck-icon,
+.vk-icon {
   width: 20px;
   height: 20px;
   border-radius: var(--radius-sm);
-  border: 1px solid;
-  flex-shrink: 0;
-  color: #fff;
 }
+.vk-icon {
+  border: 1px solid transparent;
+}
+.count-chip.v-pass .count-chip-icon,
+.subcheck.v-pass .subcheck-icon,
+.passes-list-icon,
 .vk-icon.v-pass {
-  background: var(--success-darker);
-  border-color: var(--success-darker);
+  background: var(--verdict-icon-pass);
 }
+.count-chip.v-warn .count-chip-icon,
+.subcheck.v-warn .subcheck-icon,
 .vk-icon.v-warn {
-  background: var(--warning-darker);
-  border-color: var(--warning-darker);
+  background: var(--verdict-icon-warn);
 }
+.count-chip.v-fail .count-chip-icon,
+.subcheck.v-fail .subcheck-icon,
 .vk-icon.v-fail {
-  background: var(--error-darker);
-  border-color: var(--error-darker);
+  background: var(--verdict-icon-fail);
 }
+.count-chip.v-na .count-chip-icon,
+.subcheck.v-na .subcheck-icon,
 .vk-icon.v-na {
-  background: var(--base);
-  border-color: var(--base);
+  background: var(--verdict-icon-na);
 }
+.vk-icon.v-pass { border-color: var(--verdict-icon-pass); }
+.vk-icon.v-warn { border-color: var(--verdict-icon-warn); }
+.vk-icon.v-fail { border-color: var(--verdict-icon-fail); }
+.vk-icon.v-na { border-color: var(--verdict-icon-na); }
 
 /* Issues (failures + reviews) lead the result. */
 /* Scrollable field-detail region: the headline verdict, label image, and the
@@ -1760,23 +1810,12 @@ select:focus {
 }
 .passes-list li {
   color: var(--base-dark);
-  font-size: 0.95rem;
 }
 .passes-list li {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-.passes-list-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--success-darker);
-  color: #fff;
-  flex-shrink: 0;
+  font-size: var(--text-sm);
 }
 
 /* Soft tinted card with a slim accent bar — calm, not a loud saturated block. */
@@ -1808,7 +1847,7 @@ select:focus {
 }
 .field-result .fr-name {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: var(--text-base);
   color: var(--ink);
 }
 .pill {
@@ -1816,7 +1855,7 @@ select:focus {
   align-items: center;
   gap: 5px;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1908,32 +1947,6 @@ select:focus {
   letter-spacing: 0.01em;
   color: var(--ink);
 }
-.fr-subchecks .subcheck-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius);
-  font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
-  color: #fff;
-}
-.subcheck.v-pass .subcheck-icon {
-  background: var(--success-darker);
-}
-.subcheck.v-warn .subcheck-icon {
-  background: var(--warning-darker);
-}
-.subcheck.v-fail .subcheck-icon {
-  background: var(--error-darker);
-}
-.subcheck.v-na .subcheck-icon {
-  background: var(--base-dark);
-  color: #fff;
-}
-
 /* Scorecard count chips in the result header — icon + word + color, scannable. */
 .scorecard {
   display: flex;
@@ -1946,41 +1959,19 @@ select:focus {
   align-items: center;
   gap: 7px;
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.03em;
   padding: 4px 10px 4px 5px;
   border-radius: var(--radius);
   border: 1px solid;
 }
-.count-chip-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  color: #fff;
-}
-.count-chip.v-pass .count-chip-icon {
-  background: var(--success-dark);
-}
-.count-chip.v-warn .count-chip-icon {
-  background: var(--warning-darker);
-}
-.count-chip.v-fail .count-chip-icon {
-  background: var(--error-dark);
-}
-.count-chip.v-na .count-chip-icon {
-  background: var(--base);
-}
 
 /* Operator-style timing readout under the result. */
 .result-elapsed {
   margin-top: 14px;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--text-2xs);
   letter-spacing: 0.1em;
   color: var(--base);
 }
@@ -2003,7 +1994,7 @@ select:focus {
   padding: 9px 14px;
   cursor: pointer;
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--text-2xs);
   letter-spacing: 0.08em;
   color: var(--base-dark);
 }
@@ -2055,7 +2046,7 @@ select:focus {
 
 .meta {
   color: var(--base-dark);
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
   margin-top: 8px;
 }
 
@@ -2065,7 +2056,7 @@ select:focus {
   padding-top: 12px;
   border-top: 1px solid var(--hairline);
   color: var(--base);
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 /* Side-by-side: label image beside the field results (verify-by-eye workflow). */
 .result-with-image {
@@ -2227,7 +2218,7 @@ select:focus {
   border-left: 4px solid var(--primary);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  font-size: 0.88rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
   color: var(--ink);
   opacity: 0;
@@ -2274,7 +2265,7 @@ select:focus {
 }
 .batch-toolbar h2 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
 }
 .batch-toolbar-head {
   min-width: 0;
@@ -2329,7 +2320,7 @@ select:focus {
 }
 .batch-card-name {
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   color: var(--ink);
   word-break: break-all;
   line-height: 1.35;
@@ -2340,25 +2331,38 @@ select:focus {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 .batch-card-tally {
   margin-top: 6px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: var(--text-xs);
   font-weight: 700;
 }
+.batch-card-tally > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid;
+}
 .batch-card-tally .v-pass {
+  background: var(--success-lighter);
   color: var(--success-darker);
+  border-color: var(--success);
 }
 .batch-card-tally .v-warn {
+  background: var(--warning-lighter);
   color: var(--warning-darker);
+  border-color: var(--warning-dark);
 }
 .batch-card-tally .v-fail {
+  background: var(--error-lighter);
   color: var(--error-darker);
+  border-color: var(--error);
 }
 .batch-card-remove,
 .batch-card-details {
@@ -2374,7 +2378,7 @@ select:focus {
 }
 .summary-chip {
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   letter-spacing: 0.03em;
   padding: 6px 12px;
   border-radius: var(--radius);
@@ -2399,6 +2403,27 @@ select:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--primary-dark);
 }
+/* All — neutral; verdict chips get a light semantic tint even when idle. */
+.filter-chip:not(.v-pass):not(.v-warn):not(.v-fail) {
+  background: var(--fill);
+  color: var(--ink);
+  border-color: var(--hairline);
+}
+.filter-chip.v-pass {
+  background: var(--success-lighter);
+  color: var(--success-darker);
+  border-color: var(--success);
+}
+.filter-chip.v-warn {
+  background: var(--warning-lighter);
+  color: var(--warning-darker);
+  border-color: var(--warning-dark);
+}
+.filter-chip.v-fail {
+  background: var(--error-lighter);
+  color: var(--error-darker);
+  border-color: var(--error);
+}
 .filter-chip--active {
   box-shadow: inset 0 0 0 1px currentColor;
 }
@@ -2418,9 +2443,15 @@ select:focus {
   color: var(--error-darker);
 }
 .filter-chip:not(.v-pass):not(.v-warn):not(.v-fail).filter-chip--active {
-  border-color: var(--primary);
+  border-color: var(--primary-dark);
   background: var(--primary-lightest);
   color: var(--primary-darker);
+}
+[data-theme="dark"] .filter-chip:not(.v-pass):not(.v-warn):not(.v-fail).filter-chip--active {
+  background: var(--fill-hover);
+  color: var(--ink);
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
 }
 .filter-chip-label {
   text-transform: uppercase;
@@ -2436,6 +2467,9 @@ select:focus {
   background: rgba(0, 0, 0, 0.1);
   font-size: 0.9em;
 }
+[data-theme="dark"] .filter-chip-count {
+  background: rgba(255, 255, 255, 0.12);
+}
 .status-dot {
   display: inline-block;
   width: 9px;
@@ -2449,6 +2483,18 @@ select:focus {
 .dot-running {
   background: var(--primary);
   animation: pulse 1s ease-in-out infinite;
+}
+.dot-pass {
+  background: var(--verdict-icon-pass);
+}
+.dot-warn {
+  background: var(--warning-dark);
+}
+.dot-fail {
+  background: var(--verdict-icon-fail);
+}
+.dot-na {
+  background: var(--verdict-icon-na);
 }
 @keyframes pulse {
   50% {

@@ -9,11 +9,10 @@ import {
   ReviewError,
   ACCEPTED_IMAGE_TYPES,
   isAcceptedImageType,
-  VERDICT_LABEL,
 } from "@/lib/client";
 import { batchResultsToCsv } from "@/lib/export";
 import ReviewResults from "./ReviewResults";
-import { InfoIcon, StackIcon, VerdictIcon } from "./Icon";
+import { InfoIcon, StackIcon } from "./Icon";
 
 /**
  * Batch upload: read each label in full and check required on-label elements
@@ -546,41 +545,29 @@ function BatchCard({
         <img className="batch-card-thumb" src={row.thumbUrl} alt="" />
         <div className="batch-card-body">
           <div className="batch-card-name">{row.file.name}</div>
-          <div className="batch-card-status">
-            {row.status === "pending" && (
-              <>
-                <span className="status-dot dot-pending" />
-                Waiting
-              </>
-            )}
-            {row.status === "running" && (
-              <>
-                <span className="status-dot dot-running" />
-                Reviewing…
-              </>
-            )}
-            {row.status === "done" && row.result && (
-              <span className={`pill v-${row.result.overall}`}>
-                <span className="pill-icon" aria-hidden="true">
-                  <VerdictIcon verdict={row.result.overall} size={12} />
-                </span>
-                {VERDICT_LABEL[row.result.overall]}
-              </span>
-            )}
-            {row.status === "error" && (
-              <span className="pill v-fail" title={row.error}>
-                <span className="pill-icon" aria-hidden="true">
-                  <VerdictIcon verdict="fail" size={12} />
-                </span>
-                Error
-              </span>
-            )}
-          </div>
+          {(row.status === "pending" || row.status === "running") && (
+            <div className="batch-card-status">
+              {row.status === "pending" ? (
+                <>
+                  <span className="status-dot dot-pending" />
+                  Waiting
+                </>
+              ) : (
+                <>
+                  <span className="status-dot dot-running" />
+                  Reviewing…
+                </>
+              )}
+            </div>
+          )}
           {tally && (
-            <div className="batch-card-tally" aria-label={`${tally.pass} passed, ${tally.warn} to review, ${tally.fail} failed`}>
-              <span className="v-pass">{tally.pass} passed</span>
-              <span className="v-warn">{tally.warn} review</span>
-              <span className="v-fail">{tally.fail} failed</span>
+            <div
+              className="batch-card-tally"
+              aria-label={`${tally.pass} passed, ${tally.warn} to review, ${tally.fail} failed`}
+            >
+              {tally.pass > 0 && <span className="v-pass">{tally.pass} passed</span>}
+              {tally.warn > 0 && <span className="v-warn">{tally.warn} review</span>}
+              {tally.fail > 0 && <span className="v-fail">{tally.fail} failed</span>}
             </div>
           )}
         </div>

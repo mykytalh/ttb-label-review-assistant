@@ -197,8 +197,7 @@ export default function ReviewResults({
               neutral footnote — not an alarm, not a pass. */}
           {notChecked.length > 0 && (
             <p className="result-notchecked">
-              Not checked (not in the application or on the label):{" "}
-              {notChecked.map((f) => FIELD_LABELS[f.field]).join(", ")}.
+              Not checked: {notChecked.map((f) => FIELD_LABELS[f.field]).join(", ")}.
             </p>
           )}
         </div>
