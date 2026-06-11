@@ -53,9 +53,10 @@ API key + sample photos above).
 **One label:** enter application details (brand required) → upload photo → **Check
 this label**.
 
-**Batch:** **Batch upload** tab → add up to 5 photos → **Review all**. No
-per-label application form; see [`docs/APPROACH.md`](docs/APPROACH.md) for batch
-validation scope.
+**Batch:** **Batch upload** tab → add up to 10 photos → **Review all** → filter
+results or open **Details** per row. No per-label application form; see
+[`docs/APPROACH.md`](docs/APPROACH.md) for batch validation scope. In-app help:
+header **How to use**.
 
 ## Pipeline
 

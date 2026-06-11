@@ -166,14 +166,19 @@ export default function ReviewResults({
                 aria-expanded={showPasses}
                 onClick={() => setShowPasses((s) => !s)}
               >
-                {passes.length} field{passes.length === 1 ? "" : "s"} verified
+                <span className="passes-toggle-icon" aria-hidden="true">
+                  <VerdictIcon verdict="pass" size={12} />
+                </span>
+                <span className="passes-toggle-label">
+                  {passes.length} field{passes.length === 1 ? "" : "s"} verified
+                </span>
                 <span className="passes-caret" aria-hidden="true">
                   {showPasses ? "▲" : "▼"}
                 </span>
               </button>
 
               {showPasses ? (
-                <div style={{ marginTop: 10 }}>
+                <div className="passes-expanded">
                   {passes.map((f) => (
                     <FieldCard key={f.field} f={f} />
                   ))}
@@ -181,12 +186,7 @@ export default function ReviewResults({
               ) : (
                 <ul className="passes-list">
                   {passes.map((f) => (
-                    <li key={f.field}>
-                      <span className="passes-list-icon" aria-hidden="true">
-                        <VerdictIcon verdict="pass" size={12} />
-                      </span>
-                      {FIELD_LABELS[f.field]}
-                    </li>
+                    <li key={f.field}>{FIELD_LABELS[f.field]}</li>
                   ))}
                 </ul>
               )}

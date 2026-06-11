@@ -3,7 +3,7 @@
 /** In-app help view with sidebar navigation. Opened from the header "How to use" link. */
 import { useEffect, useRef, useState } from "react";
 import { GOVERNMENT_WARNING } from "@/lib/warning";
-import { VerdictIcon } from "./Icon";
+import { InfoIcon, VerdictIcon } from "./Icon";
 
 type SectionId =
   | "start"
@@ -193,8 +193,12 @@ function Start() {
       <h3 className="docs-h3">Two ways to work</h3>
       <ul className="docs-list">
         <li><strong>One label</strong> — review a single label in detail, with image tools and a printable record.</li>
-        <li><strong>Batch upload</strong> — check a whole stack at once and download the results as a spreadsheet.</li>
+        <li><strong>Batch upload</strong> — check a whole stack at once, filter results, and download a spreadsheet.</li>
       </ul>
+      <p>
+        Use <strong>How to use</strong> in the header any time for this guide. The{" "}
+        <strong>Light / Dark</strong> toggle switches the display theme.
+      </p>
       <Callout kind="note" title="Privacy">
         Photos are checked instantly and are <strong>never saved</strong> —
         nothing from a review is kept.
@@ -214,10 +218,10 @@ function Review() {
           <span>
             <strong>Type the brand name</strong> as it appears on the label — this
             is the only field you must fill in. Open{" "}
-            <strong>&ldquo;Add more label details&rdquo;</strong> to also enter the
-            class/type, alcohol %, net contents, bottler, or country of origin. The
-            tool compares anything you enter against the label; leave a field blank
-            and it simply reads what the label shows.
+            <strong>Add more label details</strong> to also enter the class/type, alcohol %,
+            net contents, bottler, or country of origin. The tool compares anything
+            you enter against the label; leave a field blank and it simply reads
+            what the label shows.
           </span>
         </li>
         <li>
@@ -232,9 +236,8 @@ function Review() {
         <li>
           <span className="hiw-num" aria-hidden="true">3</span>
           <span>
-            <strong>Press &ldquo;Check this label.&rdquo;</strong> In a few seconds
-            you&rsquo;ll see the result, and you can <strong>Print</strong> a formal
-            record.
+            Press <strong>Check this label</strong>. In a few seconds you&rsquo;ll see
+            the result, and you can <strong>Print</strong> a formal record.
           </span>
         </li>
       </ol>
@@ -246,8 +249,8 @@ function Review() {
       <p>
         That&rsquo;s fine — only the brand is required. Leave the rest blank and the
         tool just reads the label and checks the universally-required items (above
-        all, the government warning). Fields with nothing to compare come back as{" "}
-        <strong>&ldquo;Not checked.&rdquo;</strong>
+        all, the government warning). Fields with nothing to compare are listed at the
+        bottom as <strong>Not checked</strong>.
       </p>
       <h3 className="docs-h3">Beverage type</h3>
       <p>
@@ -268,30 +271,63 @@ function Batch() {
       <p className="step">Batch upload</p>
       <h2>Check a whole stack at once</h2>
       <p>
-        Use the <strong>Batch upload</strong> tab for a stack of labels. Add the
-        photos, press <strong>Review all</strong>, and results stream in as each
-        finishes.
+        Use the <strong>Batch upload</strong> tab when you have many label photos and no
+        per-label application to enter. Add the photos, press <strong>Review all</strong>,
+        and results stream in as each finishes.
       </p>
-      <h3 className="docs-h3">What gets checked</h3>
-      <p>
-        Batch has no application form, so the AI <strong>reads every field off the
-        label</strong> and checks what federal rules require on the artwork itself:
-        brand and class must be present, alcohol content is enforced by detected
-        beverage type, and the <strong>government warning</strong> gets the full
-        strict check (present, all-caps <strong>GOVERNMENT WARNING:</strong> heading
-        with colon, verbatim wording). Producer, net contents, and origin are
-        captured when visible but not hard-failed when absent. Click any row for the full
-        readout — extracted values, verdicts, and warning sub-checks.
-      </p>
+      <Callout kind="note" title="Batch vs one label">
+        Tap the{" "}
+        <span className="docs-inline-icon" aria-hidden="true">
+          <InfoIcon size={14} />
+        </span>{" "}
+        icon next to <strong>Upload label photos</strong> for
+        a quick summary. Batch has <strong>no application form</strong> — the AI reads
+        each label and checks what federal rules require on the artwork itself.
+        Producer, net contents, and origin are captured when visible but not
+        hard-failed when absent.
+      </Callout>
+      <h3 className="docs-h3">Working the queue</h3>
+      <ol className="hiw-steps">
+        <li>
+          <span className="hiw-num" aria-hidden="true">1</span>
+          <span>
+            <strong>Add photos</strong> — click or drag up to <strong>10 labels</strong>{" "}
+            per batch (PNG, JPEG, or WebP). Duplicates are skipped automatically.
+            Use <strong>Remove</strong> on a waiting row to drop it before you run.
+          </span>
+        </li>
+        <li>
+          <span className="hiw-num" aria-hidden="true">2</span>
+          <span>
+            Press <strong>Review all</strong> — two labels run at a time. <strong>Stop</strong> halts
+            a run in progress; <strong>Clear</strong> empties the batch.
+          </span>
+        </li>
+        <li>
+          <span className="hiw-num" aria-hidden="true">3</span>
+          <span>
+            <strong>Scan the list</strong> — each finished row shows the filename and
+            small colored counts for how many fields passed, need review, or failed
+            (zeros are hidden). Press <strong>Details</strong> on a row for the full
+            single-label readout.
+          </span>
+        </li>
+        <li>
+          <span className="hiw-num" aria-hidden="true">4</span>
+          <span>
+            <strong>Filter</strong> — after a run, tap the summary chips above the list
+            (<strong>All</strong>, <strong>Passed</strong>, <strong>Needs review</strong>,{" "}
+            <strong>Failed</strong>, or <strong>Errors</strong>) to narrow the queue.
+          </span>
+        </li>
+      </ol>
       <h3 className="docs-h3">Good to know</h3>
       <ul className="docs-list">
-        <li>Up to <strong>10 labels</strong> per batch in this demo (each label is one API call). Two run at a time.</li>
-        <li>After a run, tap the summary chips (<strong>Passed</strong>, <strong>Failed</strong>, etc.) to filter the list.</li>
-        <li><strong>Stop</strong> halts a run in progress; <strong>Clear</strong> empties the batch.</li>
+        <li>Each label is one API call. Two run at a time in this demo.</li>
         <li>If the service is briefly busy, a label retries on its own and only fails after that — the rest keep going.</li>
         <li>After a run, <strong>Retry N failed</strong> re-runs only the ones that didn&rsquo;t succeed.</li>
         <li><strong>Download CSV</strong> mirrors the AI extraction readout (file, date, image quality, every field read off the label) plus a <strong>needsAttention</strong> column that lists only fails and reviews — blank when everything passed.</li>
-        <li>Only <strong>PNG, JPEG, and WebP</strong> are accepted — other formats (e.g. HEIC) are skipped with a message.</li>
+        <li>Other formats (e.g. HEIC) are skipped with a message.</li>
       </ul>
     </>
   );
@@ -334,7 +370,7 @@ function Results() {
       <h2>What the verdicts mean</h2>
       <p>
         Each field gets one of four results. The headline at the top summarizes the
-        whole label; the field cards below explain each one.
+        whole label with count chips; the field cards below explain each one.
       </p>
       <ul className="hiw-meanings">
         <li>
@@ -359,13 +395,31 @@ function Results() {
           <span className="vk-icon v-na" aria-hidden="true">
             <VerdictIcon verdict="na" size={12} />
           </span>
-          <span><strong>Not checked</strong> — nothing to compare (field absent from both the application and the label).</span>
+          <span><strong>Not checked</strong> — the tool had nothing to compare for that field.</span>
+        </li>
+      </ul>
+      <h3 className="docs-h3">How the screen is laid out</h3>
+      <ul className="docs-list">
+        <li>
+          <strong>Problems first</strong> — failures and reviews are expanded at the top
+          so you see what needs attention immediately.
+        </li>
+        <li>
+          <strong>Verified fields</strong> — passed fields collapse into a bordered checklist
+          (same panel style as AI extraction); expand for the full message per field.
+        </li>
+        <li>
+          <strong>Not checked</strong> — a quiet footnote at the bottom when a field had
+          nothing to compare.
+        </li>
+        <li>
+          <strong>AI extraction</strong> — a collapsed panel shows what the model read off
+          the label, field by field.
         </li>
       </ul>
       <p>
-        Failures and reviews are shown expanded first. Verified fields collapse into
-        a short checklist you can expand. The label image sits beside the results so
-        you can confirm by eye.
+        The label image sits beside the results (on wider screens) so you can confirm
+        by eye. In batch mode, open <strong>Details</strong> on a row to see this same readout.
       </p>
       <Callout kind="important" title="Advisory">
         Results are AI-assisted — always confirm by eye before making a decision.
@@ -424,22 +478,20 @@ function Why() {
       <p>
         Case, punctuation, and accents are normalized before comparing.{" "}
         <strong>STONE&rsquo;S THROW</strong> and <strong>Stone&rsquo;s Throw</strong>{" "}
-        are treated as a match. A close typo returns <strong>Review</strong>, not
-        Fail.
+        are treated as a match. A close typo returns <strong>Review</strong>, not Fail.
       </p>
       <h3 className="docs-h3">Strict warning</h3>
       <p>
         The government warning must be verbatim — including the colon after{" "}
         <strong>GOVERNMENT WARNING</strong>. Title case, paraphrasing, or a missing
-        clause fails. If the photo was too poor to read the warning fully,
-        the tool declines to auto-pass even if the extracted text looks right —
-        it routes you to verify by eye instead of guessing.
+        clause fails. If the photo was too poor to read the warning fully, the tool
+        routes you to verify by eye instead of auto-passing.
       </p>
       <Callout kind="note" title="Batch vs one label">
         Batch reads the label and flags missing required elements — it does not
         compare against a COLA application (no form to type into). Use <strong>One
-        label</strong> when you have application data and need full
-        application-to-label matching.
+        label</strong> when you have application data and need full application-to-label
+        matching.
       </Callout>
     </>
   );
