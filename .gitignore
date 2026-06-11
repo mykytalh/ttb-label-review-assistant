@@ -1,0 +1,23 @@
+/node_modules
+/.next
+/out
+/build
+/coverage
+.env
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# Original take-home brief — local reference only, not committed.
+/project-instructions.txt
+
+# Eval staging / scratch — harness, ground truth, and committed results ARE in git.
+/eval/incoming/
+/eval/triage.json
+/eval/triage.mjs
+
+# Real bottle photos (88) — not in the repo; download into this folder locally:
+# https://drive.google.com/drive/folders/1hCq_woq7IwyrOwbi_9XLHeSUsduSUxjN?usp=sharing
+/public/samples/alcohol

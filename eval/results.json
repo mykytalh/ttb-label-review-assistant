@@ -1,0 +1,2448 @@
+{
+  "runs": 3,
+  "count": 88,
+  "perPhoto": [
+    {
+      "file": "IMG_6220.jpg",
+      "difficulty": "easy",
+      "brand": "Chateau Ste. Michelle",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6223.jpg",
+      "difficulty": "easy",
+      "brand": "Chateau Ste. Michelle",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6225.jpg",
+      "difficulty": "moderate",
+      "brand": "Rainier",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6228.jpg",
+      "difficulty": "moderate",
+      "brand": "Rainier",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6233.jpg",
+      "difficulty": "easy",
+      "brand": "Modelo",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6234.jpg",
+      "difficulty": "easy",
+      "brand": "Coors Banquet",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6237.jpg",
+      "difficulty": "easy",
+      "brand": "Cook's",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6239.jpg",
+      "difficulty": "hard",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6241.jpg",
+      "difficulty": "moderate",
+      "brand": "Baja Lime Margarita",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6245.jpg",
+      "difficulty": "hard",
+      "brand": "Cutwater",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6247.jpg",
+      "difficulty": "hard",
+      "brand": "Cutwater",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6248.jpg",
+      "difficulty": "easy",
+      "brand": "Cutwater",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6249.jpg",
+      "difficulty": "moderate",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6252.jpg",
+      "difficulty": "easy",
+      "brand": "Patrón",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6255.jpg",
+      "difficulty": "easy",
+      "brand": "Matua",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6257.jpg",
+      "difficulty": "moderate",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6258.jpg",
+      "difficulty": "moderate",
+      "brand": "Stella",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6259.jpg",
+      "difficulty": "moderate",
+      "brand": "Riunite",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6260.jpg",
+      "difficulty": "easy",
+      "brand": "Charles Smith Wines",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6261.jpg",
+      "difficulty": "moderate",
+      "brand": "Baron Herzog",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6262.jpg",
+      "difficulty": "moderate",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6263.jpg",
+      "difficulty": "easy",
+      "brand": "Livingston Cellars",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6264.jpg",
+      "difficulty": "moderate",
+      "brand": "Barefoot",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6265.jpg",
+      "difficulty": "easy",
+      "brand": "Bota Box",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6266.jpg",
+      "difficulty": "moderate",
+      "brand": "Barefoot",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6267.jpg",
+      "difficulty": "easy",
+      "brand": "Bar West",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6268.jpg",
+      "difficulty": "easy",
+      "brand": "Mazarini",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6269.jpg",
+      "difficulty": "moderate",
+      "brand": "Joseph Carr",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6270.jpg",
+      "difficulty": "moderate",
+      "brand": "La Marca",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6271.jpg",
+      "difficulty": "hard",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6272.jpg",
+      "difficulty": "moderate",
+      "brand": "Tieton Cider Works",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6278.jpg",
+      "difficulty": "easy",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6280.jpg",
+      "difficulty": "moderate",
+      "brand": "Bota Mini",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6281.jpg",
+      "difficulty": "easy",
+      "brand": "Bulleit",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6282.jpg",
+      "difficulty": "moderate",
+      "brand": "OTR",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6283.jpg",
+      "difficulty": "moderate",
+      "brand": "Absolut Cocktails",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6286.jpg",
+      "difficulty": "moderate",
+      "brand": "Jack Daniel's",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6291.jpg",
+      "difficulty": "moderate",
+      "brand": "Bota Mini",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6292.jpg",
+      "difficulty": "easy",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6293.jpg",
+      "difficulty": "moderate",
+      "brand": "La Marca",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6298.jpg",
+      "difficulty": "easy",
+      "brand": "Juggernaut",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6300.jpg",
+      "difficulty": "moderate",
+      "brand": "Taylor",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6301.jpg",
+      "difficulty": "moderate",
+      "brand": "Gekkeikan",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6302.jpg",
+      "difficulty": "moderate",
+      "brand": "Christian Brothers",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6303.jpg",
+      "difficulty": "moderate",
+      "brand": "19 Crimes",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6304.jpg",
+      "difficulty": "moderate",
+      "brand": "Martini",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6306.jpg",
+      "difficulty": "moderate",
+      "brand": "14 Hands",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6307.jpg",
+      "difficulty": "moderate",
+      "brand": "Riunite",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6310.jpg",
+      "difficulty": "moderate",
+      "brand": "Simply Spiked",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6312.jpg",
+      "difficulty": "moderate",
+      "brand": "White Claw",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6313.jpg",
+      "difficulty": "moderate",
+      "brand": "White Claw",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6316.jpg",
+      "difficulty": "moderate",
+      "brand": "Fremont Brewing",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6317.jpg",
+      "difficulty": "moderate",
+      "brand": "No-Li Brewhouse",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6318.jpg",
+      "difficulty": "hard",
+      "brand": "Foster's",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6319.jpg",
+      "difficulty": "moderate",
+      "brand": "Bud Light",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6320.jpg",
+      "difficulty": "moderate",
+      "brand": "Budweiser",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6321.jpg",
+      "difficulty": "moderate",
+      "brand": "Voodoo Ranger",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6322.jpg",
+      "difficulty": "easy",
+      "brand": "Pabst Blue Ribbon",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6323.jpg",
+      "difficulty": "moderate",
+      "brand": "Elysian",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6324.jpg",
+      "difficulty": "hard",
+      "brand": "Elysian",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "poor"
+    },
+    {
+      "file": "IMG_6325.jpg",
+      "difficulty": "moderate",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6326.jpg",
+      "difficulty": "moderate",
+      "brand": "Bacardi",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6327.jpg",
+      "difficulty": "easy",
+      "brand": "Captain Morgan",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6328.jpg",
+      "difficulty": "moderate",
+      "brand": "Salt Point",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6333.jpg",
+      "difficulty": "moderate",
+      "brand": "Freakshow",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6334.jpg",
+      "difficulty": "moderate",
+      "brand": "Sonoma Vineyards",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6335.jpg",
+      "difficulty": "moderate",
+      "brand": "Head Snapper",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6336.jpg",
+      "difficulty": "moderate",
+      "brand": "Ménage à Trois",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6337.jpg",
+      "difficulty": "hard",
+      "brand": "Cultish Beast",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6338.jpg",
+      "difficulty": "moderate",
+      "brand": "Yellow Tail",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6339.jpg",
+      "difficulty": "moderate",
+      "brand": "Luna de Oro",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6340.jpg",
+      "difficulty": "moderate",
+      "brand": "Liquid Light",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6341.jpg",
+      "difficulty": "moderate",
+      "brand": "Segura Viudas",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6342.jpg",
+      "difficulty": "moderate",
+      "brand": "Browne Family Vineyards",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6343.jpg",
+      "difficulty": "moderate",
+      "brand": "Chandon",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6344.jpg",
+      "difficulty": "moderate",
+      "brand": null,
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6345.jpg",
+      "difficulty": "moderate",
+      "brand": "Head Snapper",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6346.jpg",
+      "difficulty": "moderate",
+      "brand": "J",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6347.jpg",
+      "difficulty": "moderate",
+      "brand": "Elemental",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6348.jpg",
+      "difficulty": "moderate",
+      "brand": "Gigi's Garden",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6349.jpg",
+      "difficulty": "moderate",
+      "brand": "Educated Guess",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6350.jpg",
+      "difficulty": "moderate",
+      "brand": "Vinafore Collection",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6351.jpg",
+      "difficulty": "moderate",
+      "brand": "Mer Soleil",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6352.jpg",
+      "difficulty": "moderate",
+      "brand": "Revelation",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6353.jpg",
+      "difficulty": "moderate",
+      "brand": "Waterbrook",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    },
+    {
+      "file": "IMG_6354.jpg",
+      "difficulty": "moderate",
+      "brand": "Grey Goose",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": false,
+          "flip": 0
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6358.jpg",
+      "difficulty": "easy",
+      "brand": "Drambuie",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": true,
+          "flip": 1
+        }
+      },
+      "quality": "fair"
+    },
+    {
+      "file": "IMG_6362.jpg",
+      "difficulty": "moderate",
+      "brand": "2 Towns Ciderhouse",
+      "runs": 3,
+      "errors": 0,
+      "scored": {
+        "warningPresent": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "abv": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        }
+      },
+      "quality": "good"
+    }
+  ],
+  "agg": {
+    "warningPresent": {
+      "correct": 82,
+      "total": 88,
+      "flips": 1,
+      "flipTotal": 88,
+      "anyCorrect": 79,
+      "anyTotal": 80
+    },
+    "warningFederal": {
+      "correct": 70,
+      "total": 80,
+      "flips": 13,
+      "flipTotal": 80,
+      "anyCorrect": 74,
+      "anyTotal": 79
+    },
+    "abv": {
+      "correct": 65,
+      "total": 88,
+      "flips": 5,
+      "flipTotal": 88,
+      "anyCorrect": 35,
+      "anyTotal": 36
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "label-review-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered assistant for verifying alcohol beverage labels against federal compliance requirements.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^15.5.4",
+    "sharp": "^0.34.5",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,2500 @@
+/*
+ * Visual language: the U.S. Web Design System (USWDS). This is a federal tool,
+ * so it should look and behave like one. Color tokens, typography (Public Sans),
+ * and spacing follow USWDS; components are our own lightweight implementations
+ * rather than the full @uswds/uswds package (right-sized for the prototype).
+ *
+ * Accessibility is treated as a hard requirement (Section 508 / WCAG 2.1 AA),
+ * because the audience is older agents with varied vision and tech comfort, and
+ * because federal sites must meet 508:
+ *   - color is never the only signal (verdicts are icon + word + color)
+ *   - all text meets AA contrast (≥4.5:1) on its background
+ *   - everything is keyboard-operable with a visible focus ring
+ *   - motion respects prefers-reduced-motion
+ *   - a skip link and live regions support screen-reader users
+ */
+
+:root {
+  /* USWDS color tokens (subset we use) */
+  --base-lightest: #f0f0f0;
+  --base-lighter: #dfe1e2;
+  --base-light: #a9aeb1;
+  --base: #565c65;
+  --base-dark: #3d4551;
+  --base-darkest: #1b1b1b;
+  --ink: #1b1b1b;
+
+  --primary: #1a7fd4; /* primary blue (lighter than default USWDS navy) */
+  --primary-dark: #1567ad;
+  --primary-darker: #1d3a66; /* masthead/footer band — a softer navy, not near-black */
+  --primary-light: #8ec5ef;
+  --primary-lightest: #eff6fc;
+  --on-primary: #ffffff; /* text/icon color on a --primary fill (AA-safe) */
+  --on-dark: #ffffff; /* strong text on the dark navy bands (masthead/footer) */
+
+  /* Semantic state colors (USWDS), chosen for AA-contrast text pairings */
+  --success: #00a91c;
+  --success-dark: #216e1f;
+  --success-darker: #154c21;
+  --success-lighter: #ecf3ec;
+
+  --warning: #ffbe2e;
+  --warning-dark: #e5a000;
+  --warning-darker: #936f38;
+  --warning-lighter: #faf3d1;
+
+  --error: #d83933;
+  --error-dark: #b50909;
+  --error-darker: #8b0a03;
+  --error-lighter: #f4e3db;
+
+  --gold: #ffbe2e;
+
+  /* Surface system: white surfaces, light borders, modest radii. */
+  --surface: #ffffff;
+  --canvas: #ffffff; /* USWDS pages are white, not gray */
+  --fill: #f5f6f7; /* very light fill for subtle zones (dropzone, chips) */
+  --fill-hover: #edeff1;
+  --hairline: #dfe1e2; /* light divider/border */
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  /* One spacing scale (4px rhythm) so vertical/horizontal gaps are deliberate,
+     not ad-hoc per-component — the single biggest "this feels designed" lever. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* One interaction timing so hovers/focus across the app feel unified. */
+  --transition: 0.12s ease;
+
+  /* Monospace for extracted values, IDs, and timings. */
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --shadow-sm: 0 1px 2px rgba(27, 27, 27, 0.06);
+  --shadow: 0 1px 3px rgba(27, 27, 27, 0.08), 0 4px 12px rgba(27, 27, 27, 0.06);
+}
+
+/* ---------- Dark theme ----------
+   Redefines the same tokens; components do not branch on theme. */
+[data-theme="dark"] {
+  --base-lightest: #1c2230;
+  --base-lighter: #2a313f;
+  --base-light: #4a5568;
+  --base: #8a93a3;
+  --base-dark: #aab2c0;
+  --base-darkest: #e6edf3;
+  --ink: #e6edf3;
+
+  /* Accent: burnt-orange for links, active tab, focus, and primary actions. */
+  --primary: #d4761a; /* burnt orange */
+  --primary-dark: #e88b2c;
+  --primary-darker: #0a0d12; /* near-black masthead/footer band */
+  --primary-light: #d4761a;
+  --primary-lightest: #1d1409;
+  --on-primary: #0c0f14; /* dark ink on the orange fill (AA-safe) */
+
+  --success: #3fb950;
+  --success-dark: #56d364;
+  --success-darker: #7ee787;
+  --success-lighter: #0f2417;
+
+  --warning: #e3b341;
+  --warning-dark: #f0c651;
+  --warning-darker: #f5d271;
+  --warning-lighter: #2a2113;
+
+  --error: #f85149;
+  --error-dark: #ff6a61;
+  --error-darker: #ff938c;
+  --error-lighter: #2b1717;
+
+  --gold: #e3b341;
+  --on-dark: #c9d1d9; /* softer off-white on dark bands — easier on the eyes */
+
+  --surface: #0d1014;
+  --canvas: #050608;
+  --fill: #111419;
+  --fill-hover: #171b21;
+  --hairline: #242830; /* neutral gray border */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+/* In dark mode the filled status chips use a LIGHT semantic background, so their
+   text must be dark ink (not white) to keep AA contrast. */
+[data-theme="dark"] .pill.v-pass,
+[data-theme="dark"] .pill.v-warn,
+[data-theme="dark"] .pill.v-fail,
+[data-theme="dark"] .overall.v-pass .badge-icon,
+[data-theme="dark"] .overall.v-warn .badge-icon,
+[data-theme="dark"] .overall.v-fail .badge-icon,
+[data-theme="dark"] .overall.v-na .badge-icon {
+  color: #0c0f14;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-x: hidden;
+}
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-public-sans), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  font-size: 1.02rem; /* ~16.5px; comfortable but not heavy */
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  /* Full-height column so the footer sits at the bottom of the viewport on
+     short pages instead of leaving scrollable dead space below it. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Visible focus everywhere — soft blue glow (Apple-style) rather than a hard ring. */
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--ink);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+a {
+  color: var(--primary);
+}
+
+.container {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 12px 20px 64px;
+  /* Grows to fill leftover viewport height so the footer sits at the bottom. */
+  flex: 1 0 auto;
+}
+
+/* ---------- Skip link (USWDS) ---------- */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--primary-darker);
+  color: var(--on-dark);
+  padding: 12px 16px;
+  z-index: 100;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius) 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+  color: var(--on-dark);
+  padding: 4px 0;
+  position: relative;
+  border-bottom: 3px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(29, 58, 102, 0.18);
+  /* Soft top-down sheen over the band color — a gentle brushed surface, not the
+     hard near-black band the edgier look had. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 50%),
+    var(--primary-darker);
+}
+.masthead .inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+/* Title on the left; controls on the right. */
+.masthead-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.masthead-id {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Header controls (How-to-use + theme toggle) grouped at the right. */
+.masthead-actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* Light/dark theme toggle. */
+.theme-toggle {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--on-dark);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius);
+  padding: 7px 12px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background var(--transition), border-color var(--transition);
+}
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.theme-toggle-icon {
+  display: inline-flex;
+}
+.masthead h1 {
+  color: var(--on-dark);
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.6rem;
+  margin: 0;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+/* Eyebrow above the product title: small gold monospace uppercase. */
+.masthead-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 3px;
+}
+/* Subtitle under the product title. */
+.masthead-org {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #aec6e0;
+  margin: 3px 0 0;
+}
+
+/* ---------- Site footer (mirrors the masthead) ---------- */
+.site-footer {
+  color: var(--on-dark);
+  flex-shrink: 0;
+  position: relative;
+  /* Matte polycarbonate finish, matching the masthead. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.22) 100%),
+    var(--primary-darker);
+}
+/* Red / white / blue accent stripe along the top of the footer — flag banding. */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--error) 0 33.3%,
+    #ffffff 33.3% 66.6%,
+    var(--primary-dark) 66.6% 100%
+  );
+  opacity: 0.85;
+}
+.site-footer .inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+.footer-eagle {
+  height: 56px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+.footer-meta {
+  margin-left: auto; /* hug the right edge even if the eagle is narrow */
+  text-align: right;
+}
+.site-footer .byline {
+  color: #c3d4e8;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+  text-align: right;
+}
+.footer-link {
+  color: var(--on-dark);
+  text-decoration: underline;
+}
+.footer-link:hover {
+  color: var(--gold);
+}
+
+/* ---------- "How to use this tool" (senior-facing guidance) ----------
+   A labeled control in the masthead opens a full-page guidance view (not a popup)
+   in place of the tool. It auto-opens on the first visit and is reachable from the
+   header anytime after. Reads as a calm document — the federal-site pattern — with
+   an obvious "Back to the tool" link; text a touch larger for the audience. */
+
+/* Header trigger — mirrors the theme toggle so the two read as a control pair. */
+.hiw-trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--on-dark);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius);
+  padding: 7px 12px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background var(--transition), border-color var(--transition);
+}
+.hiw-trigger:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.hiw-trigger-icon {
+  display: inline-flex;
+}
+
+/* ---------- Help / documentation (sidebar nav + content) ---------- */
+.docs {
+  margin-top: var(--space-4);
+}
+.hiw-back {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--space-4);
+}
+.hiw-back:hover {
+  text-decoration: underline;
+}
+.docs-layout {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+/* Left section nav — sticky so it stays in view while reading a long section. */
+.docs-nav {
+  position: sticky;
+  top: var(--space-4);
+}
+.docs-nav-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--base);
+  margin: 0 0 var(--space-3);
+}
+.docs-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.docs-nav-link {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 2px solid var(--hairline);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--base-dark);
+  padding: var(--space-2) var(--space-3);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.docs-nav-link:hover {
+  background: var(--fill);
+  color: var(--ink);
+}
+.docs-nav-link.active {
+  border-left-color: var(--primary);
+  color: var(--ink);
+  background: var(--fill);
+  font-weight: 700;
+}
+/* Content pane — tuned for comfortable reading: a ~64ch measure, airy line
+   height, and clearly-stepped headings so sections don't blur together. */
+.docs-content {
+  /* full content width within the grid column; the measure is held by the text
+     blocks below so headings/rules can still span the pane */
+  max-width: 100%;
+  line-height: 1.7;
+  font-size: 1rem;
+  color: var(--ink);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+/* Hold body text to a comfortable reading measure, but let the h2 rule and
+   quote blocks run full-width for a cleaner document look. */
+.docs-content p,
+.docs-content .hiw-steps,
+.docs-content .hiw-meanings,
+.docs-content .docs-list {
+  max-width: 62ch;
+}
+.docs-content h2 {
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--primary); /* coloured accent rule */
+}
+/* Sub-heads: visibly larger than body, in the accent colour, with generous space
+   above to open a new topic — the main lever for "easy to scan". */
+.docs-h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--primary-dark);
+  margin: var(--space-6) 0 var(--space-2);
+}
+.docs-lead {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: var(--base-dark);
+  margin: 0 0 var(--space-4);
+}
+.docs-content p {
+  margin: 0 0 var(--space-4);
+}
+.docs-list {
+  margin: 0 0 var(--space-4);
+  padding-left: 22px;
+}
+.docs-list li {
+  margin-bottom: var(--space-2);
+  line-height: 1.6;
+}
+/* ---- Coloured callout boxes — make the docs inviting to read, theme-aware ---- */
+.callout {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-4) 0;
+  border: 1px solid var(--hairline);
+  border-left-width: 4px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.callout-icon {
+  flex-shrink: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.callout p {
+  margin: 0;
+  max-width: none;
+}
+.callout-title {
+  font-weight: 700;
+  margin-right: 4px;
+}
+/* Tip (green) */
+.callout.tip {
+  background: var(--success-lighter);
+  border-color: var(--success);
+}
+.callout.tip .callout-title,
+.callout.tip .callout-icon {
+  color: var(--success-darker);
+}
+/* Note / good-to-know (blue) */
+.callout.note {
+  background: var(--primary-lightest);
+  border-color: var(--primary-light);
+}
+.callout.note .callout-title,
+.callout.note .callout-icon {
+  color: var(--primary-dark);
+}
+/* Important (amber) */
+.callout.important {
+  background: var(--warning-lighter);
+  border-color: var(--warning-dark);
+}
+.callout.important .callout-title,
+.callout.important .callout-icon {
+  color: var(--warning-darker);
+}
+/* The verbatim mandated statement — set apart as a quoted regulatory block. */
+.docs-quote {
+  margin: 0 0 var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--fill);
+  border-left: 3px solid var(--primary);
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.docs-cite {
+  font-size: 0.85rem;
+  color: var(--base);
+  margin: 0 0 var(--space-4);
+}
+.docs-link {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.docs-link:hover {
+  color: var(--primary-dark);
+}
+
+/* Numbered steps (used in the docs single-column). */
+.hiw-steps {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.hiw-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.hiw-num {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.hiw-meanings {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.hiw-meanings li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  line-height: 1.45;
+  color: var(--base-dark);
+}
+.hiw-meanings strong {
+  color: var(--ink);
+}
+
+/* Docs section picker — hidden on desktop, burger menu on mobile. */
+.docs-menu-toggle {
+  display: none;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 28px;
+  margin: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.tab {
+  appearance: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--base-dark);
+  font-size: 1.02rem;
+  font-weight: 600;
+  padding: 12px 2px 14px;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--primary);
+}
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--primary);
+}
+
+/* ---------- Two-column workspace ---------- */
+/* Single-label input uses the full container width, matching batch — one thing
+   at a time, top to bottom; the result appears right under the action. */
+.single-flow,
+.batch-flow {
+  margin: 16px auto 0;
+}
+/* Compact the single-label entry so the whole form fits one viewport without
+   scrolling — tighter card, fields, dropzone, and a shorter primary button. */
+.single-flow .card {
+  padding: 20px 24px;
+  margin-bottom: 0;
+}
+.single-flow .field {
+  margin-bottom: 12px;
+}
+.single-flow .more-details {
+  margin-bottom: 12px;
+  padding-top: 12px;
+}
+.single-flow .dropzone {
+  padding: 16px;
+}
+.single-flow .dropzone .icon {
+  font-size: 1.5rem;
+}
+.single-flow .dropzone p {
+  margin-top: 5px;
+}
+.single-flow .btn {
+  padding: 11px 24px;
+  margin-top: 4px;
+}
+
+/* Result view uses the full container width — the part worth spreading out. */
+.result-view {
+  margin-top: 20px;
+}
+/* Operator-grade: the result panel is square-edged to match the record bar. */
+.result-view .card {
+  border-radius: var(--radius);
+  overflow: visible;
+  max-width: 100%;
+}
+/* Operator-grade "record bar": a dark header strip identifying the record under
+   review, with a mono file/ID line — reads like an instrument, not a webpage. */
+.result-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  background: var(--primary-darker);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+.result-bar-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.result-bar-info strong {
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
+.result-bar-meta {
+  color: #aec6e0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  word-break: break-word;
+}
+.result-bar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Optional cross-check fields, tucked behind a native expander. */
+.more-details {
+  margin-bottom: 18px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+}
+.more-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary);
+  list-style: none;
+  padding: 4px 0;
+}
+.more-details > summary::-webkit-details-marker {
+  display: none;
+}
+.more-details > summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 8px;
+  transition: transform 0.1s ease;
+}
+.more-details[open] > summary::before {
+  content: "▾";
+}
+.more-details-note {
+  color: var(--base-dark);
+  font-size: 0.9rem;
+  margin: 4px 0 14px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* Empty / loading placeholder in the result column. */
+.result-placeholder {
+  text-align: center;
+  color: var(--base-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+}
+.result-placeholder .icon {
+  font-size: 2.5rem;
+  opacity: 0.7;
+}
+.result-placeholder p {
+  margin: 0;
+  max-width: 36ch;
+}
+.spinner-dark {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--base-lighter);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ---------- Cards & form ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+.step {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+.field label {
+  display: block;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  color: var(--base-dark);
+}
+/* Inline, lightweight optional/required hint so labels stay on one line. */
+.field .hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--base-light);
+  font-size: 0.72rem;
+}
+input[type="text"],
+select {
+  width: 100%;
+  /* Pin both controls to the SAME box: native <input> and <select> compute
+     height differently, so an explicit height + box-sizing keeps them pixel-
+     matched side by side regardless of browser. */
+  box-sizing: border-box;
+  height: 44px;
+  font-size: 1rem;
+  line-height: 1.2;
+  padding: 0 13px;
+  border: 1px solid var(--base); /* USWDS input border */
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+/* Data being entered reads as data. */
+input[type="text"] {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+}
+input[type="text"]::placeholder {
+  color: var(--base-light);
+  font-family: var(--mono);
+}
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary); /* USWDS focus uses a doubled outline */
+  outline: none;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+/* ---------- Responsive (tablet and phone) ---------- */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px 16px 32px;
+  }
+
+  /* Masthead */
+  .masthead {
+    padding: 10px 0 12px;
+  }
+  .masthead .inner {
+    padding: 0 16px;
+  }
+  .masthead-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .masthead-id {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .masthead h1 {
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+  .masthead-org {
+    font-size: 0.7rem;
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+  .masthead-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .hiw-trigger,
+  .theme-toggle {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 40px;
+  }
+
+  /* Tabs */
+  .tabs {
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    font-size: 0.92rem;
+    white-space: nowrap;
+    flex: 1 1 50%;
+    text-align: center;
+    padding: 12px 8px 14px;
+  }
+
+  /* Cards & forms */
+  .card {
+    padding: 16px;
+  }
+  .card h2 {
+    font-size: 1.1rem;
+  }
+  .dropzone {
+    padding: 20px 14px;
+  }
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Result view — page scrolls naturally; no nested clipping */
+  .result-scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .result-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+  }
+  .result-bar-info strong {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+  .result-bar-meta {
+    white-space: normal;
+  }
+  .result-bar-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .result-bar-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  .result-image {
+    max-width: none;
+    width: 100%;
+  }
+  .result-image .img-editor--view-only .img-stage,
+  .result-image .img-stage {
+    max-height: min(70vh, 520px);
+    min-height: 120px;
+    overflow: hidden;
+  }
+  .result-image .magnifier img {
+    max-height: min(60vh, 480px);
+    width: 100%;
+    height: auto;
+  }
+  .overall {
+    font-size: 1rem;
+    flex-wrap: wrap;
+    padding: 14px;
+  }
+  .scorecard {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .count-chip {
+    font-size: 0.78rem;
+  }
+  .field-result .fr-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .field-result .fr-compare {
+    grid-template-columns: 1fr;
+  }
+  .field-result .fr-compare dd {
+    border-left: none;
+  }
+  .ai-extract-toggle {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ai-extract-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 6px 14px;
+  }
+  .ai-extract-row dd {
+    padding-bottom: 4px;
+  }
+
+  /* Image editor (input mode) */
+  .img-stage {
+    min-height: 140px;
+    max-height: min(50vh, 360px);
+    padding: var(--space-2);
+  }
+  .magnifier img {
+    max-height: min(45vh, 320px);
+  }
+  .img-tools {
+    gap: 6px;
+  }
+  .tool-btn {
+    font-size: 0.78rem;
+    padding: 6px 8px;
+  }
+
+  /* Batch */
+  .batch-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .batch-toolbar-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .batch-toolbar-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  .batch-card-main {
+    flex-wrap: wrap;
+  }
+  .batch-card-details {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  /* Docs — burger nav */
+  .docs-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    background: var(--fill);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+  .docs-menu-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--primary);
+  }
+  .docs-menu-label {
+    flex: 1;
+    min-width: 0;
+  }
+  .docs-menu-caret {
+    color: var(--base);
+    font-size: 0.75rem;
+  }
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .docs-nav {
+    position: static;
+    display: none;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 8px 0;
+  }
+  .docs-nav.open {
+    display: block;
+  }
+  .docs-nav-title {
+    padding: 0 14px;
+    margin-bottom: 8px;
+  }
+  .docs-nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+  .docs-nav-link {
+    border-left: none;
+    border-radius: 0;
+    padding: 10px 14px;
+  }
+  .docs-nav-link.active {
+    border-left: 3px solid var(--primary);
+    background: var(--fill);
+  }
+  .docs-content {
+    padding: 16px;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding-bottom: 8px;
+  }
+  .site-footer .inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 16px;
+  }
+  .footer-eagle {
+    height: 44px;
+  }
+  .footer-meta {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+  .site-footer .byline {
+    margin-left: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .masthead h1 {
+    font-size: 1.1rem;
+  }
+  .hiw-trigger-label,
+  .theme-toggle-text {
+    display: none;
+  }
+  .hiw-trigger,
+  .theme-toggle {
+    flex: 0 0 auto;
+    min-width: 44px;
+    padding: 8px 12px;
+  }
+  .tab {
+    font-size: 0.88rem;
+  }
+  .result-bar-actions {
+    grid-template-columns: 1fr;
+  }
+  .batch-toolbar-actions {
+    grid-template-columns: 1fr;
+  }
+  .pill {
+    white-space: normal;
+    text-align: left;
+  }
+}
+
+/* ---------- Dropzone ---------- */
+.dropzone {
+  border: 1.5px dashed var(--base-light);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  background: var(--fill);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+.dropzone:hover {
+  background: var(--fill-hover);
+}
+.dropzone.drag {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+.dropzone .icon {
+  color: var(--base);
+  display: flex;
+  justify-content: center;
+}
+.dropzone p {
+  margin: 8px 0 0;
+  color: var(--base-dark);
+}
+.dropzone-hint {
+  font-size: 0.85rem;
+  color: var(--base);
+}
+/* Collapsed upload state — once the result shows the image, the input side
+   recedes to a slim confirmation chip. One image, one source of truth. */
+.upload-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--success-lighter);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+}
+.upload-chip-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--success-dark);
+  color: #fff;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.upload-chip-name {
+  flex: 1;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.link-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+}
+.preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.preview-name {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--base-dark);
+  word-break: break-all;
+}
+
+/* ---------- Image editor (stage + tool strip + loupe) ---------- */
+.img-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+/* Result-side preview: same clipped stage as upload so zoom + pan work. */
+.img-editor--view-only .img-stage {
+  overflow: hidden;
+}
+.img-editor--view-only .magnifier {
+  width: 100%;
+  min-height: 180px;
+  justify-content: center;
+  align-items: center;
+}
+.img-editor--view-only .img-tools {
+  flex-wrap: wrap;
+}
+/* Bordered stage the agent can actually read the label in (the old thumbnail was
+   too small to verify by eye). The contained image is height-capped; overflow is
+   clipped so a zoomed/scaled image scrolls within the stage rather than the page. */
+.img-stage {
+  position: relative; /* anchor for the Replace/Remove corner controls */
+  background: var(--fill);
+  border: 1px solid var(--hairline);
+  padding: var(--space-3);
+  min-height: 200px;
+  max-height: 380px;
+  /* Hidden, not auto: a zoomed image is navigated by dragging (pan), so the
+     stage just clips the moved image rather than showing fiddly scrollbars. */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.magnifier {
+  position: relative;
+  display: inline-flex;
+  line-height: 0;
+  max-width: 100%;
+}
+.magnifier.active {
+  cursor: crosshair;
+}
+.magnifier.cropping {
+  cursor: crosshair;
+}
+/* Drag-to-pan a zoomed image: grab hand, closed while dragging. */
+.magnifier.pannable {
+  cursor: grab;
+}
+.magnifier.grabbing {
+  cursor: grabbing;
+}
+.magnifier img {
+  max-width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform var(--transition);
+}
+.magnifier.grabbing img {
+  transition: none; /* follow the cursor 1:1 while dragging */
+}
+.magnifier-lens {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  box-shadow:
+    0 0 0 1px var(--base),
+    0 4px 14px rgba(0, 0, 0, 0.35);
+  image-rendering: -webkit-optimize-contrast;
+  z-index: 5;
+}
+@media (prefers-reduced-motion: reduce) {
+  .magnifier-lens {
+    display: none;
+  }
+}
+/* Crop selection rectangle. */
+.crop-box {
+  position: absolute;
+  border: 1px dashed var(--on-dark);
+  outline: 1px solid rgba(0, 0, 0, 0.6);
+  background: rgba(0, 94, 162, 0.18);
+  pointer-events: none;
+  z-index: 6;
+}
+.crop-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+.crop-hint {
+  font-size: 0.85rem;
+  color: var(--base-dark);
+}
+
+/* The tool strip: clean, compact icon+label buttons. */
+/* Edit tools — centered strip below the image. */
+.img-tool-error {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  color: var(--error);
+}
+
+.img-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+.tool-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  color: var(--base-dark);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 8px 13px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition),
+    color var(--transition), transform 0.06s ease;
+}
+.tool-btn svg {
+  color: var(--primary);
+  transition: color var(--transition);
+}
+.tool-btn:hover:not(:disabled) {
+  background: var(--fill);
+  border-color: var(--primary-light);
+  color: var(--ink);
+}
+.tool-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.tool-btn.active {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+.tool-btn.active svg {
+  color: var(--on-primary);
+}
+.tool-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* File actions as corner controls overlaid on the image. */
+.img-corner {
+  position: absolute;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background var(--transition);
+}
+.img-corner svg {
+  color: #fff;
+}
+.img-corner:hover {
+  background: rgba(0, 0, 0, 0.82);
+}
+.img-corner.top-right {
+  top: var(--space-3);
+  right: var(--space-3);
+}
+.img-corner.bottom-right {
+  bottom: var(--space-3);
+  right: var(--space-3);
+}
+.tool-btn svg {
+  flex-shrink: 0;
+}
+.rotate-hint--compact {
+  display: none;
+}
+@media (max-width: 768px) {
+  .rotate-hint--full {
+    display: none;
+  }
+  .rotate-hint--compact {
+    display: block;
+  }
+  .img-editor--compact .img-tools {
+    justify-content: flex-start;
+  }
+  .img-editor--view-only.img-editor--compact .img-stage {
+    margin-bottom: 0;
+  }
+}
+
+.rotate-hint {
+  color: var(--base);
+  font-size: 0.85rem;
+  margin: 4px 0 8px;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 1.02rem;
+  font-weight: 600;
+  /* Full-width primary CTA: a taller, prominent action. */
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.12s ease, transform 0.06s ease;
+}
+.btn:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  background: var(--base-light);
+  border-color: var(--base-light);
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Auto-width buttons (action rows) share ONE consistent height so they align
+   in a row regardless of which variant they are. */
+.btn.compact,
+.btn.secondary {
+  width: auto;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 0.92rem;
+}
+.btn.secondary {
+  background: var(--fill);
+  color: var(--primary-dark);
+  border-color: var(--base-lighter);
+  box-shadow: none;
+}
+.btn.secondary:hover {
+  background: var(--fill-hover);
+  border-color: var(--base-light);
+}
+
+/* ---------- Verdict colors ----------
+   Each verdict uses a dark ink on a light tint (AA contrast) plus an icon and a
+   word, so color is never the sole signal. */
+.v-pass {
+  background: var(--success-lighter);
+  color: var(--success-darker);
+  border-color: var(--success);
+}
+.v-warn {
+  background: var(--warning-lighter);
+  color: var(--warning-darker);
+  border-color: var(--warning-dark);
+}
+.v-fail {
+  background: var(--error-lighter);
+  color: var(--error-darker);
+  border-color: var(--error);
+}
+
+.overall {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--base);
+  border-radius: var(--radius);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-3);
+}
+/* Quiet advisory under the headline verdict — the tool advises, the agent decides. */
+.advisory-note {
+  margin: 0 0 var(--space-4);
+  font-size: 0.85rem;
+  color: var(--base);
+  font-style: italic;
+}
+.overall.v-pass {
+  border-left-color: var(--success-dark);
+}
+.overall.v-warn {
+  border-left-color: var(--warning-dark);
+}
+.overall.v-fail {
+  border-left-color: var(--error);
+}
+.overall .badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.overall.v-pass .badge-icon {
+  background: var(--success-dark);
+}
+.overall.v-warn .badge-icon {
+  background: var(--warning-darker);
+}
+.overall.v-fail .badge-icon {
+  background: var(--error-dark);
+}
+
+/* Small verdict-icon chip — used in the How-to-use modal's "What the result
+   means" key. (The inline result-view legend was removed as redundant.) */
+.vk-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+/* Issues (failures + reviews) lead the result. */
+/* Scrollable field-detail region: the headline verdict, label image, and the
+   "reviewed in Ns" line stay fixed; the field cards scroll within the viewport
+   on a long result so the agent never loses the summary. */
+.result-scroll {
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  /* Room so the focus ring on the last card / passes toggle isn't clipped. */
+  padding-right: 4px;
+}
+
+.result-issues {
+  margin-bottom: 16px;
+}
+.result-scroll > .result-issues:last-child,
+.result-scroll > .result-passes:last-child {
+  margin-bottom: 0;
+}
+
+/* Passes recede into a quiet, expandable checklist. */
+.result-passes {
+  border-top: 1px solid var(--base-lighter);
+  padding-top: 12px;
+}
+.passes-toggle {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  color: var(--success-darker);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Stays pinned at the top of the scroll region when the verified list is
+     expanded, so the "N fields verified" header (and its caret) stay in view
+     while the agent scrolls the fields under it. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  background: var(--surface);
+  padding: 8px 0;
+}
+.passes-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--success-darker);
+  color: #fff;
+  font-size: 0.8rem;
+}
+.passes-caret {
+  font-size: 0.7rem;
+  color: var(--base);
+}
+.passes-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.passes-list li {
+  color: var(--base-dark);
+  font-size: 0.95rem;
+}
+.passes-list li span {
+  color: var(--success-dark);
+  font-weight: 700;
+}
+
+/* Soft tinted card with a slim accent bar — calm, not a loud saturated block. */
+.field-result {
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--base-light);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+.field-result.v-pass {
+  border-left-color: var(--success);
+  background: var(--success-lighter);
+}
+.field-result.v-warn {
+  border-left-color: var(--warning-dark);
+  background: var(--warning-lighter);
+}
+.field-result.v-fail {
+  border-left-color: var(--error);
+  background: var(--error-lighter);
+}
+.field-result .fr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.field-result .fr-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.pill {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  border: none;
+}
+.pill.v-pass {
+  background: var(--success-darker);
+  color: #fff;
+  border-color: var(--success-darker);
+}
+.pill.v-warn {
+  background: var(--warning-darker);
+  color: #fff;
+  border-color: var(--warning-darker);
+}
+.pill.v-fail {
+  background: var(--error-darker);
+  color: #fff;
+  border-color: var(--error-darker);
+}
+.field-result .fr-msg {
+  margin: 8px 0 0;
+  color: var(--ink);
+}
+/* Application-vs-label comparison as a tight, bordered data block. Values are
+   monospace so a character difference (PATRÓN vs Patron) is obvious at a glance. */
+.field-result .fr-compare {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: var(--ink);
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  border: 1px solid var(--hairline);
+  background: var(--fill);
+}
+.field-result .fr-compare dt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--base);
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.field-result .fr-compare dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
+  word-break: break-word;
+}
+/* drop the divider on the last row */
+.field-result .fr-compare dt:last-of-type,
+.field-result .fr-compare dd:last-of-type {
+  border-bottom: none;
+}
+
+/* Per-requirement breakdown inside a field (the government warning's 3 checks). */
+.fr-subchecks {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fr-subchecks .subcheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.fr-subchecks .subcheck-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius);
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.subcheck.v-pass .subcheck-icon {
+  background: var(--success-lighter);
+  color: var(--success-darker);
+}
+.subcheck.v-warn .subcheck-icon {
+  background: var(--warning-lighter);
+  color: var(--warning-darker);
+}
+.subcheck.v-fail .subcheck-icon {
+  background: var(--error-lighter);
+  color: var(--error-darker);
+}
+.subcheck.v-na .subcheck-icon {
+  background: var(--base-lightest);
+  color: var(--base);
+}
+
+/* Scorecard count chips in the result header — icon + word + color, scannable. */
+.scorecard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.count-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 10px;
+  border-radius: var(--radius);
+  border: 1px solid;
+}
+
+/* Operator-style timing readout under the result. */
+.result-elapsed {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--base);
+}
+
+/* AI extraction readout — the model's raw read, framed as instrument data. */
+.ai-extract {
+  margin-top: 16px;
+  border: 1px solid var(--hairline);
+  background: var(--fill);
+}
+.ai-extract-toggle {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: none;
+  border-bottom: 1px solid var(--hairline);
+  padding: 9px 14px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--base-dark);
+}
+.ai-extract-toggle[aria-expanded="false"] {
+  border-bottom: none;
+}
+.ai-extract-label {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+.ai-extract-quality {
+  margin-left: auto;
+  color: var(--base);
+}
+.ai-extract-body {
+  margin: 0;
+  padding: 6px 0;
+}
+.ai-extract-row {
+  display: grid;
+  grid-template-columns: minmax(0, 11.5rem) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 4px 14px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.ai-extract-row dt {
+  color: var(--base);
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.ai-extract-row dd {
+  margin: 0;
+  color: var(--ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.ai-extract-note {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--base);
+  margin: 4px 0 0;
+  padding: 8px 14px 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.meta {
+  color: var(--base-dark);
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+
+/* Quiet, neutral footnote for fields that couldn't be checked. */
+.result-notchecked {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  color: var(--base);
+  font-size: 0.9rem;
+}
+.overall.v-na .badge-icon {
+  background: var(--base);
+}
+
+/* Side-by-side: label image beside the field results (verify-by-eye workflow). */
+.result-with-image {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  width: 100%;
+}
+.result-body {
+  min-width: 0;
+}
+.result-image {
+  position: sticky;
+  top: 16px;
+  min-width: 0;
+}
+.result-image .img-editor {
+  width: 100%;
+}
+.result-image .img-stage {
+  max-height: 460px;
+}
+/* Show the WHOLE label in the result, fit to the stage (not stretched to full
+   width, which made a portrait photo overflow and look zoomed-in). */
+.result-image .magnifier img {
+  width: auto;
+  max-width: 100%;
+  max-height: 432px;
+  object-fit: contain;
+  border: 1px solid var(--base-lighter);
+}
+
+/* Stack image above analysis on tablet/phone — must live AFTER the base
+   .result-with-image rules above or the two-column grid wins the cascade. */
+@media (max-width: 900px) {
+  .result-with-image {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .result-image,
+  .result-body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .result-image {
+    position: static;
+    order: 1;
+  }
+  .result-body {
+    order: 2;
+  }
+  .result-scroll {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .result-image .img-stage {
+    max-height: min(70vh, 520px);
+    overflow: hidden;
+  }
+  .result-image .magnifier img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(65vh, 480px);
+  }
+}
+
+/* Prominent, actionable callout when the photo was too poor to trust. */
+.quality-alert {
+  background: var(--warning-lighter);
+  color: var(--warning-darker);
+  border-left: 8px solid var(--warning-dark);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 10px 0 0;
+}
+
+.error-banner {
+  background: var(--error-lighter);
+  color: var(--error-darker);
+  border-left: 8px solid var(--error);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-weight: 600;
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: -3px;
+  margin-right: 8px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Batch upload ---------- */
+.batch-intro {
+  margin-top: 0;
+}
+.batch-cost-note {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  background: var(--warning-lighter);
+  color: var(--warning-darker);
+  border-left: 4px solid var(--warning-dark);
+  border-radius: var(--radius);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.batch-notice {
+  margin: 12px 0 0;
+}
+.batch-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.batch-toolbar h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.batch-toolbar-head {
+  min-width: 0;
+  flex: 1 1 200px;
+}
+.batch-progress {
+  margin: 4px 0 0;
+}
+.batch-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.batch-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.batch-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.batch-card {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.batch-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+}
+.batch-card-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--base-lighter);
+  flex-shrink: 0;
+}
+.batch-card-body {
+  flex: 1;
+  min-width: 0;
+}
+.batch-card-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  word-break: break-all;
+  line-height: 1.35;
+}
+.batch-card-status {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+.batch-card-tally {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.batch-card-tally .v-pass {
+  color: var(--success-darker);
+}
+.batch-card-tally .v-warn {
+  color: var(--warning-darker);
+}
+.batch-card-tally .v-fail {
+  color: var(--error-darker);
+}
+.batch-card-details {
+  flex-shrink: 0;
+  align-self: center;
+}
+.batch-card-detail {
+  padding: 0 12px 12px;
+  border-top: 1px solid var(--hairline);
+}
+.batch-card-error {
+  padding: 0 12px 12px;
+}
+.summary-chip {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  border: 1px solid;
+}
+.status-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius);
+  margin-right: 8px;
+}
+.dot-pending {
+  background: var(--base-light);
+}
+.dot-running {
+  background: var(--primary);
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The formal print report is hidden on screen; revealed only when printing. */
+.print-report {
+  display: none;
+}
+
+/* Print: hide the entire interactive UI and render only the structured record,
+   so window.print() produces a clean filed document — not a screenshot. */
+@page {
+  /* Comfortable, document-like margins. (The browser's own URL/date/page-number
+     headers are controlled by the print dialog's "Headers and footers" toggle —
+     CSS can't remove those, but generous margins keep the record itself clean.) */
+  margin: 0.75in;
+}
+@media print {
+  /* Hide everything that's screen UI. */
+  .masthead,
+  .site-footer,
+  .tabs,
+  .no-print,
+  .screen-only,
+  .skip-link {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+  .container {
+    padding: 0;
+    max-width: none;
+  }
+
+  .print-report {
+    display: block;
+    color: #000;
+    font-family: var(--font-public-sans), sans-serif;
+  }
+  .pr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .pr-head h1 {
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: 18pt;
+    margin: 0;
+  }
+  .pr-sub {
+    margin: 2px 0 0;
+    font-size: 9pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #333;
+  }
+  .pr-ref {
+    text-align: right;
+    font-size: 9.5pt;
+  }
+  .pr-ref > div {
+    margin-bottom: 2px;
+  }
+  .pr-k {
+    display: block;
+    font-size: 8pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .pr-v {
+    font-weight: 600;
+  }
+  .pr-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 32px;
+    margin-bottom: 16px;
+  }
+  .pr-determination {
+    border: 1.5px solid #000;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+  }
+  .pr-determination strong {
+    display: block;
+    font-size: 13pt;
+    margin-top: 2px;
+  }
+  .pr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 10pt;
+  }
+  .pr-table th,
+  .pr-table td {
+    border: 1px solid #999;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .pr-table th {
+    background: #eee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 8.5pt;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pr-field {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .pr-verdict {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pr-findings,
+  .pr-subchecks,
+  .pr-notes {
+    margin-bottom: 14px;
+    font-size: 10pt;
+  }
+  .pr-findings ul,
+  .pr-subchecks ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+  }
+  .pr-findings li {
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  /* Raw extraction readout — a definition list, fixed-width values for the data. */
+  .pr-extract {
+    margin-bottom: 16px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  .pr-extract dl {
+    margin: 6px 0 0;
+  }
+  .pr-extract-row {
+    display: grid;
+    grid-template-columns: 1.6in 1fr;
+    gap: 8px;
+    padding: 3px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .pr-extract dt {
+    font-weight: 600;
+  }
+  .pr-extract dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 8.5pt;
+    word-break: break-word;
+  }
+  .pr-notes p {
+    margin: 4px 0 0;
+  }
+  .pr-image {
+    margin-bottom: 16px;
+  }
+  .pr-image img {
+    max-width: 100%;
+    max-height: 3.2in;
+    border: 1px solid #999;
+    margin-top: 4px;
+  }
+  .pr-signoff {
+    margin-top: 28px;
+    border-top: 1px solid #000;
+    padding-top: 12px;
+  }
+  .pr-sign-line {
+    display: flex;
+    gap: 24px;
+    font-size: 8.5pt;
+    color: #555;
+  }
+  .pr-sign-line > span {
+    flex: 1;
+    border-top: 1px solid #000;
+    padding-top: 4px;
+    margin-top: 36px;
+  }
+  .pr-disclaimer {
+    margin-top: 16px;
+    font-size: 8pt;
+    color: #555;
+    line-height: 1.4;
+  }
+}
+
+/* Respect users who prefer reduced motion — disable the spinner/pulse. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
