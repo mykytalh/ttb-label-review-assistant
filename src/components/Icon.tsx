@@ -1,3 +1,5 @@
+import type { Verdict } from "@/lib/types";
+
 /** Inline SVG icons for functional UI. Decorative by default (aria-hidden). */
 export function UploadIcon({ size = 28 }: { size?: number }) {
   return (
@@ -105,3 +107,69 @@ export const ResetIcon = ({ size }: { size?: number }) => (
     <path d="M3 3v5h5" />
   </ToolSvg>
 );
+
+/** Accessible verdict glyphs — crisp SVGs instead of platform-dependent unicode. */
+export function VerdictIcon({ verdict, size = 16 }: { verdict: Verdict; size?: number }) {
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2.25,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+    focusable: false,
+  };
+
+  switch (verdict) {
+    case "pass":
+      return (
+        <svg {...common}>
+          <path d="M6 12.5 10 16.5 18 7.5" />
+        </svg>
+      );
+    case "warn":
+      return (
+        <svg {...common}>
+          <path d="M12 5.5 19 18.5H5L12 5.5z" />
+          <path d="M12 10v4.5" />
+          <circle cx="12" cy="17.25" r="0.9" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "fail":
+      return (
+        <svg {...common}>
+          <path d="M8 8l8 8M16 8l-8 8" />
+        </svg>
+      );
+    case "na":
+      return (
+        <svg {...common}>
+          <path d="M7.5 12h9" />
+        </svg>
+      );
+  }
+}
+
+export function InfoIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      role="img"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5" />
+      <circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}

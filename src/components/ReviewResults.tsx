@@ -6,8 +6,29 @@
 
 import { useState } from "react";
 import { FIELD_LABELS, FieldResult, ReviewResult } from "@/lib/types";
-import { VERDICT_ICON, VERDICT_LABEL } from "@/lib/client";
+import { VERDICT_LABEL } from "@/lib/client";
+import { VerdictIcon } from "./Icon";
 import ImageEditor from "./ImageEditor";
+import type { Verdict } from "@/lib/types";
+
+function CountChip({
+  verdict,
+  count,
+  label,
+}: {
+  verdict: Verdict;
+  count: number;
+  label: string;
+}) {
+  return (
+    <span className={`count-chip v-${verdict}`}>
+      <span className="count-chip-icon" aria-hidden="true">
+        <VerdictIcon verdict={verdict} size={12} />
+      </span>
+      {count} {label}
+    </span>
+  );
+}
 
 const OVERALL_TEXT = {
   pass: "All checks passed",
@@ -23,7 +44,10 @@ function FieldCard({ f }: { f: FieldResult }) {
       <div className="fr-head">
         <span className="fr-name">{FIELD_LABELS[f.field]}</span>
         <span className={`pill v-${f.verdict}`}>
-          {VERDICT_ICON[f.verdict]} {VERDICT_LABEL[f.verdict]}
+          <span className="pill-icon" aria-hidden="true">
+            <VerdictIcon verdict={f.verdict} size={12} />
+          </span>
+          {VERDICT_LABEL[f.verdict]}
         </span>
       </div>
       <p className="fr-msg">{f.message}</p>
@@ -32,7 +56,7 @@ function FieldCard({ f }: { f: FieldResult }) {
           {f.subChecks.map((s) => (
             <li key={s.label} className={`subcheck v-${s.verdict}`}>
               <span className="subcheck-icon" aria-hidden="true">
-                {VERDICT_ICON[s.verdict]}
+                <VerdictIcon verdict={s.verdict} size={12} />
               </span>
               {s.label}
             </li>
@@ -79,31 +103,20 @@ export default function ReviewResults({
       <div className="result-body">
         {/* Headline verdict and field summary */}
         <div className={`overall v-${result.overall}`} role="status">
-          <span className="badge-icon" aria-hidden="true">
-            {VERDICT_ICON[result.overall]}
-          </span>
           <div>
-            <div>{OVERALL_TEXT[result.overall]}</div>
+            <div className="overall-headline">{OVERALL_TEXT[result.overall]}</div>
             <div className="scorecard">
               {fails.length > 0 && (
-                <span className="count-chip v-fail">
-                  {VERDICT_ICON.fail} {fails.length} failed
-                </span>
+                <CountChip verdict="fail" count={fails.length} label="failed" />
               )}
               {reviews.length > 0 && (
-                <span className="count-chip v-warn">
-                  {VERDICT_ICON.warn} {reviews.length} to review
-                </span>
+                <CountChip verdict="warn" count={reviews.length} label="to review" />
               )}
               {passes.length > 0 && (
-                <span className="count-chip v-pass">
-                  {VERDICT_ICON.pass} {passes.length} verified
-                </span>
+                <CountChip verdict="pass" count={passes.length} label="verified" />
               )}
               {notChecked.length > 0 && (
-                <span className="count-chip v-na">
-                  {VERDICT_ICON.na} {notChecked.length} not checked
-                </span>
+                <CountChip verdict="na" count={notChecked.length} label="not checked" />
               )}
             </div>
           </div>
@@ -153,7 +166,6 @@ export default function ReviewResults({
                 aria-expanded={showPasses}
                 onClick={() => setShowPasses((s) => !s)}
               >
-                <span className="passes-check" aria-hidden="true">✓</span>
                 {passes.length} field{passes.length === 1 ? "" : "s"} verified
                 <span className="passes-caret" aria-hidden="true">
                   {showPasses ? "▲" : "▼"}
@@ -170,7 +182,10 @@ export default function ReviewResults({
                 <ul className="passes-list">
                   {passes.map((f) => (
                     <li key={f.field}>
-                      <span aria-hidden="true">✓</span> {FIELD_LABELS[f.field]}
+                      <span className="passes-list-icon" aria-hidden="true">
+                        <VerdictIcon verdict="pass" size={12} />
+                      </span>
+                      {FIELD_LABELS[f.field]}
                     </li>
                   ))}
                 </ul>

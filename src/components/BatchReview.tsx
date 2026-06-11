@@ -9,12 +9,11 @@ import {
   ReviewError,
   ACCEPTED_IMAGE_TYPES,
   isAcceptedImageType,
-  VERDICT_ICON,
   VERDICT_LABEL,
 } from "@/lib/client";
 import { batchResultsToCsv } from "@/lib/export";
 import ReviewResults from "./ReviewResults";
-import { StackIcon } from "./Icon";
+import { InfoIcon, StackIcon, VerdictIcon } from "./Icon";
 
 /**
  * Batch upload: read each label in full and check required on-label elements
@@ -23,6 +22,7 @@ import { StackIcon } from "./Icon";
  */
 
 type RowStatus = "pending" | "running" | "done" | "error";
+type BatchFilter = "all" | Verdict | "error";
 
 interface BatchRow {
   id: number;
@@ -36,15 +36,21 @@ interface BatchRow {
 const CONCURRENCY = 2;
 const BEVERAGE_DEFAULT = "auto" as const;
 /** Prototype cap — each label is one paid API call. Production can raise this. */
-const MAX_BATCH = 5;
+const MAX_BATCH = 10;
 const DEFAULT_BACKOFF_MS = 5_000;
 const MAX_RL_RETRIES = 2;
+
+/** Stable identity for a browser File (name alone is not enough). */
+function fileKey(file: File): string {
+  return `${file.name}|${file.size}|${file.lastModified}`;
+}
 
 export default function BatchReview() {
   const [rows, setRows] = useState<BatchRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [filter, setFilter] = useState<BatchFilter>("all");
   const inputRef = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -75,17 +81,40 @@ export default function BatchReview() {
         setNotice(`This batch is full (${MAX_BATCH} labels). Run or clear it before adding more.`);
         return;
       }
-      const take = images.slice(0, room);
+
+      const existingKeys = new Set(rows.map((r) => fileKey(r.file)));
+      const unique: File[] = [];
+      let dupCount = 0;
+      for (const file of images) {
+        const key = fileKey(file);
+        if (existingKeys.has(key)) {
+          dupCount++;
+          continue;
+        }
+        existingKeys.add(key);
+        unique.push(file);
+      }
+
+      const take = unique.slice(0, room);
       const parts: string[] = [];
       if (skipped > 0) {
         parts.push(
           `${skipped} file${skipped === 1 ? "" : "s"} skipped — only PNG, JPEG, and WebP are supported.`,
         );
       }
-      if (take.length < images.length) {
+      if (dupCount > 0) {
         parts.push(
-          `Added ${take.length} of ${images.length} — batches are limited to ${MAX_BATCH} labels in this demo.`,
+          `${dupCount} duplicate${dupCount === 1 ? "" : "s"} skipped — already in the batch.`,
         );
+      }
+      if (take.length < unique.length) {
+        parts.push(
+          `Added ${take.length} of ${unique.length} — batches are limited to ${MAX_BATCH} labels in this demo.`,
+        );
+      }
+      if (take.length === 0) {
+        setNotice(parts.length > 0 ? parts.join(" ") : null);
+        return;
       }
       setNotice(parts.length > 0 ? parts.join(" ") : null);
       const added = take.map((file) => {
@@ -95,7 +124,7 @@ export default function BatchReview() {
       });
       setRows((prev) => [...prev, ...added]);
     },
-    [rows.length],
+    [rows],
   );
 
   const update = (id: number, patch: Partial<BatchRow>) =>
@@ -159,6 +188,17 @@ export default function BatchReview() {
 
   const stop = () => abortRef.current?.abort();
 
+  const removeRow = useCallback((id: number) => {
+    setRows((prev) => {
+      const row = prev.find((r) => r.id === id);
+      if (!row || row.status !== "pending") return prev;
+      URL.revokeObjectURL(row.thumbUrl);
+      urls.current.delete(row.thumbUrl);
+      return prev.filter((r) => r.id !== id);
+    });
+    setExpanded((e) => (e === id ? null : e));
+  }, []);
+
   const clearAll = () => {
     abortRef.current?.abort();
     for (const u of urls.current) URL.revokeObjectURL(u);
@@ -166,6 +206,7 @@ export default function BatchReview() {
     setRows([]);
     setExpanded(null);
     setNotice(null);
+    setFilter("all");
   };
 
   const downloadCsv = () => {
@@ -198,18 +239,23 @@ export default function BatchReview() {
   const errorCount = rows.filter((r) => r.status === "error").length;
   const pendingCount = rows.filter((r) => r.status === "pending" || r.status === "running").length;
 
+  const visibleRows = rows.filter((r) => {
+    if (filter === "all") return true;
+    if (filter === "error") return r.status === "error";
+    return r.status === "done" && r.result?.overall === filter;
+  });
+
   return (
     <div className="batch-flow">
       <section className="card" aria-label="Batch upload">
-        <h2>Upload label photos</h2>
+        <div className="batch-heading-row">
+          <h2>Upload label photos</h2>
+          <BatchInfoTip />
+        </div>
         <p className="meta batch-intro">
-          Add multiple label images at once. Each photo is read in full — required
-          fields, government warning, and alcohol content by detected beverage type.
-        </p>
-        <p className="batch-cost-note" role="note">
-          Each label uses one API call. This demo limits batches to{" "}
-          <strong>{MAX_BATCH} labels</strong> so you can try the workflow without a
-          large bill. A production deployment would raise that cap.
+          Screen a stack of labels without entering an application for each one.
+          Upload the photos, press <strong>Review all</strong>, and results stream
+          in as each finishes.
         </p>
         <div
           className="dropzone"
@@ -313,32 +359,158 @@ export default function BatchReview() {
           </div>
 
           {doneCount > 0 && (
-            <div className="batch-summary">
-              <span className="summary-chip v-pass">
-                {VERDICT_ICON.pass} {counts.pass} passed
-              </span>
-              <span className="summary-chip v-warn">
-                {VERDICT_ICON.warn} {counts.warn} to review
-              </span>
-              <span className="summary-chip v-fail">
-                {VERDICT_ICON.fail} {counts.fail} failed
-              </span>
+            <div className="batch-summary" role="group" aria-label="Filter results">
+              <FilterChip
+                active={filter === "all"}
+                onClick={() => setFilter("all")}
+                label="All"
+                count={rows.filter((r) => r.status === "done" || r.status === "error").length}
+              />
+              {counts.pass > 0 && (
+                <FilterChip
+                  active={filter === "pass"}
+                  onClick={() => setFilter("pass")}
+                  label="Passed"
+                  count={counts.pass}
+                  verdict="pass"
+                />
+              )}
+              {counts.warn > 0 && (
+                <FilterChip
+                  active={filter === "warn"}
+                  onClick={() => setFilter("warn")}
+                  label="Needs review"
+                  count={counts.warn}
+                  verdict="warn"
+                />
+              )}
+              {counts.fail > 0 && (
+                <FilterChip
+                  active={filter === "fail"}
+                  onClick={() => setFilter("fail")}
+                  label="Failed"
+                  count={counts.fail}
+                  verdict="fail"
+                />
+              )}
+              {errorCount > 0 && (
+                <FilterChip
+                  active={filter === "error"}
+                  onClick={() => setFilter("error")}
+                  label="Errors"
+                  count={errorCount}
+                  verdict="fail"
+                />
+              )}
             </div>
           )}
 
+          {filter !== "all" && visibleRows.length === 0 && (
+            <p className="meta batch-filter-empty">No labels match this filter.</p>
+          )}
+
           <ul className="batch-list">
-            {rows.map((r) => (
+            {visibleRows.map((r) => (
               <BatchCard
                 key={r.id}
                 row={r}
                 expanded={expanded === r.id}
+                busy={busy}
                 onToggle={() => setExpanded(expanded === r.id ? null : r.id)}
+                onRemove={() => removeRow(r.id)}
               />
             ))}
           </ul>
         </section>
       )}
     </div>
+  );
+}
+
+function BatchInfoTip() {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onOutside = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onOutside);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onOutside);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [open]);
+
+  return (
+    <div className={`info-tip${open ? " info-tip--open" : ""}`} ref={wrapRef}>
+      <button
+        type="button"
+        className="info-tip-trigger"
+        aria-expanded={open}
+        aria-controls="batch-info-panel"
+        aria-label="How batch review works"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <InfoIcon />
+      </button>
+      <div id="batch-info-panel" className="info-tip-panel" role="tooltip">
+        <p>
+          <strong>How batch differs from single review:</strong> there is no
+          application form here. The AI reads each label photo and checks what
+          federal rules require <em>on the artwork itself</em>.
+        </p>
+        <ul>
+          <li>
+            <strong>Brand name</strong> and <strong>class / type</strong> must be
+            present on the label
+          </li>
+          <li>
+            <strong>Alcohol content</strong> is required for spirits (detected
+            beverage type sets the rule)
+          </li>
+          <li>
+            <strong>Government warning</strong> — heading, all-caps{" "}
+            <strong>GOVERNMENT WARNING:</strong>, and verbatim wording
+          </li>
+          <li>
+            Producer, net contents, and origin are captured when visible but not
+            hard-failed when absent
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function FilterChip({
+  active,
+  onClick,
+  label,
+  count,
+  verdict,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  verdict?: Verdict;
+}) {
+  return (
+    <button
+      type="button"
+      className={`summary-chip filter-chip${active ? " filter-chip--active" : ""}${verdict ? ` v-${verdict}` : ""}`}
+      aria-pressed={active}
+      onClick={onClick}
+    >
+      <span className="filter-chip-label">{label}</span>
+      <span className="filter-chip-count">{count}</span>
+    </button>
   );
 }
 
@@ -355,11 +527,15 @@ function fieldTally(result: ReviewResult) {
 function BatchCard({
   row,
   expanded,
+  busy,
   onToggle,
+  onRemove,
 }: {
   row: BatchRow;
   expanded: boolean;
+  busy: boolean;
   onToggle: () => void;
+  onRemove: () => void;
 }) {
   const tally = row.result ? fieldTally(row.result) : null;
 
@@ -385,12 +561,18 @@ function BatchCard({
             )}
             {row.status === "done" && row.result && (
               <span className={`pill v-${row.result.overall}`}>
-                {VERDICT_ICON[row.result.overall]} {VERDICT_LABEL[row.result.overall]}
+                <span className="pill-icon" aria-hidden="true">
+                  <VerdictIcon verdict={row.result.overall} size={12} />
+                </span>
+                {VERDICT_LABEL[row.result.overall]}
               </span>
             )}
             {row.status === "error" && (
               <span className="pill v-fail" title={row.error}>
-                ✕ Error
+                <span className="pill-icon" aria-hidden="true">
+                  <VerdictIcon verdict="fail" size={12} />
+                </span>
+                Error
               </span>
             )}
           </div>
@@ -402,8 +584,19 @@ function BatchCard({
             </div>
           )}
         </div>
+        {row.status === "pending" && (
+          <button
+            type="button"
+            className="btn secondary batch-card-remove"
+            onClick={onRemove}
+            disabled={busy}
+            aria-label={`Remove ${row.file.name}`}
+          >
+            Remove
+          </button>
+        )}
         {row.status === "done" && (
-          <button className="btn secondary batch-card-details" onClick={onToggle}>
+          <button type="button" className="btn secondary batch-card-details" onClick={onToggle}>
             {expanded ? "Hide" : "Details"}
           </button>
         )}

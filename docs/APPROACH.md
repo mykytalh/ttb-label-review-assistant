@@ -109,7 +109,7 @@ by detected beverage type, and the government warning gets the full strict check
 There is no application-to-label matching until a COLA integration supplies per-row
 application records.
 
-The prototype caps batches at **5 labels** because each photo is one paid API call.
+The prototype caps batches at **10 labels** because each photo is one paid API call.
 The queue UI shows that limit and the per-label cost. Production would raise the cap
 and run with agency-budgeted infrastructure.
 

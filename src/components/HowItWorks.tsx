@@ -3,6 +3,7 @@
 /** In-app help view with sidebar navigation. Opened from the header "How to use" link. */
 import { useEffect, useRef, useState } from "react";
 import { GOVERNMENT_WARNING } from "@/lib/warning";
+import { VerdictIcon } from "./Icon";
 
 type SectionId =
   | "start"
@@ -284,7 +285,8 @@ function Batch() {
       </p>
       <h3 className="docs-h3">Good to know</h3>
       <ul className="docs-list">
-        <li>Up to <strong>5 labels</strong> per batch in this demo (each label is one API call). Two run at a time.</li>
+        <li>Up to <strong>10 labels</strong> per batch in this demo (each label is one API call). Two run at a time.</li>
+        <li>After a run, tap the summary chips (<strong>Passed</strong>, <strong>Failed</strong>, etc.) to filter the list.</li>
         <li><strong>Stop</strong> halts a run in progress; <strong>Clear</strong> empties the batch.</li>
         <li>If the service is briefly busy, a label retries on its own and only fails after that — the rest keep going.</li>
         <li>After a run, <strong>Retry N failed</strong> re-runs only the ones that didn&rsquo;t succeed.</li>
@@ -336,19 +338,27 @@ function Results() {
       </p>
       <ul className="hiw-meanings">
         <li>
-          <span className="vk-icon v-pass" aria-hidden="true">✓</span>
+          <span className="vk-icon v-pass" aria-hidden="true">
+            <VerdictIcon verdict="pass" size={12} />
+          </span>
           <span><strong>Pass</strong> — matches or compliant.</span>
         </li>
         <li>
-          <span className="vk-icon v-warn" aria-hidden="true">⚠</span>
+          <span className="vk-icon v-warn" aria-hidden="true">
+            <VerdictIcon verdict="warn" size={12} />
+          </span>
           <span><strong>Review</strong> — probably fine, but verify by eye (a close match or soft finding).</span>
         </li>
         <li>
-          <span className="vk-icon v-fail" aria-hidden="true">✕</span>
+          <span className="vk-icon v-fail" aria-hidden="true">
+            <VerdictIcon verdict="fail" size={12} />
+          </span>
           <span><strong>Fail</strong> — mismatch, missing required text, or non-compliant wording.</span>
         </li>
         <li>
-          <span className="vk-icon v-na" aria-hidden="true">–</span>
+          <span className="vk-icon v-na" aria-hidden="true">
+            <VerdictIcon verdict="na" size={12} />
+          </span>
           <span><strong>Not checked</strong> — nothing to compare (field absent from both the application and the label).</span>
         </li>
       </ul>

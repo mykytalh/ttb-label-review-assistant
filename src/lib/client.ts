@@ -193,13 +193,6 @@ function isReviewResult(data: unknown): data is ReviewResult {
   );
 }
 
-export const VERDICT_ICON: Record<Verdict, string> = {
-  pass: "✓",
-  warn: "⚠",
-  fail: "✕",
-  na: "–",
-};
-
 export const VERDICT_LABEL: Record<Verdict, string> = {
   pass: "Pass",
   warn: "Review",

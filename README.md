@@ -3,7 +3,7 @@
 AI-assisted alcohol label extraction and compliance verification. An agent
 enters application details, uploads a label photo, and receives per-field
 **pass / review / fail** verdicts in a few seconds — single label or batch (up to
-5 per run in this prototype).
+10 per run in this prototype).
 
 The tool assists review; it does not replace agent judgment.
 
