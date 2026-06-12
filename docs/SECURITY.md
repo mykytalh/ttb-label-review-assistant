@@ -14,6 +14,12 @@ Browser (untrusted)  ──HTTPS──▶  Next.js server (trusted)  ──HTTPS
 The browser is untrusted. Client-side checks (image downscaling, field limits) are
 convenience only; the server re-validates every constraint.
 
+Two endpoints cross the boundary — `/api/review` (extract + validate) and
+`/api/extract` (extraction only, used to preload while the agent types). Both
+run the same input validation, the same error sanitization, and spend from the
+**same per-IP rate-limit bucket**, so the pair cannot be used to double an
+abuser's request volume.
+
 ## Threats and mitigations
 
 | Threat | Mitigation |
