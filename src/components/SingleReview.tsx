@@ -171,8 +171,8 @@ export default function SingleReview() {
     <div className="single-flow">
       {/* One calm, centered card: just what's needed to run a review. */}
       <section className="card" aria-label="Label and application details">
-        <ApplicationForm value={app} onChange={setApp} />
-
+        {/* Photo first: it's the one thing every review needs, and most agents
+            arrive holding the image — fields are the cross-check, not the start. */}
         <div className="field">
           <label htmlFor="label-photo-file">Label photo</label>
           {dataUrl ? (
@@ -230,6 +230,9 @@ export default function SingleReview() {
             </div>
           )}
         </div>
+
+
+        <ApplicationForm value={app} onChange={setApp} />
 
         <button className="btn" onClick={onSubmit} disabled={!canSubmit}>
           {busy ? (

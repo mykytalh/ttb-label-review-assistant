@@ -481,6 +481,17 @@ a {
   background: var(--primary-lightest);
   border-color: var(--primary-lightest);
 }
+/* Dark theme: a white pill glares on the near-black band — the lit state is
+   the app's dark blue with light text instead. */
+[data-theme="dark"] .hiw-trigger[aria-expanded="true"] {
+  background: var(--primary-dark);
+  border-color: var(--primary-light);
+  color: #fff;
+}
+[data-theme="dark"] .hiw-trigger[aria-expanded="true"]:hover {
+  background: var(--primary);
+  border-color: var(--primary-light);
+}
 
 .hiw-trigger-icon {
   display: inline-flex;
@@ -2487,6 +2498,21 @@ select:focus {
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+}
+/* Phones: chips pin to the viewport top (no sticky masthead there), frosted so
+   queue rows blur beneath instead of hitting a hard edge. */
+@media (max-width: 768px) {
+  .batch-summary {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    margin: 0 -16px 16px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06);
+  }
 }
 /* Expanded Details aligns below the pinned toolbar (see BatchCard effect). */
 .batch-card {
