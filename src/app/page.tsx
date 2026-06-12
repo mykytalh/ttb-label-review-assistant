@@ -22,6 +22,23 @@ export default function Home() {
   const [showHelp, setShowHelp] = useState(false);
   const helpTriggerRef = useRef<HTMLButtonElement>(null);
 
+  // Batch is desktop/tablet-only. On phone-width screens the tab strip is
+  // gone (CSS hides it pre-hydration; this removes it from the DOM) and the
+  // mode snaps back to single so a rotation can't strand the agent on a
+  // hidden panel. BatchReview stays mounted, so widening the window again
+  // restores any in-progress batch untouched.
+  const [phoneScreen, setPhoneScreen] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const update = () => setPhoneScreen(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (phoneScreen && mode === "batch") setMode("single");
+  }, [phoneScreen, mode]);
+
   // First visit → show the guide once, so a new agent is oriented before diving
   // in (the tool has real depth: image tools, auto-detect, verdicts).
   useEffect(() => {
@@ -100,28 +117,42 @@ export default function Home() {
             who checks the guide mid-review must come back to their typed
             fields, photo, and batch results, not a reset screen. */}
         <div hidden={showHelp}>
-          <div className="tabs" role="tablist" aria-label="Review mode">
-            {TAB_ORDER.map((m) => (
-              <button
-                key={m}
-                id={`tab-${m}`}
-                className="tab"
-                role="tab"
-                aria-selected={mode === m}
-                aria-controls={`panel-${m}`}
-                tabIndex={mode === m ? 0 : -1}
-                onClick={() => setMode(m)}
-                onKeyDown={onTabKeyDown}
-              >
-                {TAB_LABEL[m]}
-              </button>
-            ))}
-          </div>
+          {!phoneScreen && (
+            <div className="tabs" role="tablist" aria-label="Review mode">
+              {TAB_ORDER.map((m) => (
+                <button
+                  key={m}
+                  id={`tab-${m}`}
+                  className="tab"
+                  role="tab"
+                  aria-selected={mode === m}
+                  aria-controls={`panel-${m}`}
+                  tabIndex={mode === m ? 0 : -1}
+                  onClick={() => setMode(m)}
+                  onKeyDown={onTabKeyDown}
+                >
+                  {TAB_LABEL[m]}
+                </button>
+              ))}
+            </div>
+          )}
 
-          <div id="panel-single" role="tabpanel" aria-labelledby="tab-single" hidden={mode !== "single"}>
+          {/* Without the tablist (phones) the panels drop their tab ARIA — a
+              tabpanel must not reference a tab that isn't in the document. */}
+          <div
+            id="panel-single"
+            role={phoneScreen ? undefined : "tabpanel"}
+            aria-labelledby={phoneScreen ? undefined : "tab-single"}
+            hidden={mode !== "single"}
+          >
             <SingleReview />
           </div>
-          <div id="panel-batch" role="tabpanel" aria-labelledby="tab-batch" hidden={mode !== "batch"}>
+          <div
+            id="panel-batch"
+            role={phoneScreen ? undefined : "tabpanel"}
+            aria-labelledby={phoneScreen ? undefined : "tab-batch"}
+            hidden={mode !== "batch"}
+          >
             <BatchReview />
           </div>
         </div>

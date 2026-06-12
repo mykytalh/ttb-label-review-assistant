@@ -509,16 +509,23 @@ a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-/* Phone variant: pinned strip under the sticky masthead so the way back never
-   scrolls away (the sidebar holding the desktop link collapses on phones). */
-.hiw-back--bar {
+/* Strip pinned under the sticky masthead so the way back never scrolls away
+   from the top-left. On phones the strip also carries the section-drawer
+   toggle on the right; the back link never shrinks. */
+.docs-topbar {
   position: sticky;
   top: var(--masthead-h);
   z-index: 42;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   background: var(--canvas);
   padding: 8px 0;
   margin-bottom: var(--space-2);
+}
+.docs-topbar .hiw-back {
+  flex-shrink: 0;
 }
 
 .docs-layout {
@@ -754,39 +761,39 @@ a {
 }
 
 /* ---------- Help drawer (phones) ----------
-   A fixed tab on the left edge opens a slide-in sidebar holding the section
-   list and the way back — always reachable at any scroll depth, zero
-   persistent height cost. Desktop uses the sticky sidebar instead. */
+   The toggle in the pinned top strip opens a right slide-in sidebar holding
+   the section list — always reachable at any scroll depth. Desktop uses the
+   sticky sidebar instead. */
 .docs-drawer-handle,
 .docs-drawer,
 .docs-drawer-backdrop {
   display: none;
 }
 @media (max-width: 768px) {
+  /* Toggle button inside the pinned strip: current section name + menu icon. */
   .docs-drawer-handle {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    position: fixed;
-    left: 0;
-    bottom: 24px;
-    z-index: 70;
-    max-width: 60vw;
-    background: var(--primary);
-    color: var(--on-primary);
-    border: none;
-    border-radius: 0 999px 999px 0;
-    padding: 12px 16px 12px 14px;
+    min-width: 0;
+    min-height: 44px;
+    background: var(--fill);
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 8px 12px;
     font: inherit;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(27, 27, 27, 0.28);
   }
   .docs-drawer-handle span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  .docs-topbar .hiw-back {
+    min-height: 44px;
   }
   .docs-drawer-backdrop {
     display: block;
@@ -801,18 +808,18 @@ a {
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
+    right: 0;
     z-index: 85;
     width: min(300px, 84vw);
     background: var(--surface);
-    box-shadow: 4px 0 24px rgba(27, 27, 27, 0.25);
+    box-shadow: -4px 0 24px rgba(27, 27, 27, 0.25);
     padding: 16px;
     overflow-y: auto;
     animation: drawer-in 0.18s ease-out;
   }
   @keyframes drawer-in {
     from {
-      transform: translateX(-100%);
+      transform: translateX(100%);
     }
     to {
       transform: translateX(0);
@@ -848,22 +855,6 @@ a {
   }
   .docs-drawer-list .docs-nav-link {
     padding: 12px var(--space-3);
-  }
-  .docs-drawer-back {
-    appearance: none;
-    margin-top: auto;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius);
-    background: var(--fill);
-    color: var(--primary);
-    font: inherit;
-    font-weight: 600;
-    padding: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1167,67 +1158,43 @@ select:focus {
 
 /* ---------- Responsive (tablet and phone) ---------- */
 @media (max-width: 768px) {
+  :root {
+    /* Compact single-row masthead: 6px padding ×2 + 44px controls + 3px border. */
+    --masthead-h: 59px;
+  }
+
   .container {
     padding: 10px 16px 32px;
   }
 
-  /* Masthead — phones keep the full two-row layout (title + subtitle, then
-     actions) and don't pin it: that height is too expensive on a small screen,
-     and the help drawer / pinned chips carry their own navigation. */
+  /* Masthead — pinned on phones too. The two-row layout was too tall to pin,
+     so the phone masthead compacts to a single row: title left, icon controls
+     right, subtitle hidden. */
   .masthead {
-    position: static;
-    padding: 10px 0 12px;
+    padding: 6px 0;
   }
   .masthead .inner {
     padding: 0 16px;
   }
   .masthead-row {
-    flex-wrap: wrap;
-    align-items: flex-start;
     gap: 12px;
-  }
-  .masthead-id {
-    flex: 1 1 100%;
-    min-width: 0;
   }
   .masthead h1 {
     font-size: 1.2rem;
     line-height: 1.25;
   }
   .masthead-org {
-    font-size: 0.7rem;
-    line-height: 1.45;
-    margin-top: 4px;
-  }
-  .masthead-actions {
-    margin-left: 0;
-    width: 100%;
-    justify-content: space-between;
-    gap: 8px;
+    display: none;
   }
   .hiw-trigger,
   .theme-toggle {
-    flex: 1 1 auto;
-    justify-content: center;
     min-height: 44px;
   }
 
-  /* Tabs */
+  /* Phones run single-label review only — the mode tabs are hidden (batch
+     needs a wider screen; page.tsx forces single mode under this width). */
   .tabs {
-    gap: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar {
     display: none;
-  }
-  .tab {
-    font-size: 0.92rem;
-    white-space: nowrap;
-    flex: 1 1 50%;
-    text-align: center;
-    padding: 12px 8px 14px;
   }
 
   /* Cards & forms */
@@ -1305,22 +1272,10 @@ select:focus {
   .count-chip {
     font-size: var(--text-xs);
   }
-  .info-tip-panel {
-    right: 0;
-    width: min(340px, calc(100vw - 32px));
-  }
-  .filter-chip {
-    padding: 8px 12px;
-    min-height: 44px;
-  }
   .btn.compact,
   .btn.secondary {
     min-height: 44px;
     height: auto;
-  }
-  .info-tip-trigger {
-    width: 44px;
-    height: 44px;
   }
   .tool-btn {
     min-height: 44px;
@@ -1363,55 +1318,14 @@ select:focus {
     padding: 6px 8px;
   }
 
-  /* Batch */
-  .batch-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .batch-toolbar-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .batch-toolbar-actions .btn {
-    width: 100%;
-    min-width: 0;
-  }
-  .batch-card-main {
-    flex-wrap: wrap;
-  }
-  .batch-card-remove,
-  .batch-card-details {
-    width: 100%;
-    margin-top: 4px;
-  }
+  /* (No batch rules here: batch is desktop/tablet-only — at this width the
+     tab strip is hidden and page.tsx forces single mode.) */
 
-  /* On phones the full batch toolbar is too tall to pin — only the filter
-     chips (the queue navigation) stay stuck below the masthead. */
-  .batch-sticky {
-    position: static;
-    margin: 0;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-  }
-  .batch-summary {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    background: var(--surface);
-    margin: 0 -16px 16px;
-    padding: 8px 16px;
-    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06);
-  }
-  .batch-card {
-    scroll-margin-top: 64px;
-  }
-
-  /* Docs on phones: the sidebar and pinned strips give way to the drawer. */
-  .hiw-back--bar {
-    display: none;
+  /* Docs on phones: a single column — the sidebar gives way to the edge
+     drawer, and the pinned "Back to the tool" strip sits under the sticky
+     masthead so the way back never scrolls away. */
+  .docs-layout {
+    grid-template-columns: 1fr;
   }
   .docs-nav {
     display: none;
@@ -1471,13 +1385,7 @@ select:focus {
     min-width: 44px;
     padding: 8px 12px;
   }
-  .tab {
-    font-size: 0.88rem;
-  }
   .result-bar-actions {
-    grid-template-columns: 1fr;
-  }
-  .batch-toolbar-actions {
     grid-template-columns: 1fr;
   }
   .pill {

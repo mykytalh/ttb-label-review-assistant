@@ -26,8 +26,9 @@ const NAV: { id: SectionId; label: string }[] = [
 
 export default function HowItWorks({ onClose }: { onClose: () => void }) {
   const [active, setActive] = useState<SectionId>("start");
-  // Phone navigation lives in a slide-in drawer (section list + back button)
-  // opened from a fixed edge tab — no permanent pinned bars eating the screen.
+  // Phone section navigation lives in a right slide-in drawer holding the
+  // section list, opened from the toggle in the pinned top strip (which also
+  // carries the "Back to the tool" link on every screen size).
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerOpenRef = useRef(false);
   drawerOpenRef.current = drawerOpen;
@@ -96,25 +97,26 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
       <h2 id="docs-dialog-title" className="visually-hidden">
         How to use the Label Review Assistant
       </h2>
-      {/* Pinned under the sticky masthead — the way back is always at the
-          top-left, at any scroll depth. */}
-      <button ref={backRef} type="button" className="hiw-back hiw-back--bar" onClick={onClose}>
-        <span aria-hidden="true">←</span> <span className="hiw-back-text">Back to the tool</span>
-      </button>
-
-      {/* Phone: fixed edge tab opens the section drawer. Hidden on desktop. */}
-      <button
-        type="button"
-        className="docs-drawer-handle"
-        aria-expanded={drawerOpen}
-        aria-controls="docs-drawer"
-        onClick={() => setDrawerOpen(true)}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-        </svg>
-        <span>{activeLabel}</span>
-      </button>
+      {/* Strip pinned under the sticky masthead — always reachable at any
+          scroll depth. The way back keeps the top-left on every screen size;
+          phones add the section-drawer toggle on the right. */}
+      <div className="docs-topbar">
+        <button ref={backRef} type="button" className="hiw-back" onClick={onClose}>
+          <span aria-hidden="true">←</span> <span className="hiw-back-text">Back to the tool</span>
+        </button>
+        <button
+          type="button"
+          className="docs-drawer-handle"
+          aria-expanded={drawerOpen}
+          aria-controls="docs-drawer"
+          onClick={() => setDrawerOpen(true)}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+          </svg>
+          <span>{activeLabel}</span>
+        </button>
+      </div>
 
       {drawerOpen && (
         <>
@@ -145,9 +147,6 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
                 </li>
               ))}
             </ul>
-            <button type="button" className="docs-drawer-back" onClick={onClose}>
-              <span aria-hidden="true">←</span> Back to the tool
-            </button>
           </div>
         </>
       )}
@@ -236,7 +235,7 @@ function Start() {
       <h3 className="docs-h3">Two ways to work</h3>
       <ul className="docs-list">
         <li><strong>One label</strong> — review a single label in detail, with image tools and a printable record.</li>
-        <li><strong>Batch upload</strong> — check a whole stack at once, filter results, and download a spreadsheet.</li>
+        <li><strong>Batch upload</strong> — check a whole stack at once, filter results, and download a spreadsheet (on a desktop or tablet screen; phones show single-label review only).</li>
       </ul>
       <p>
         Use <strong>How to use</strong> in the header any time for this guide. The{" "}
@@ -319,7 +318,8 @@ function Batch() {
       <p>
         Use the <strong>Batch upload</strong> tab when you have many label photos and no
         per-label application to enter. Add the photos, press <strong>Review all</strong>,
-        and results stream in as each finishes.
+        and results stream in as each finishes. Batch needs a wider screen — on a
+        phone the tool offers single-label review only.
       </p>
       <Callout kind="note" title="Batch vs one label">
         Tap the{" "}
