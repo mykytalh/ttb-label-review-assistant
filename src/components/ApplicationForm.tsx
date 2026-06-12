@@ -74,18 +74,21 @@ export default function ApplicationForm({
           the label. Leave blank to just read what&rsquo;s on the label.
         </p>
 
-        <div className="field">
-          <label htmlFor={`${idPrefix}-class`}>Class / type</label>
-          <input
-            id={`${idPrefix}-class`}
-            type="text"
-            value={value.classType ?? ""}
-            onChange={(e) => set({ classType: e.target.value })}
-            placeholder="e.g. Kentucky Straight Bourbon Whiskey"
-          />
-        </div>
-
-        <div className="row">
+        {/* One responsive grid: wide screens pack these five into two rows
+            (class + abv + net, then producer + origin) so the expanded form
+            doesn't push the photo off a laptop viewport; narrower screens fall
+            back to the stacked shape. The long text fields get double width. */}
+        <div className="optional-grid">
+          <div className="field og-class">
+            <label htmlFor={`${idPrefix}-class`}>Class / type</label>
+            <input
+              id={`${idPrefix}-class`}
+              type="text"
+              value={value.classType ?? ""}
+              onChange={(e) => set({ classType: e.target.value })}
+              placeholder="e.g. Kentucky Straight Bourbon Whiskey"
+            />
+          </div>
           <div className="field">
             <label htmlFor={`${idPrefix}-abv`}>Alcohol content</label>
             <input
@@ -106,10 +109,7 @@ export default function ApplicationForm({
               placeholder="e.g. 750 mL"
             />
           </div>
-        </div>
-
-        <div className="row">
-          <div className="field">
+          <div className="field og-producer">
             <label htmlFor={`${idPrefix}-producer`}>Bottler / producer</label>
             <input
               id={`${idPrefix}-producer`}
@@ -119,8 +119,7 @@ export default function ApplicationForm({
               placeholder="e.g. Old Tom Distillery, Bardstown, KY"
             />
           </div>
-
-          <div className="field">
+          <div className="field og-origin">
             <label htmlFor={`${idPrefix}-origin`}>
               Country of origin <span className="hint">(imports only)</span>
             </label>

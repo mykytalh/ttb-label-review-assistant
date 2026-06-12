@@ -1003,6 +1003,29 @@ select:focus {
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
+/* The five optional application fields. Base (tablet) shape matches the old
+   stacked layout: class full-width, then abv|net, then producer|origin. Wide
+   screens repack into two rows so the expanded form leaves the photo and the
+   Check button on a 15-inch viewport. Phones stack to one column. */
+.optional-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+}
+.og-class {
+  grid-column: 1 / -1;
+}
+@media (min-width: 980px) {
+  .optional-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .og-class,
+  .og-producer,
+  .og-origin {
+    grid-column: span 2;
+  }
+}
+
 /* ---------- Responsive (tablet and phone) ---------- */
 @media (max-width: 768px) {
   .container {
@@ -1088,6 +1111,12 @@ select:focus {
   }
   .row {
     grid-template-columns: 1fr;
+  }
+  .optional-grid {
+    grid-template-columns: 1fr;
+  }
+  .og-class {
+    grid-column: auto;
   }
 
   /* Result view — page scrolls naturally; no nested clipping */
