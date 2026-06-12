@@ -2029,6 +2029,12 @@ select:focus {
   border-left-color: var(--success);
   background: var(--success-lighter);
 }
+/* Inside the verified group the container already carries the green edge —
+   inner cards go neutral so the accent isn't stacked twice per row. */
+.result-passes .field-result.v-pass {
+  border-left-color: var(--hairline);
+  background: var(--surface);
+}
 .field-result.v-warn {
   border-left-color: var(--warning-dark);
   background: var(--warning-lighter);
