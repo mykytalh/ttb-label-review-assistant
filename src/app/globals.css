@@ -522,23 +522,7 @@ a {
   padding: 8px 0;
   margin-bottom: var(--space-2);
 }
-@media (min-width: 769px) {
-  .hiw-back--bar {
-    display: none;
-  }
-}
-/* Desktop variant: rides the sticky section sidebar, separated from the list. */
-.hiw-back--nav {
-  margin-top: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-top: 1px solid var(--hairline);
-  width: 100%;
-}
-@media (max-width: 768px) {
-  .hiw-back--nav {
-    display: none;
-  }
-}
+
 .docs-layout {
   display: grid;
   grid-template-columns: 232px 1fr;
@@ -548,7 +532,7 @@ a {
 /* Left section nav — sticky so it stays in view while reading a long section. */
 .docs-nav {
   position: sticky;
-  top: calc(var(--masthead-h) + var(--space-4));
+  top: calc(var(--masthead-h) + 46px);
 }
 .docs-nav-title {
   font-family: var(--mono);
