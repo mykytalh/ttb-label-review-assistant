@@ -46,7 +46,9 @@ Download the evaluation set from
 into `public/samples/alcohol/` for local review, batch upload, or the eval harness.
 
 Committed artifacts: `eval/ground-truth-clean.json` (labels),
-`eval/results.json` (last scored run, 88 × 3), `eval/run.mjs` (harness).
+`eval/results.json` (last scored run, 88 × 3), `eval/run.mjs` (harness),
+`eval/tuning-set.json` (frozen prompt-tuning subset — see
+[`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md)).
 
 Optional accuracy re-run: [`docs/EVALUATION.md`](docs/EVALUATION.md) (dev server +
 API key + sample photos above).

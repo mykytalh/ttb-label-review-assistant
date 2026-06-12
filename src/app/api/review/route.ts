@@ -25,6 +25,11 @@ export const maxDuration = 30;
 const RATE_LIMIT = 20;
 const RATE_WINDOW_MS = 60_000;
 
+/**
+ * Review one label image. With application fields present, extracted values are
+ * cross-checked against them; with no brandName the request is treated as batch
+ * mode (labelOnly) and the universal on-label requirements are enforced instead.
+ */
 export async function POST(req: NextRequest) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(

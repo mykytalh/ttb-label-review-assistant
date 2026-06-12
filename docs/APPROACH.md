@@ -96,4 +96,10 @@ integration, persistence/audit log.
 
 ## Production follow-ups
 
-On-prem extractor · tamper-evident audit log · type-size with calibrated geometry.
+On-prem extractor · tamper-evident audit log · type-size with calibrated geometry ·
+**COLA registry cross-check** — the public COLA registry (or a licensed feed of it,
+e.g. COLA Cloud) is the authoritative record of approved labels; in production the
+extracted brand/class/ABV should be verified against the applicant's approved COLA,
+and the registry's labeled images are the natural source for growing the eval set
+beyond 88 hand-labeled photos. Skipped here for cost and because the prototype's
+bottleneck was eval-label quality, not data volume.

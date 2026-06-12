@@ -20,6 +20,7 @@ export interface RateLimitResult {
  * @param key       identifier to limit on (e.g. client IP)
  * @param limit     max requests per window
  * @param windowMs  window length in ms
+ * @param now       current time override for deterministic tests
  */
 export function rateLimit(
   key: string,
