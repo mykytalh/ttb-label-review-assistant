@@ -2,10 +2,14 @@
 
 AI-assisted alcohol label extraction and compliance verification. An agent
 enters application details, uploads a label photo, and receives per-field
-**pass / review / fail** verdicts in a few seconds — single label or batch (up to
-10 per run in this prototype).
+**pass / review / fail** verdicts in a few seconds — single label or batch.
+The demo caps batches at 10 to bound API spend; the queue architecture
+(concurrency, retry, filtering, paging, CSV export) is built for the 200–300
+label drops importers actually submit.
 
-The tool assists review; it does not replace agent judgment.
+The tool assists review; it does not replace agent judgment. Every design
+decision traces to a stakeholder need from the discovery interviews — see the
+traceability table at the top of [`docs/APPROACH.md`](docs/APPROACH.md).
 
 **Live demo:** https://ttb-label-review-assistant.vercel.app/
 

@@ -139,19 +139,22 @@ export default function BatchReview() {
     abortRef.current = controller;
     setBusy(true);
     setNotice(null);
-    const queue = rows.filter((r) => r.status === "pending" || r.status === "error").map((r) => r.id);
+    // Snapshot id + file together: workers run async across re-renders, and
+    // reading `rows` later would see a stale closure. The File itself is
+    // immutable per row, so the pair is all a worker needs.
+    const queue = rows
+      .filter((r) => r.status === "pending" || r.status === "error")
+      .map((r) => ({ id: r.id, file: r.file }));
 
     let cursor = 0;
     const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
     const worker = async () => {
       while (cursor < queue.length && !controller.signal.aborted) {
-        const id = queue[cursor++];
-        const row = rows.find((r) => r.id === id);
-        if (!row) continue;
+        const { id, file } = queue[cursor++];
         update(id, { status: "running", error: undefined });
         try {
-          const { base64, mediaType } = await prepareImage(row.file);
+          const { base64, mediaType } = await prepareImage(file);
           if (controller.signal.aborted) return;
           const app: ApplicationData = { beverageType: BEVERAGE_DEFAULT };
           let result: ReviewResult | null = null;

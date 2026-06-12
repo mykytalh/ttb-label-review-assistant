@@ -38,6 +38,13 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
   drawerOpenRef.current = drawerOpen;
   const panelRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLButtonElement>(null);
+  const drawerToggleRef = useRef<HTMLButtonElement>(null);
+
+  /** Close the drawer and put keyboard focus back on its toggle (WCAG 2.4.3). */
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    requestAnimationFrame(() => drawerToggleRef.current?.focus());
+  };
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -52,8 +59,12 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
       if (e.key === "Escape") {
         e.preventDefault();
         // Escape peels one layer: drawer first, then the help view itself.
-        if (drawerOpenRef.current) setDrawerOpen(false);
-        else onClose();
+        if (drawerOpenRef.current) {
+          setDrawerOpen(false);
+          requestAnimationFrame(() => drawerToggleRef.current?.focus());
+        } else {
+          onClose();
+        }
         return;
       }
       if (e.key !== "Tab") return;
@@ -82,7 +93,7 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
 
   const selectSection = (id: SectionId) => {
     setActive(id);
-    setDrawerOpen(false);
+    closeDrawer();
     // Switching mid-article must show the new section from its start — without
     // this, a reader deep in a long section lands in the middle of the next one.
     window.scrollTo({ top: 0 });
@@ -110,7 +121,8 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
         </button>
         <button
           type="button"
-          className="docs-drawer-handle"
+          ref={drawerToggleRef}
+        className="docs-drawer-handle"
           aria-expanded={drawerOpen}
           aria-controls="docs-drawer"
           onClick={() => setDrawerOpen(true)}
@@ -124,14 +136,14 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
 
       {drawerOpen && (
         <>
-          <div className="docs-drawer-backdrop" onClick={() => setDrawerOpen(false)} aria-hidden="true" />
+          <div className="docs-drawer-backdrop" onClick={closeDrawer} aria-hidden="true" />
           <div id="docs-drawer" className="docs-drawer" role="dialog" aria-label="Help sections">
             <div className="docs-drawer-head">
               <p className="docs-nav-title">Help &amp; documentation</p>
               <button
                 type="button"
                 className="docs-drawer-close"
-                onClick={() => setDrawerOpen(false)}
+                onClick={closeDrawer}
                 aria-label="Close section list"
               >
                 ✕

@@ -84,10 +84,41 @@ USWDS-inspired tokens and spacing. WCAG 2.1 AA / Section 508: verdicts use icon 
 word + color; keyboard tabs; skip link; `aria-live` for results; `prefers-reduced-motion`.
 Light/dark toggle (OS default on first visit, saved in `localStorage`).
 
-## Stack
+## Tools used
 
-Next.js + TypeScript (Vercel) · Claude vision + structured JSON · Vitest · GitHub
-Actions CI.
+Next.js 15 (React 19, TypeScript 5) · Anthropic SDK with Claude Haiku 4.5
+(vision + structured JSON; `LABEL_MODEL` swaps in Opus 4.8) · Vitest +
+V8 coverage · ESLint · GitHub Actions CI · Vercel hosting · sharp (eval-harness
+image preparation only) · Node 18+.
+
+## Assumptions made
+
+Where the brief left gaps, these were filled deliberately:
+
+- **Application data arrives by keystroke.** No COLA feed exists for a standalone
+  prototype, so the agent types what the application says — and because the AI
+  reads the label side anyway, every field beyond brand name is optional input.
+- **One photo may not show the whole container.** Absence from the photo is not
+  absence from the label: missing mandatory elements *warn* in single review
+  (check the other panel) and *fail* in batch, where the image stands in for the
+  full artwork.
+- **The 5-second target is a hard requirement, not a preference** — the prior
+  vendor died at 30–40s. This drove the model choice (measured p50 3.3s) over a
+  slower, marginally stronger extractor.
+- **The federal warning is the current 27 CFR 16.21 text**, compared verbatim;
+  bold weight cannot be verified from extracted text, so it is an advisory
+  sub-check rather than a silent pass.
+- **Labels are English-language, standard market formats** (mL/L/fl oz volumes,
+  % ABV / proof statements). Exotic formats fall to the warn path, not silent
+  misreads.
+- **Prototype security posture per the IT interview**: no authentication, no
+  retention, public demo deployment with a server-side API key. A production
+  deployment would add FedRAMP-aligned hosting, audit logging, and SSO.
+- **The demo batch cap (10) bounds API spend only** — the architecture
+  (queue + concurrency + retry + CSV) is built for the stated 200–300 drops.
+- **Retail bottle photos are a fair stand-in** for submitted label artwork when
+  evaluating extraction accuracy — they are strictly harder (glare, curvature,
+  angles) than flat artwork files.
 
 ## Out of scope
 

@@ -257,6 +257,11 @@ body {
   outline: 2px solid var(--primary-dark);
   outline-offset: 2px;
 }
+/* Dark canvas: the navy ring measures ~1.8:1 there — use the family's light
+   blue (6.1:1) so keyboard focus is unmissable in both themes. */
+[data-theme="dark"] :focus-visible {
+  outline-color: var(--primary-light);
+}
 
 h1,
 h2,
@@ -1153,7 +1158,8 @@ input[type="text"] {
   font-size: var(--text-sm);
 }
 input[type="text"]::placeholder {
-  color: var(--base-light);
+  /* --base, not --base-light: hint text also clears 4.5:1 in both themes. */
+  color: var(--base);
   font-family: var(--mono);
 }
 input[type="text"]:focus,
@@ -2549,6 +2555,13 @@ select:focus {
     padding: 8px 16px;
     box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06);
   }
+}
+
+/* Dark theme: denser frosting — at 82% the blur can't guarantee AA for text
+   over arbitrary scrolled content, so opacity rises where contrast is tightest. */
+[data-theme="dark"] .batch-sticky,
+[data-theme="dark"] .batch-summary {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 /* Expanded Details aligns below the pinned toolbar (see BatchCard effect). */
 .batch-card {
