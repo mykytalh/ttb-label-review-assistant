@@ -14,9 +14,15 @@ next-env.d.ts
 /project-instructions.txt
 
 # Eval staging / scratch — harness, ground truth, and committed results ARE in git.
+# Tuning-iteration outputs are scratch too; the frozen subset (tuning-set.json)
+# and the per-iteration numbers recorded in docs/PROMPT_TUNING.md are the record.
 /eval/incoming/
 /eval/triage.json
 /eval/triage.mjs
+/eval/triage-fps.json
+/eval/results.tuning.json
+/eval/tuning-baseline.json
+/eval/tuning-iter*.json
 
 # Real bottle photos (88) — not in the repo; download into this folder locally:
 # https://drive.google.com/drive/folders/1hCq_woq7IwyrOwbi_9XLHeSUsduSUxjN?usp=sharing

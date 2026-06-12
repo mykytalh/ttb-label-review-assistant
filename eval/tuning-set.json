@@ -1,0 +1,27 @@
+{
+  "_about": "Frozen prompt-tuning subset (22 of 88). Replayed identically across tuning iterations via --only so results are comparable; headline numbers come only from full no-subset runs. Composition: every warningFederal strict miss from the post-audit baseline (curved cans, faint print, glare, side crops, run-to-run flicker), three watch photos (two labels GT-corrected to warningPresent=true by the 2026-06 visual audit, plus IMG_6292 — the one verified intermittent warning hallucination), and nine zero-flip regression guards. Guards cover each behavior a warning-transcription change could break: easy pass (6220), negative control with no warning in frame (6233), curved-can hard pass (6239), Serving-Facts can pass (6249), ABV-correctly-null pass (6252), fine-print ABV pass (6257), sideways curved pass (6271), sideways pass (6316), and a state (non-federal) warning that must NOT match the federal text (6338).",
+  "files": [
+    "IMG_6225.jpg",
+    "IMG_6259.jpg",
+    "IMG_6261.jpg",
+    "IMG_6270.jpg",
+    "IMG_6319.jpg",
+    "IMG_6324.jpg",
+    "IMG_6335.jpg",
+    "IMG_6336.jpg",
+    "IMG_6340.jpg",
+    "IMG_6358.jpg",
+    "IMG_6255.jpg",
+    "IMG_6325.jpg",
+    "IMG_6292.jpg",
+    "IMG_6220.jpg",
+    "IMG_6233.jpg",
+    "IMG_6239.jpg",
+    "IMG_6249.jpg",
+    "IMG_6252.jpg",
+    "IMG_6257.jpg",
+    "IMG_6271.jpg",
+    "IMG_6316.jpg",
+    "IMG_6338.jpg"
+  ]
+}
