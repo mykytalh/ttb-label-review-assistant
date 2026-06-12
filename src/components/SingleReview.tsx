@@ -183,6 +183,7 @@ export default function SingleReview() {
               <ImageEditor
                 src={dataUrl}
                 alt="Selected label preview"
+                fileName={file?.name}
                 onEdited={setEditedUrl}
                 onReplace={() => inputRef.current?.click()}
                 onRemove={() => {

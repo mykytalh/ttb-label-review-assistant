@@ -1687,6 +1687,25 @@ select:focus {
   top: var(--space-3);
   right: var(--space-3);
 }
+/* Filename chip, top-left of the stage — same finish as the corner controls
+   but read-only. Truncates so a long phone filename never crowds Replace. */
+.img-stage-name {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 4;
+  max-width: 45%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  backdrop-filter: blur(2px);
+}
 .img-corner.bottom-right {
   bottom: var(--space-3);
   right: var(--space-3);

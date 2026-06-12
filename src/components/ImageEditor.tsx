@@ -89,6 +89,7 @@ function cropDataUrl(src: string, frac: Rect): Promise<string> {
 export default function ImageEditor({
   src,
   alt,
+  fileName,
   onEdited,
   onReplace,
   onRemove,
@@ -97,6 +98,8 @@ export default function ImageEditor({
   /** The original image data URL. */
   src: string;
   alt: string;
+  /** Shown as a corner chip on the stage so the agent knows which photo this is. */
+  fileName?: string;
   /** Called whenever the edited (rotated/cropped) image changes; null = back to original. */
   onEdited?: (dataUrl: string) => void;
   /** Swap the photo (opens the file picker). Shown as a corner control on the image. */
@@ -174,6 +177,7 @@ export default function ImageEditor({
       <ImageStage
         src={edited}
         alt={alt}
+        fileName={fileName}
         zoom={zoom}
         magnify={magnify && !cropping}
         cropping={cropping}
@@ -287,6 +291,7 @@ export default function ImageEditor({
 function ImageStage({
   src,
   alt,
+  fileName,
   zoom,
   magnify,
   cropping,
@@ -297,6 +302,7 @@ function ImageStage({
 }: {
   src: string;
   alt: string;
+  fileName?: string;
   zoom: number;
   magnify: boolean;
   cropping: boolean;
@@ -420,6 +426,11 @@ function ImageStage({
   return (
     <>
     <div className="img-stage">
+      {fileName && !cropping && (
+        <span className="img-stage-name" title={fileName}>
+          {fileName}
+        </span>
+      )}
       <div
         ref={boxRef}
         className={`magnifier${magnify ? " active" : ""}${cropping ? " cropping" : ""}${canPan ? " pannable" : ""}${grabbing ? " grabbing" : ""}`}
