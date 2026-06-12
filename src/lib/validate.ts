@@ -36,8 +36,9 @@ function norm(s: string): string {
  * Canonicalize the warning body into a word sequence for verbatim comparison.
  *
  * Absorbs OCR rendering noise that is not a wording change (list markers like
- * "(1)"/"[1]"/"1)"/"1.", sentence punctuation, line-wrap hyphens) while leaving
- * the words themselves intact, so a genuine wording change still fails.
+ * "(1)"/"[1]"/"1)"/"1." and roman-numeral misreads "(i)"/"(ii)" of tiny print,
+ * sentence punctuation, line-wrap hyphens) while leaving the words themselves
+ * intact, so a genuine wording change still fails.
  *
  * The federal text contains no hyphens, so any hyphen is a line-wrap artifact.
  * A rule can't distinguish a split word ("preg-nancy" -> "pregnancy") from a
@@ -53,6 +54,9 @@ function warningBodyWords(s: string, hyphen: "join" | "split" = "join"): string[
     .toLowerCase()
     .replace(/[[(]\s*(\d)\s*[)\]]/g, " ($1) ") // (1), [1] -> (1)
     .replace(/(?:^|\s)(\d)[).]/g, " ($1) ") // "1)", "1." -> (1)
+    // Roman-numeral misreads of the tiny numbered markers: "(i)" -> (1),
+    // "(ii)" -> (2). Bracketed-only, so real words are never touched.
+    .replace(/[[(]\s*(i{1,3})\s*[)\]]/g, (_, r: string) => ` (${r.length}) `)
     .replace(/[.,;:]/g, " ")
     .replace(/\s+/g, " ")
     .trim()

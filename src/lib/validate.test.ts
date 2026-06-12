@@ -332,6 +332,21 @@ describe("government warning — strict", () => {
     expect(verdictOf(bad, "governmentWarning")).toBe("fail");
   });
 
+  it("tolerates roman-numeral misreads of the list markers", () => {
+    // Observed on a slanted bottle photo (eval IMG_6336): the label prints
+    // "(1)"/"(2)" but the model transcribes the tiny numerals as "(i)"/"(ii)".
+    // The words themselves are verbatim, so this is marker noise, not a
+    // wording change — same class as "[1]" for "(1)".
+    const roman = GOVERNMENT_WARNING.replace("(1)", "(i)").replace("(2)", "(ii)");
+    const r = validate(appWith({ brandName: app.brandName }), label({ governmentWarning: roman }));
+    expect(verdictOf(r, "governmentWarning")).toBe("pass");
+
+    // The tolerance is markers-only: roman markers plus dropped words still fail.
+    const romanMissingWords = roman.replace("during pregnancy ", "");
+    const bad = validate(appWith({ brandName: app.brandName }), label({ governmentWarning: romanMissingWords }));
+    expect(verdictOf(bad, "governmentWarning")).toBe("fail");
+  });
+
   it("fails when a clause is dropped", () => {
     const oneClause =
       "GOVERNMENT WARNING: (1) According to the Surgeon General, women should not drink alcoholic beverages during pregnancy because of the risk of birth defects.";
