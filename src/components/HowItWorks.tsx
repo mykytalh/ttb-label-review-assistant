@@ -29,12 +29,16 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
   const [navOpen, setNavOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLButtonElement>(null);
+  const navBackRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const panel = panelRef.current;
     if (!panel) return;
 
-    backRef.current?.focus();
+    // Focus whichever back control is visible at this breakpoint (the phone
+    // strip and the desktop sidebar link are display-toggled in CSS).
+    const back = [backRef.current, navBackRef.current].find((el) => el && el.offsetParent !== null);
+    back?.focus();
 
     const focusableSelector =
       'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -90,7 +94,9 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
       <h2 id="docs-dialog-title" className="visually-hidden">
         How to use the Label Review Assistant
       </h2>
-      <button ref={backRef} type="button" className="hiw-back" onClick={onClose}>
+      {/* Phone exit: pinned strip under the masthead (the sidebar that hosts
+          the desktop link is a collapsed dropdown on small screens). */}
+      <button ref={backRef} type="button" className="hiw-back hiw-back--bar" onClick={onClose}>
         <span aria-hidden="true">←</span> Back to the tool
       </button>
 
@@ -133,6 +139,11 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
               </li>
             ))}
           </ul>
+          {/* Desktop exit lives with the navigation — the sidebar is sticky,
+              so the way back is always in view. */}
+          <button ref={navBackRef} type="button" className="hiw-back hiw-back--nav" onClick={onClose}>
+            <span aria-hidden="true">←</span> Back to the tool
+          </button>
         </nav>
 
         <article className="docs-content card">
