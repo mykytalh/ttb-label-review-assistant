@@ -114,9 +114,9 @@
      underline color), unchanged across themes so the identity doesn't shift
      when the theme does. */
   --primary: #005ea2;
-  --primary-dark: #2a77c0; /* hover — one step lighter on the dark canvas */
+  --primary-dark: #1a4480; /* identical to light mode — same ink, both themes */
   --primary-darker: #0a0d12; /* near-black masthead/footer band */
-  --primary-light: #2a77c0;
+  --primary-light: #73b3e7; /* identical to light mode */
   --primary-lightest: #0e2238; /* navy tint for fills/selected states */
   --on-primary: #ffffff;
   /* Solid fills share the same blue; hover deepens like light mode. */
