@@ -6,6 +6,7 @@
 "use client";
 
 import { ApplicationData, BEVERAGE_LABELS, BeverageType, SELECTABLE_BEVERAGE_TYPES } from "@/lib/types";
+import InfoTip from "./InfoTip";
 
 export default function ApplicationForm({
   value,
@@ -65,14 +66,21 @@ export default function ApplicationForm({
       </div>
 
       <details className="more-details">
+        {/* The "what is this for" note lives behind the ⓘ so the expanded form
+            spends its space on fields, not on a sentence regulars stop reading. */}
         <summary>
-          Add more label details
-          {optionalFilled > 0 ? ` (${optionalFilled} added)` : " (optional)"}
+          <span className="more-details-label">
+            Add more label details
+            {optionalFilled > 0 ? ` (${optionalFilled} added)` : " (optional)"}
+          </span>
+          <InfoTip panelId={`${idPrefix}-more-info`} label="What the optional details do" align="left">
+            <p>
+              Enter the values from the application and the tool will compare
+              them to the label. Leave blank to just read what&rsquo;s on the
+              label.
+            </p>
+          </InfoTip>
         </summary>
-        <p className="more-details-note">
-          Enter the values from the application and the tool will compare them to
-          the label. Leave blank to just read what&rsquo;s on the label.
-        </p>
 
         {/* One responsive grid: wide screens pack these five into two rows
             (class + abv + net, then producer + origin) so the expanded form

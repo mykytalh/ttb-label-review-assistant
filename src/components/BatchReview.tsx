@@ -12,7 +12,8 @@ import {
 } from "@/lib/client";
 import { batchResultsToCsv } from "@/lib/export";
 import ReviewResults from "./ReviewResults";
-import { InfoIcon, StackIcon } from "./Icon";
+import { StackIcon } from "./Icon";
+import InfoTip from "./InfoTip";
 
 /**
  * Batch upload: read each label in full and check required on-label elements
@@ -485,38 +486,8 @@ export default function BatchReview() {
 }
 
 function BatchInfoTip() {
-  const [open, setOpen] = useState(false);
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onOutside = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onOutside);
-    document.addEventListener("keydown", onEsc);
-    return () => {
-      document.removeEventListener("mousedown", onOutside);
-      document.removeEventListener("keydown", onEsc);
-    };
-  }, [open]);
-
   return (
-    <div className={`info-tip${open ? " info-tip--open" : ""}`} ref={wrapRef}>
-      <button
-        type="button"
-        className="info-tip-trigger"
-        aria-expanded={open}
-        aria-controls="batch-info-panel"
-        aria-label="How batch review works"
-        onClick={() => setOpen((o) => !o)}
-      >
-        <InfoIcon />
-      </button>
-      <div id="batch-info-panel" className="info-tip-panel" role="tooltip">
+    <InfoTip panelId="batch-info-panel" label="How batch review works">
         <p>
           <strong>How batch differs from single review:</strong> there is no
           application form here. The AI reads each label photo and checks what
@@ -545,8 +516,7 @@ function BatchInfoTip() {
             an import
           </li>
         </ul>
-      </div>
-    </div>
+    </InfoTip>
   );
 }
 
