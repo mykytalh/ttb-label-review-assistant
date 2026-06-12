@@ -17,7 +17,7 @@
 :root {
   /* Sticky masthead height — coordinates offsets for the sticky help nav and
      anchor scroll margins. Keep in sync with the masthead's actual height. */
-  --masthead-h: 62px;
+  --masthead-h: 56px;
 
   /* USWDS color tokens (subset we use) */
   --base-lightest: #f0f0f0;
@@ -285,7 +285,7 @@ a {
 /* ---------- Masthead ---------- */
 .masthead {
   color: var(--on-dark);
-  padding: 4px 0;
+  padding: 2px 0;
   /* Sticky: the help link, theme toggle, and product identity stay reachable
      however far the agent scrolls — on phones especially, the help view is
      long and the way back must never disappear. */
@@ -354,7 +354,7 @@ a {
 .masthead h1 {
   color: var(--on-dark);
   font-family: var(--font-serif), Georgia, "Times New Roman", serif;
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   margin: 0;
   letter-spacing: 0;
   font-weight: 700;
@@ -372,10 +372,10 @@ a {
 /* Subtitle under the product title. */
 .masthead-org {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.04em;
   color: #aec6e0;
-  margin: 3px 0 0;
+  margin: 2px 0 0;
 }
 
 /* ---------- Site footer (mirrors the masthead) ---------- */
@@ -747,7 +747,7 @@ a {
   color: var(--base-dark);
   font-size: 1.02rem;
   font-weight: 600;
-  padding: 12px 2px 14px;
+  padding: 9px 2px 11px;
   cursor: pointer;
   margin-bottom: -1px;
 }
@@ -769,15 +769,18 @@ a {
 /* Compact the single-label entry so the whole form fits one viewport without
    scrolling — tighter card, fields, dropzone, and a shorter primary button. */
 .single-flow .card {
-  padding: 20px 24px;
+  padding: 16px 24px;
   margin-bottom: 0;
 }
 .single-flow .field {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+}
+.single-flow .field label {
+  margin-bottom: 5px;
 }
 .single-flow .more-details {
-  margin-bottom: 12px;
-  padding-top: 12px;
+  margin-bottom: 10px;
+  padding-top: 10px;
 }
 .single-flow .dropzone {
   padding: 16px;
@@ -1007,9 +1010,11 @@ select:focus {
   }
 
   /* Masthead — one compact row on phones (the subtitle moves out of the way)
-     so the sticky band costs the small screen as little height as possible. */
+     so the sticky band costs the small screen as little height as possible.
+     Padding keeps the real height at or under --masthead-h so pinned elements
+     tuck cleanly underneath. */
   .masthead {
-    padding: 10px 0 12px;
+    padding: 7px 0 8px;
   }
   .masthead .inner {
     padding: 0 16px;
@@ -1460,12 +1465,12 @@ select:focus {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--space-4);
+  gap: var(--space-2);
 }
 .preview-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 4px;
 }
 .preview-name {
   font-family: var(--mono);
@@ -1478,7 +1483,7 @@ select:focus {
 .img-editor {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   width: 100%;
 }
 /* Result-side preview: same clipped stage as upload so zoom + pan work. */
@@ -1501,9 +1506,11 @@ select:focus {
   position: relative; /* anchor for the Replace/Remove corner controls */
   background: var(--fill);
   border: 1px solid var(--hairline);
-  padding: var(--space-3);
+  padding: var(--space-2);
   min-height: 200px;
-  max-height: 380px;
+  /* Track the viewport so form + photo + button fit a laptop screen at 100%
+     zoom; the zoom/magnify tools cover reading fine print at this size. */
+  max-height: clamp(260px, 38vh, 380px);
   /* Hidden, not auto: a zoomed image is navigated by dragging (pan), so the
      stage just clips the moved image rather than showing fiddly scrollbars. */
   overflow: hidden;
@@ -1532,7 +1539,7 @@ select:focus {
 }
 .magnifier img {
   max-width: 100%;
-  max-height: 340px;
+  max-height: min(34vh, 340px);
   object-fit: contain;
   -webkit-user-select: none;
   user-select: none;
@@ -1691,7 +1698,7 @@ select:focus {
 .rotate-hint {
   color: var(--base);
   font-size: 0.85rem;
-  margin: 4px 0 8px;
+  margin: 0 0 4px;
 }
 
 /* ---------- Buttons ---------- */
