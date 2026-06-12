@@ -118,7 +118,13 @@ export default function PrintReport({
             <tr key={f.field}>
               <td className="pr-field">{FIELD_LABELS[f.field]}</td>
               <td>{f.expected ?? "—"}</td>
-              <td>{f.found ?? "—"}</td>
+              <td>
+                {/* The full warning is long enough to swamp the table; it's
+                    printed once, in the verbatim section below. */}
+                {f.field === "governmentWarning" && f.found
+                  ? "Transcribed — full text below"
+                  : (f.found ?? "—")}
+              </td>
               <td className="pr-verdict">{VERDICT_LABEL[f.verdict]}</td>
             </tr>
           ))}
@@ -177,10 +183,10 @@ export default function PrintReport({
         </section>
       )}
 
-      {/* The verbatim warning transcription. Every other extracted value is
-          already in the "On label" column above; the warning is the one field
-          where the table truncates and the full text is the legal substance of
-          the record (27 CFR 16.21). */}
+      {/* The verbatim warning transcription — printed exactly once, here. The
+          table above carries a pointer instead, because the full text is the
+          legal substance of the record (27 CFR 16.21) and deserves a readable
+          block, not a cramped table cell. */}
       <section className="pr-extract">
         <span className="pr-k">Government warning as read from the label (verbatim)</span>
         <p className="pr-warning-text">
