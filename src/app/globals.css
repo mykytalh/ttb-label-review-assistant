@@ -470,6 +470,18 @@ a {
   background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.4);
 }
+/* While the help view is open the trigger inverts — white fill, blue text —
+   a lit "you are here" state on the always-visible masthead control. */
+.hiw-trigger[aria-expanded="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: var(--primary);
+}
+.hiw-trigger[aria-expanded="true"]:hover {
+  background: var(--primary-lightest);
+  border-color: var(--primary-lightest);
+}
+
 .hiw-trigger-icon {
   display: inline-flex;
 }
@@ -484,7 +496,6 @@ a {
 .hiw-back {
   appearance: none;
   border: none;
-  border-bottom: 1px solid var(--hairline);
   cursor: pointer;
   position: sticky;
   top: var(--masthead-h);
@@ -494,12 +505,10 @@ a {
   align-items: center;
   gap: 6px;
   color: var(--primary);
-  /* White bar with blue text — reads as a location strip: you're in help,
-     and this is the way back. */
-  background: var(--surface);
+  background: var(--canvas);
   font: inherit;
   font-weight: 600;
-  padding: 9px 10px;
+  padding: 8px 0;
   margin-bottom: var(--space-2);
 }
 .hiw-back:hover {
