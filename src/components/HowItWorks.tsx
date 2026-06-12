@@ -72,6 +72,9 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
   const selectSection = (id: SectionId) => {
     setActive(id);
     setNavOpen(false);
+    // Switching mid-article must show the new section from its start — without
+    // this, a reader deep in a long section lands in the middle of the next one.
+    window.scrollTo({ top: 0 });
   };
 
   const activeLabel = NAV.find((s) => s.id === active)?.label ?? "Help";
@@ -286,9 +289,11 @@ function Batch() {
         icon next to <strong>Upload label photos</strong> for
         a quick summary. Batch has <strong>no application form</strong> — the AI reads
         each label and checks what federal rules require on the artwork itself.
-        Batch checks universal on-label elements: net contents and bottler name and
-        address must be present; country of origin is required when the label
-        indicates an import.
+        Batch checks every universal on-label element: brand name, class/type,
+        net contents, and bottler name and address must be present; alcohol
+        content is required by beverage type (always for spirits); country of
+        origin is required when the label indicates an import; and the
+        government warning is checked word for word.
       </Callout>
       <h3 className="docs-h3">Working the queue</h3>
       <ol className="hiw-steps">

@@ -518,6 +518,7 @@ function FilterChip({
   );
 }
 
+/** Per-verdict field counts for one result, shown as the batch row's tally chips. */
 function fieldTally(result: ReviewResult) {
   const c = { pass: 0, warn: 0, fail: 0 };
   for (const f of result.fields) {

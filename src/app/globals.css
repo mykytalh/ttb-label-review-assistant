@@ -15,6 +15,10 @@
  */
 
 :root {
+  /* Sticky masthead height — coordinates offsets for the sticky help nav and
+     anchor scroll margins. Keep in sync with the masthead's actual height. */
+  --masthead-h: 62px;
+
   /* USWDS color tokens (subset we use) */
   --base-lightest: #f0f0f0;
   --base-lighter: #dfe1e2;
@@ -256,6 +260,11 @@ a {
 }
 
 /* ---------- Skip link (USWDS) ---------- */
+/* Anchor jumps (the skip link) land below the sticky masthead. */
+#main-content {
+  scroll-margin-top: calc(var(--masthead-h) + 8px);
+}
+
 .skip-link {
   position: absolute;
   left: -999px;
@@ -275,7 +284,12 @@ a {
 .masthead {
   color: var(--on-dark);
   padding: 4px 0;
-  position: relative;
+  /* Sticky: the help link, theme toggle, and product identity stay reachable
+     however far the agent scrolls — on phones especially, the help view is
+     long and the way back must never disappear. */
+  position: sticky;
+  top: 0;
+  z-index: 90;
   border-bottom: 3px solid var(--primary);
   box-shadow: 0 2px 8px rgba(29, 58, 102, 0.18);
   /* Soft top-down sheen over the band color — a gentle brushed surface, not the
@@ -488,7 +502,7 @@ a {
 /* Left section nav — sticky so it stays in view while reading a long section. */
 .docs-nav {
   position: sticky;
-  top: var(--space-4);
+  top: calc(var(--masthead-h) + var(--space-4));
 }
 .docs-nav-title {
   font-family: var(--mono);
@@ -990,7 +1004,8 @@ select:focus {
     padding: 10px 16px 32px;
   }
 
-  /* Masthead */
+  /* Masthead — one compact row on phones (the subtitle moves out of the way)
+     so the sticky band costs the small screen as little height as possible. */
   .masthead {
     padding: 10px 0 12px;
   }
@@ -998,13 +1013,21 @@ select:focus {
     padding: 0 16px;
   }
   .masthead-row {
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: 12px;
   }
   .masthead-id {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
     min-width: 0;
+  }
+  .masthead-id h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .masthead-org {
+    display: none;
   }
   .masthead h1 {
     font-size: 1.2rem;
@@ -1197,8 +1220,14 @@ select:focus {
     margin-top: 4px;
   }
 
-  /* Docs — burger nav */
+  /* Docs — burger nav. The picker stays pinned under the masthead while the
+     agent scrolls a long help section, so switching sections never requires
+     scrolling back to the top. */
   .docs-menu-toggle {
+    position: sticky;
+    top: calc(var(--masthead-h) - 2px);
+    z-index: 40;
+    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.08);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1242,6 +1271,13 @@ select:focus {
   }
   .docs-nav.open {
     display: block;
+    /* Pin the open list right below the pinned picker; scroll internally if
+       the viewport is short. */
+    position: sticky;
+    top: calc(var(--masthead-h) + 52px);
+    z-index: 39;
+    max-height: calc(100vh - var(--masthead-h) - 72px);
+    overflow-y: auto;
   }
   .docs-nav-title {
     padding: 0 14px;
@@ -2739,30 +2775,21 @@ select:focus {
     margin-bottom: 4px;
     line-height: 1.4;
   }
-  /* Raw extraction readout — a definition list, fixed-width values for the data. */
+  /* Verbatim warning transcription — fixed-width, kept on one page. */
   .pr-extract {
     margin-bottom: 16px;
     font-size: 9.5pt;
     page-break-inside: avoid;
   }
-  .pr-extract dl {
-    margin: 6px 0 0;
-  }
-  .pr-extract-row {
-    display: grid;
-    grid-template-columns: 1.6in 1fr;
-    gap: 8px;
-    padding: 3px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  .pr-extract dt {
-    font-weight: 600;
-  }
-  .pr-extract dd {
-    margin: 0;
+  .pr-warning-text {
+    margin: 4px 0 0;
     font-family: var(--mono);
     font-size: 8.5pt;
+    line-height: 1.5;
     word-break: break-word;
+  }
+  .pr-clear {
+    margin: 4px 0 0;
   }
   .pr-notes p {
     margin: 4px 0 0;

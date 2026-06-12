@@ -49,7 +49,7 @@ describe("POST /api/review", () => {
   beforeEach(() => {
     process.env.ANTHROPIC_API_KEY = "sk-test";
     reviewLabelMock.mockReset();
-    rateLimitMock.mockReturnValue({ allowed: true, retryAfterSeconds: 0 });
+    rateLimitMock.mockReturnValue({ allowed: true, remaining: 19, retryAfterSeconds: 0 });
   });
 
   afterEach(() => {
@@ -65,7 +65,7 @@ describe("POST /api/review", () => {
   });
 
   it("returns 429 when rate limited", async () => {
-    rateLimitMock.mockReturnValueOnce({ allowed: false, retryAfterSeconds: 12 });
+    rateLimitMock.mockReturnValueOnce({ allowed: false, remaining: 0, retryAfterSeconds: 12 });
     const res = await post(goodBody());
     expect(res.status).toBe(429);
     expect(res.headers.get("Retry-After")).toBe("12");

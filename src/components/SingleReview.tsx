@@ -15,6 +15,12 @@ import ImageEditor from "./ImageEditor";
 import PrintReport from "./PrintReport";
 import { UploadIcon } from "./Icon";
 
+/**
+ * Single-label review: application form + photo upload with edit tools
+ * (rotate/crop/zoom), then the field-by-field result below. The image sent for
+ * review is exactly the edited image the agent sees, and each run gets a
+ * reference ID + timestamp for the printable record.
+ */
 export default function SingleReview() {
   const [app, setApp] = useState<ApplicationData>(emptyApplication());
   const [file, setFile] = useState<File | null>(null);

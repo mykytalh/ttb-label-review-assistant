@@ -125,23 +125,32 @@ export default function PrintReport({
         </tbody>
       </table>
 
-      {/* Per-field explanation — the "why" behind each verdict. */}
+      {/* Findings — only the items that need a human (the table above already
+          records every verdict; repeating pass explanations adds paper, not
+          information). */}
       <section className="pr-findings">
-        <span className="pr-k">Findings</span>
-        <ul>
-          {rows.map((f) => (
-            <li key={f.field}>
-              <strong>{FIELD_LABELS[f.field]}</strong> — {VERDICT_LABEL[f.verdict]}: {f.message}
-            </li>
-          ))}
-        </ul>
+        <span className="pr-k">Findings requiring attention</span>
+        {rows.some((f) => f.verdict === "warn" || f.verdict === "fail") ? (
+          <ul>
+            {rows
+              .filter((f) => f.verdict === "warn" || f.verdict === "fail")
+              .map((f) => (
+                <li key={f.field}>
+                  <strong>{FIELD_LABELS[f.field]}</strong> — {VERDICT_LABEL[f.verdict]}: {f.message}
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <p className="pr-clear">None — every checked item meets its requirement.</p>
+        )}
       </section>
 
-      {/* Per-requirement breakdown for the government warning, if present. */}
-      {rows.some((f) => f.subChecks?.length) && (
+      {/* Per-requirement breakdown for the government warning — only when it
+          isn't a clean pass (three "Pass" sub-lines add nothing to the record). */}
+      {rows.some((f) => f.subChecks?.length && f.verdict !== "pass") && (
         <section className="pr-subchecks">
           {rows
-            .filter((f) => f.subChecks?.length)
+            .filter((f) => f.subChecks?.length && f.verdict !== "pass")
             .map((f) => (
               <div key={f.field}>
                 <span className="pr-k">{FIELD_LABELS[f.field]} — detail</span>
@@ -168,21 +177,15 @@ export default function PrintReport({
         </section>
       )}
 
-      {/* Raw AI extraction — exactly what the model read off the label, the source
-          data behind every finding above. The government warning is shown in full. */}
+      {/* The verbatim warning transcription. Every other extracted value is
+          already in the "On label" column above; the warning is the one field
+          where the table truncates and the full text is the legal substance of
+          the record (27 CFR 16.21). */}
       <section className="pr-extract">
-        <span className="pr-k">AI extraction (raw, read from the label)</span>
-        <dl>
-          {order.map((k) => {
-            const f = fieldFor(k);
-            return (
-              <div key={k} className="pr-extract-row">
-                <dt>{FIELD_LABELS[k]}</dt>
-                <dd>{f?.found ?? "— (not detected)"}</dd>
-              </div>
-            );
-          })}
-        </dl>
+        <span className="pr-k">Government warning as read from the label (verbatim)</span>
+        <p className="pr-warning-text">
+          {fieldFor("governmentWarning")?.found ?? "— no legible government warning detected"}
+        </p>
       </section>
 
       {imageUrl && (
