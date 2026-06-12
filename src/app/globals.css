@@ -503,8 +503,11 @@ a {
   font-weight: 600;
   padding: 0;
 }
-.hiw-back:hover {
+/* Underline only the words on hover — a flex gap between arrow and text would
+   otherwise leave a hole in the underline. */
+.hiw-back:hover .hiw-back-text {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 /* Phone variant: pinned strip under the sticky masthead so the way back never
    scrolls away (the sidebar holding the desktop link collapses on phones). */
