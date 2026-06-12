@@ -99,4 +99,21 @@ describe("coerceExtractedLabel", () => {
     expect(r.notes?.toLowerCase()).not.toContain("barcode");
     expect(r.notes).not.toContain("8129951");
   });
+
+  it("truncates long notes at a sentence boundary, never mid-list", () => {
+    // Real UI bug: a long note was cut mid-enumeration ("net contents, alcohol
+    // content, and…") and the renderer added a period after the ellipsis.
+    const sentence1 = "Government warning partially obscured by label overlay and glare; text is fragmented and some words not fully legible.";
+    const tail = " Net contents, alcohol content, and producer are printed in small type along the bottom edge of the label.";
+    const out = coerceExtractedLabel({ notes: sentence1 + tail, warningLegible: true, imageQuality: "fair" });
+    expect(out.notes).toBe(sentence1.replace(/\.$/, ""));
+    expect(out.notes).not.toMatch(/,\s*(and|or)?…?$/);
+  });
+
+  it("tidies a dangling connector when only a word cut is possible", () => {
+    const oneLong = "The label lists " + "x".repeat(120) + " contents, alcohol content, and more besides";
+    const out = coerceExtractedLabel({ notes: oneLong, warningLegible: true, imageQuality: "fair" });
+    expect(out.notes!.endsWith("…")).toBe(true);
+    expect(out.notes).not.toMatch(/(,|and|or)\s*…$/);
+  });
 });

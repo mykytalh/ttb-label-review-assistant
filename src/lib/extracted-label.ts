@@ -54,7 +54,19 @@ function cleanNote(v: unknown): string | undefined {
     .join(" ");
   let t = kept.replace(/\s+/g, " ").trim().replace(/[.\s]+$/, "");
   if (!t) return undefined;
-  if (t.length > NOTE_MAX) t = t.slice(0, NOTE_MAX).replace(/\s+\S*$/, "") + "…";
+  if (t.length > NOTE_MAX) {
+    // Cut at a sentence boundary when one fits, so the note never ends
+    // mid-list ("net contents, alcohol content, and…"). Only when the first
+    // sentence alone exceeds the cap, fall back to a word cut — and tidy any
+    // dangling connector or comma before the ellipsis.
+    const head = t.slice(0, NOTE_MAX);
+    const lastSentenceEnd = head.lastIndexOf(". ");
+    if (lastSentenceEnd > 40) {
+      t = head.slice(0, lastSentenceEnd);
+    } else {
+      t = head.replace(/\s+\S*$/, "").replace(/[,;:\s]+(?:and|or)?$/i, "") + "…";
+    }
+  }
   return t;
 }
 

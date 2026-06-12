@@ -177,8 +177,8 @@ export default function PrintReport({
           <span className="pr-k">Reviewer notes</span>
           <p>
             Image quality was reported as <strong>{result.imageQuality}</strong>
-            {result.notes ? ` — ${result.notes}` : ""}. Items marked “Review” could
-            not be auto-confirmed and should be checked by eye.
+            {result.notes ? ` — ${result.notes}${/[.!?…]$/.test(result.notes) ? "" : "."}` : "."} Items
+            marked “Review” could not be auto-confirmed and should be checked by eye.
           </p>
         </section>
       )}

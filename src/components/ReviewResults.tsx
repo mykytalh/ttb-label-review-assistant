@@ -92,11 +92,47 @@ export default function ReviewResults({
   const passes = result.fields.filter((f) => f.verdict === "pass");
   const notChecked = result.fields.filter((f) => f.verdict === "na");
 
+  // Raw extraction readout — what the model read, as instrument data. Lives
+  // under the photo when there is one (read the label, read the extraction,
+  // compare by eye in one column); falls back into the body otherwise.
+  const aiExtract = (
+    <div className="ai-extract">
+      <button
+        type="button"
+        className="ai-extract-toggle"
+        aria-expanded={showExtract}
+        onClick={() => setShowExtract((s) => !s)}
+      >
+        <span className="ai-extract-label">AI EXTRACTION</span>
+        <span className="ai-extract-quality">
+          IMAGE QUALITY: {result.imageQuality.toUpperCase()}
+        </span>
+        <span aria-hidden="true">{showExtract ? "▲" : "▼"}</span>
+      </button>
+      {showExtract && (
+        <>
+          <dl className="ai-extract-body">
+            {result.fields.map((f) => (
+              <div key={f.field} className="ai-extract-row">
+                <dt>{FIELD_LABELS[f.field]}</dt>
+                <dd>{f.found ?? "null"}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="ai-extract-note">
+            AI-assisted extraction and compliance verification
+          </p>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className={imageUrl ? "result-with-image" : undefined}>
       {imageUrl && (
         <div className="result-image">
           <ImageEditor src={imageUrl} alt="The label that was reviewed" viewOnly />
+          {aiExtract}
         </div>
       )}
 
@@ -144,8 +180,9 @@ export default function ReviewResults({
         {result.imageQuality === "fair" && (
           <p className="meta">
             Photo quality was <strong>fair</strong>
-            {result.notes ? ` — ${result.notes}.` : "."} Double-check anything that
-            looks off.
+            {/* No period after a note that already ends in one or an ellipsis. */}
+            {result.notes ? ` — ${result.notes}${/[.!?…]$/.test(result.notes) ? "" : "."}` : "."} Double-check
+            anything that looks off.
           </p>
         )}
 
@@ -206,37 +243,7 @@ export default function ReviewResults({
           )}
         </div>
 
-        {/* AI extraction readout — what the model read off the label, as raw
-            instrument data. Secondary to the verdicts, so it's collapsed. */}
-        <div className="ai-extract">
-          <button
-            type="button"
-            className="ai-extract-toggle"
-            aria-expanded={showExtract}
-            onClick={() => setShowExtract((s) => !s)}
-          >
-            <span className="ai-extract-label">AI EXTRACTION</span>
-            <span className="ai-extract-quality">
-              IMAGE QUALITY: {result.imageQuality.toUpperCase()}
-            </span>
-            <span aria-hidden="true">{showExtract ? "▲" : "▼"}</span>
-          </button>
-          {showExtract && (
-            <>
-              <dl className="ai-extract-body">
-                {result.fields.map((f) => (
-                  <div key={f.field} className="ai-extract-row">
-                    <dt>{FIELD_LABELS[f.field]}</dt>
-                    <dd>{f.found ?? "null"}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="ai-extract-note">
-                AI-assisted extraction and compliance verification
-              </p>
-            </>
-          )}
-        </div>
+        {!imageUrl && aiExtract}
 
         {typeof result.elapsedMs === "number" && (
           <p className="result-elapsed">
