@@ -478,19 +478,26 @@ a {
 .docs {
   margin-top: var(--space-4);
 }
+/* Pinned under the sticky masthead so the way back never scrolls away,
+   however deep the agent reads. Full-width canvas strip so content passes
+   cleanly beneath. */
 .hiw-back {
   appearance: none;
-  background: none;
   border: none;
   cursor: pointer;
-  display: inline-flex;
+  position: sticky;
+  top: var(--masthead-h);
+  z-index: 42;
+  display: flex;
+  width: 100%;
   align-items: center;
   gap: 6px;
   color: var(--primary);
+  background: var(--canvas);
   font: inherit;
   font-weight: 600;
-  padding: 0;
-  margin-bottom: var(--space-4);
+  padding: 8px 0;
+  margin-bottom: var(--space-2);
 }
 .hiw-back:hover {
   text-decoration: underline;
@@ -504,7 +511,7 @@ a {
 /* Left section nav — sticky so it stays in view while reading a long section. */
 .docs-nav {
   position: sticky;
-  top: calc(var(--masthead-h) + var(--space-4));
+  top: calc(var(--masthead-h) + 46px);
 }
 .docs-nav-title {
   font-family: var(--mono);
@@ -1282,7 +1289,7 @@ select:focus {
      scrolling back to the top. */
   .docs-menu-toggle {
     position: sticky;
-    top: calc(var(--masthead-h) - 2px);
+    top: calc(var(--masthead-h) + 38px);
     z-index: 40;
     box-shadow: 0 2px 8px rgba(27, 27, 27, 0.08);
     display: flex;
@@ -1331,9 +1338,9 @@ select:focus {
     /* Pin the open list right below the pinned picker; scroll internally if
        the viewport is short. */
     position: sticky;
-    top: calc(var(--masthead-h) + 52px);
+    top: calc(var(--masthead-h) + 90px);
     z-index: 39;
-    max-height: calc(100vh - var(--masthead-h) - 72px);
+    max-height: calc(100vh - var(--masthead-h) - 110px);
     overflow-y: auto;
   }
   .docs-nav-title {
