@@ -16,9 +16,10 @@ convenience only; the server re-validates every constraint.
 
 Two endpoints cross the boundary — `/api/review` (extract + validate) and
 `/api/extract` (extraction only, used to preload while the agent types). Both
-run the same input validation, the same error sanitization, and spend from the
-**same per-IP rate-limit bucket**, so the pair cannot be used to double an
-abuser's request volume.
+run the same input validation, the same error sanitization, and draw from the
+same per-IP rate-limit bucket within a server instance. (The existing
+single-instance caveat below applies — serverless deployment can give each
+route its own instance, which is part of why production needs a shared store.)
 
 ## Threats and mitigations
 
