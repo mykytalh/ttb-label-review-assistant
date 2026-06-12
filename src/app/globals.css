@@ -1750,6 +1750,15 @@ select:focus {
   border-color: var(--base);
   color: var(--ink);
 }
+/* Disabled secondary stays an outline button, just muted — the solid-gray
+   primary disabled treatment reads as a different button, not a blocked one. */
+.btn.secondary:disabled {
+  background: var(--fill);
+  border-color: var(--base-lighter);
+  color: var(--base);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* ---------- Verdict colors ----------
    Each verdict uses a dark ink on a light tint (AA contrast) plus an icon and a
@@ -2473,6 +2482,11 @@ select:focus {
   font-size: var(--text-sm);
   color: var(--base-dark);
   text-align: center;
+}
+/* An arrow with nowhere to go isn't shown — visibility (not display) keeps the
+   layout stable so "Page X of Y" doesn't shift when an arrow disappears. */
+.batch-pager .btn:disabled {
+  visibility: hidden;
 }
 .batch-list {
   list-style: none;
