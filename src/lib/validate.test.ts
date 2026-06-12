@@ -400,6 +400,23 @@ describe("beverage type changes ABV requirements", () => {
     expect(verdictOf(r, "alcoholContent")).toBe("fail");
   });
 
+  it("applies the wine tolerance band on each side of 14% ABV", () => {
+    // 27 CFR 4.36: ±1.5% at or below 14%, ±1% above — the band keys off the
+    // application's stated ABV (the applied-for class). A ~1.3% difference
+    // passes in the lower band and a smaller 1.2% fails in the upper one.
+    const low = validate(
+      appWith({ brandName: app.brandName, beverageType: "wine", alcoholContent: "13.8%" }),
+      label({ alcoholContent: "12.5% ALC/VOL" }),
+    );
+    expect(verdictOf(low, "alcoholContent")).toBe("pass");
+
+    const high = validate(
+      appWith({ brandName: app.brandName, beverageType: "wine", alcoholContent: "16.2%" }),
+      label({ alcoholContent: "15.0% ALC/VOL" }),
+    );
+    expect(verdictOf(high, "alcoholContent")).toBe("fail");
+  });
+
   it("warns on missing ABV for wine without a table/light designation", () => {
     // Wine may omit ABV only when "table wine"/"light wine" appears on the
     // label (27 CFR 4.36(a)); with no designation the omission needs eyes.
@@ -520,6 +537,15 @@ describe("producer — ignores regulatory lead-in phrases", () => {
       label({ producer: "Bottled by Wild Turkey Distilling, Lawrenceburg, KY" }),
     );
     expect(verdictOf(r, "producer")).toBe("fail");
+  });
+});
+
+describe("producer in batch mode", () => {
+  it("warns when the producer name is present but carries no address", () => {
+    // TTB requires name AND address (27 CFR Parts 4, 5, 7). Batch mode has no
+    // application to lean on, so a bare name must surface for a human look.
+    const r = validate({ beverageType: "wine" }, label({ producer: "Old Tom Distillery" }), { labelOnly: true });
+    expect(verdictOf(r, "producer")).toBe("warn");
   });
 });
 
