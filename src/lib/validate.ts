@@ -302,87 +302,280 @@ function parseProof(s: string): number | null {
   return m ? parseFloat(m[1]) : null;
 }
 
+type AbvParse =
+  | { kind: "single"; value: number }
+  | { kind: "range"; lo: number; hi: number };
+
+/** Parse a label/application ABV string into a single value or an allowed range. */
+function parseAbvText(s: string): AbvParse | null {
+  const range = s.match(
+    /(\d+(?:\.\d+)?)\s*(?:%|percent)?\s*(?:to|[-–—])\s*(\d+(?:\.\d+)?)\s*(?:%|percent|alc|abv|vol)/i,
+  );
+  if (range) {
+    const lo = parseFloat(range[1]);
+    const hi = parseFloat(range[2]);
+    if (isPlausibleAbv(lo) && isPlausibleAbv(hi) && lo <= hi) {
+      return { kind: "range", lo, hi };
+    }
+  }
+
+  const single = parsePercent(s);
+  if (single !== null) return { kind: "single", value: single };
+
+  const proof = parseProof(s);
+  if (proof !== null && isPlausibleAbv(proof / 2)) {
+    return { kind: "single", value: proof / 2 };
+  }
+
+  return null;
+}
+
+/** TTB labeling tolerances when comparing application vs label (27 CFR 4.36, 5.66, 7.65). */
+function abvTolerance(beverageType: BeverageType, referencePct: number): number {
+  switch (beverageType) {
+    case "spirits":
+      return 0.3;
+    case "wine":
+      return referencePct > 14 ? 1.0 : 1.5;
+    case "beer":
+      return 0.3;
+    default:
+      return 0.3;
+  }
+}
+
+const TABLE_WINE_EXEMPT = /\b(table\s+wine|light\s+wine)\b/i;
+
+/** Fortified / dessert wine classes that typically exceed 14% and must state ABV. */
+const HIGH_ALCOHOL_WINE_CLASS =
+  /\b(port|sherry|madeira|marsala|vermouth|dessert\s+wine|fortified|liqueur|angelica|muscatel)\b/i;
+
+function isTableWineExempt(classType: string | null): boolean {
+  return classType !== null && TABLE_WINE_EXEMPT.test(classType);
+}
+
+function suggestsHighAlcoholWine(classType: string | null): boolean {
+  return classType !== null && HIGH_ALCOHOL_WINE_CLASS.test(classType);
+}
+
+/** Whether a parsed label ABV (single or range) exceeds the 14% wine threshold. */
+function wineExceeds14Pct(parsed: AbvParse): boolean {
+  return parsed.kind === "single" ? parsed.value > 14 : parsed.hi > 14;
+}
+
+function formatPct(n: number): string {
+  return Number.isInteger(n) ? `${n}` : n.toFixed(1).replace(/\.0$/, "");
+}
+
 /**
- * Match alcohol content numerically within a tolerance, with a proof-vs-ABV
- * consistency check (US proof = 2 x ABV).
+ * Compare two parsed ABV values using the TTB tolerance for the beverage type.
+ * Ranges are inclusive; a single value may fall inside the other's stated range.
+ */
+function abvValuesAgree(
+  expected: AbvParse,
+  found: AbvParse,
+  beverageType: BeverageType,
+): { ok: boolean; tolerance: number; note?: string } {
+  if (expected.kind === "range" && found.kind === "range") {
+    const ok = expected.lo === found.lo && expected.hi === found.hi;
+    return { ok, tolerance: 0, note: ok ? undefined : "range endpoints differ" };
+  }
+
+  if (found.kind === "range" && expected.kind === "single") {
+    const ok = expected.value >= found.lo && expected.value <= found.hi;
+    return {
+      ok,
+      tolerance: 0,
+      note: ok ? undefined : `application ${formatPct(expected.value)}% is outside label range ${formatPct(found.lo)}–${formatPct(found.hi)}%`,
+    };
+  }
+
+  if (expected.kind === "range" && found.kind === "single") {
+    const ok = found.value >= expected.lo && found.value <= expected.hi;
+    return {
+      ok,
+      tolerance: 0,
+      note: ok ? undefined : `label ${formatPct(found.value)}% is outside application range ${formatPct(expected.lo)}–${formatPct(expected.hi)}%`,
+    };
+  }
+
+  const expVal = expected.kind === "single" ? expected.value : (expected.lo + expected.hi) / 2;
+  const foundVal = found.kind === "single" ? found.value : (found.lo + found.hi) / 2;
+  const ref = Math.max(expVal, foundVal);
+  const tolerance = abvTolerance(beverageType, ref);
+  const diff = Math.abs(expVal - foundVal);
+  return {
+    ok: diff <= tolerance,
+    tolerance,
+    note: diff <= tolerance ? undefined : `difference ${diff.toFixed(1)}% exceeds ±${tolerance}% TTB tolerance`,
+  };
+}
+
+function cfrForAbvType(beverageType: BeverageType): string {
+  switch (beverageType) {
+    case "spirits":
+      return "27 CFR 5.66";
+    case "wine":
+      return "27 CFR 4.36";
+    case "beer":
+      return "27 CFR 7.65";
+    default:
+      return "27 CFR Parts 4, 5, 7";
+  }
+}
+
+/** Verdict when ABV is absent — type- and context-aware per TTB rules. */
+function missingAbvResult(
+  field: FieldKey,
+  expected: string | undefined,
+  label: ExtractedLabel,
+  beverageType: BeverageType,
+  labelOnly: boolean,
+): FieldResult {
+  const cfr = cfrForAbvType(beverageType);
+  const classType = label.classType;
+
+  if (beverageType === "spirits") {
+    const msg = expected
+      ? `Expected "${expected}" but no alcohol content found on the label — required for distilled spirits (${cfr}).`
+      : `No alcohol content on the label. Distilled spirits must state alcohol content as % by volume (${cfr}).`;
+    return result(field, "fail", expected ?? null, null, msg);
+  }
+
+  if (beverageType === "wine") {
+    if (isTableWineExempt(classType)) {
+      return result(
+        field,
+        "na",
+        expected ?? null,
+        null,
+        `ABV not shown — permissible for table/light wine at or below 14% when that designation appears on the label (${cfr}(a)).`,
+      );
+    }
+    if (suggestsHighAlcoholWine(classType)) {
+      const msg = expected
+        ? `Application states "${expected}" but no ABV on the label — wine over 14% must state alcohol content (${cfr}(a)).`
+        : `No ABV on the label. Fortified/dessert wines over 14% must state alcohol content (${cfr}(a)).`;
+      return result(field, labelOnly ? "fail" : "warn", expected ?? null, null, msg);
+    }
+    const msg = expected
+      ? `Application states "${expected}" but no ABV on the label — required if over 14%; at or below 14% may be omitted only with "table wine" or "light wine" on the label (${cfr}(a)).`
+      : labelOnly
+        ? `No ABV on the label. Required if over 14% ABV; at or below 14% may be omitted only when "table wine" or "light wine" appears on the label (${cfr}(a)).`
+        : `Not shown — wine at or below 14% may omit ABV when labeled as table/light wine (${cfr}(a)).`;
+    return result(field, labelOnly ? "warn" : "na", expected ?? null, null, msg);
+  }
+
+  if (beverageType === "beer") {
+    const msg = expected
+      ? `Application states "${expected}" but no ABV on the label — malt beverages may omit alcohol content at the federal level unless state law requires it (${cfr}(a)).`
+      : `Not shown — malt beverages may omit alcohol content at the federal level (${cfr}(a)).`;
+    return result(field, "na", expected ?? null, null, msg);
+  }
+
+  const msg = expected
+    ? `Application states "${expected}" but none found on the label — confirm whether this product type requires it.`
+    : `Not provided and not detected. Confirm whether this beverage type requires alcohol content.`;
+  return result(field, "warn", expected ?? null, null, msg);
+}
+
+/**
+ * Match alcohol content using TTB type-specific rules and tolerances, with a
+ * proof-vs-ABV consistency check (US proof = 2 × ABV).
  *
- * Beverage type sets the stakes of a missing ABV: spirits must state it (absence
- * fails), while wine and malt beverages may omit it within a tolerance band
- * (absence is advisory, not a failure).
+ * Spirits: mandatory, ±0.3% (27 CFR 5.66). Wine: mandatory over 14%; optional
+ * at or below 14% with table/light wine designation; ±1% or ±1.5% by band, or
+ * stated range (27 CFR 4.36). Beer: optional federally; ±0.3% when stated
+ * (27 CFR 7.65).
  */
 function matchAbv(
   expected: string | undefined,
   found: string | null,
   beverageType: BeverageType,
+  label: ExtractedLabel,
+  labelOnly: boolean,
 ): FieldResult {
   const field: FieldKey = "alcoholContent";
-  // Spirits must state alcohol content. Wine and malt beverages may omit it
-  // within a tolerance band, so a missing ABV there is "not checked", not a
-  // failure. "Other" is neither forced nor exempt, so ask the agent to confirm
-  // rather than guess the rule for an unclassified product.
-  const requiredByType = beverageType === "spirits";
-  const abvOptionalByType =
-    beverageType === "wine" || beverageType === "beer";
+  const cfr = cfrForAbvType(beverageType);
+
+  if (!found) {
+    return missingAbvResult(field, expected, label, beverageType, labelOnly);
+  }
 
   if (!expected) {
-    if (found) {
-      return result(field, "pass", null, found, `Not provided in application; label shows "${found}".`);
+    const foundParsed = parseAbvText(found);
+    if (beverageType === "wine" && foundParsed && wineExceeds14Pct(foundParsed)) {
+      return result(
+        field,
+        "pass",
+        null,
+        found,
+        `Label shows ${found} — required for wine over 14% ABV (${cfr}(a)).`,
+      );
     }
-    if (requiredByType) {
-      return result(field, "fail", null, null, `No alcohol content on the label. Distilled spirits must state alcohol content.`);
+    if (beverageType === "spirits") {
+      return result(
+        field,
+        "pass",
+        null,
+        found,
+        `Label shows ${found} — required for distilled spirits (${cfr}).`,
+      );
     }
-    return abvOptionalByType
-      ? result(field, "na", null, null, `Not shown — may be permissible; wine and malt beverages are exempt within a tolerance band.`)
-      : result(field, "warn", null, null, `Not provided and not detected. Confirm whether this beverage type requires it.`);
-  }
-  if (!found) {
-    return result(
-      field,
-      requiredByType ? "fail" : "warn",
-      expected,
-      null,
-      requiredByType
-        ? `Expected "${expected}" but no alcohol content found on the label (required for spirits).`
-        : `Application states "${expected}" but none found on the label — confirm whether this type requires it.`,
-    );
+    return result(field, "pass", null, found, `Not provided in application; label shows "${found}".`);
   }
 
-  // Effective ABV: a stated percentage, or proof converted (US proof = 2 x ABV).
-  // Lets a proof-only label ("90 Proof") compare against an ABV application
-  // ("45") instead of failing as a string mismatch.
-  const proofAsAbv = (s: string): number | null => {
-    const p = parseProof(s);
-    return p !== null && isPlausibleAbv(p / 2) ? p / 2 : null;
-  };
-  const expPct = parsePercent(expected) ?? proofAsAbv(expected);
-  const foundPct = parsePercent(found) ?? proofAsAbv(found);
+  const expParsed = parseAbvText(expected);
+  const foundParsed = parseAbvText(found);
 
-  if (expPct !== null && foundPct !== null) {
-    const diff = Math.abs(expPct - foundPct);
-    if (diff < 0.05) {
-      // If the label also states proof, check it's internally consistent.
+  if (expParsed && foundParsed) {
+    const { ok, tolerance, note } = abvValuesAgree(expParsed, foundParsed, beverageType);
+    const foundVal =
+      foundParsed.kind === "single"
+        ? foundParsed.value
+        : `${formatPct(foundParsed.lo)}–${formatPct(foundParsed.hi)}`;
+
+    if (ok) {
       const proof = parseProof(found);
-      if (proof !== null && Math.abs(proof - foundPct * 2) > 0.5) {
+      const foundSingle = foundParsed.kind === "single" ? foundParsed.value : null;
+      if (proof !== null && foundSingle !== null && Math.abs(proof - foundSingle * 2) > 0.5) {
         return result(
           field,
           "warn",
           expected,
           found,
-          `ABV matches (${foundPct}%), but the stated proof (${proof}) is inconsistent — proof should be ≈ ${(foundPct * 2).toFixed(0)}.`,
+          `ABV matches within TTB tolerance (±${tolerance}% per ${cfr}), but stated proof (${proof}) is inconsistent — proof should be ≈ ${(foundSingle * 2).toFixed(0)}.`,
         );
       }
-      return result(field, "pass", expected, found, `Match (${foundPct}%).`);
+
+      if (foundParsed.kind === "range" && beverageType === "wine") {
+        const span = foundParsed.hi - foundParsed.lo;
+        const maxSpan = foundParsed.hi > 14 ? 2 : 3;
+        if (span > maxSpan + 0.01) {
+          return result(
+            field,
+            "warn",
+            expected,
+            found,
+            `Values align, but the stated range spans ${span.toFixed(1)}% — TTB allows at most ${maxSpan}% for this wine band (${cfr}(b)(2)).`,
+          );
+        }
+      }
+
+      const tolNote =
+        tolerance > 0 ? ` (within ±${tolerance}% TTB tolerance, ${cfr})` : "";
+      return result(field, "pass", expected, found, `Match (${foundVal}%${tolNote}).`);
     }
+
     return result(
       field,
       "fail",
       expected,
       found,
-      `Alcohol content differs: label ${foundPct}% vs application ${expPct}%.`,
+      `Alcohol content differs: label shows ${foundVal}% vs application ${expected}. ${note ?? ""}`.trim(),
     );
   }
 
-  // No number on one side, so fall back to a fuzzy string compare.
   return matchIdentity(field, "alcoholContent", expected, found);
 }
 
@@ -435,11 +628,73 @@ function parseVolumeMl(s: string): number | null {
  * with different units or spacing match ("750 mL" = "0.75 L" = bare "750"). Falls
  * back to a string compare only when neither side yields a parseable quantity.
  */
-function matchNetContents(expected: string | undefined, found: string | null): FieldResult {
+/** US state abbreviations and common country names seen on bottler statements. */
+const US_STATE_ABBREV =
+  /\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)\b/;
+
+const US_STATE_NAME =
+  /\b(alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new\s+hampshire|new\s+jersey|new\s+mexico|new\s+york|north\s+carolina|north\s+dakota|ohio|oklahoma|oregon|pennsylvania|rhode\s+island|south\s+carolina|south\s+dakota|tennessee|texas|utah|vermont|virginia|washington|west\s+virginia|wisconsin|wyoming)\b/i;
+
+const FOREIGN_COUNTRY =
+  /\b(france|italy|scotland|ireland|mexico|canada|japan|germany|spain|australia|new\s+zealand|united\s+kingdom|england|wales|portugal|chile|argentina|south\s+africa|netherlands|belgium|sweden|norway|denmark|finland|austria|switzerland|hungary|greece|turkey|india|china|korea|taiwan|thailand|brazil|peru|colombia)\b/i;
+
+const DOMESTIC_ORIGIN = /\b(usa|u\.?\s?s\.?a?\.?|united\s+states(\s+of\s+america)?|america)\b/i;
+
+/**
+ * Heuristic: does a bottler/producer string include a recognizable address?
+ * TTB requires name and address on the label (27 CFR Parts 4, 5, 7). We look for
+ * a US ZIP, state, or a foreign country — not full street-level parsing.
+ */
+function hasProducerAddress(s: string): boolean {
+  if (/\b\d{5}(?:-\d{4})?\b/.test(s)) return true;
+  if (US_STATE_ABBREV.test(s) || US_STATE_NAME.test(s)) return true;
+  if (FOREIGN_COUNTRY.test(s)) return true;
+  return false;
+}
+
+/**
+ * Does the extracted label text suggest an imported product? Used to require
+ * country of origin when the application omits it (batch) or to warn in single review.
+ */
+function suggestsImport(label: ExtractedLabel): boolean {
+  const parts = [label.producer, label.classType, label.originCountry, label.brandName].filter(
+    Boolean,
+  ) as string[];
+  const text = parts.join(" ");
+
+  if (/\b(imported\s+by|imported\s+from|sole\s+(?:distributor|importer)|imported\s+and)\b/i.test(text)) {
+    return true;
+  }
+
+  const productOf = text.match(/\bproduct\s+of\s+([^.,;]+)/i);
+  if (productOf && !DOMESTIC_ORIGIN.test(productOf[1])) return true;
+
+  const madeIn = text.match(/\b(?:distilled|bottled|produced|made|vinted)\s+in\s+([^.,;]+)/i);
+  if (madeIn && !DOMESTIC_ORIGIN.test(madeIn[1])) return true;
+
+  if (label.originCountry && !DOMESTIC_ORIGIN.test(label.originCountry)) return true;
+
+  return false;
+}
+
+function matchNetContents(
+  expected: string | undefined,
+  found: string | null,
+  requirePresence = false,
+): FieldResult {
   const field: FieldKey = "netContents";
   if (!expected) {
-    return found
-      ? result(field, "pass", null, found, `Not provided; label shows "${found}".`)
+    if (found) {
+      return result(field, "pass", null, found, `Not provided; label shows "${found}".`);
+    }
+    return requirePresence
+      ? result(
+          field,
+          "fail",
+          null,
+          null,
+          `No net contents found on the label — required on all alcohol beverages (27 CFR Parts 4, 5, 7). Check the fill volume is clearly shown and in frame.`,
+        )
       : result(field, "na", null, null, `Not provided in the application and not detected on the label.`);
   }
   if (!found) {
@@ -480,15 +735,77 @@ function matchNetContents(expected: string | undefined, found: string | null): F
  * country tokens must match as a set, so "Scotland" == "Product of Scotland" but
  * "US" != "Russia" and "Mexico" != "New Mexico, USA".
  */
-function matchOrigin(expected: string | undefined, found: string | null): FieldResult {
+/**
+ * Bottler / producer. Fuzzy identity match plus an address heuristic — TTB
+ * requires both name and address on the label.
+ */
+function matchProducer(
+  expected: string | undefined,
+  found: string | null,
+  requirePresence: boolean,
+): FieldResult {
+  const base = matchIdentity("producer", "producer", expected, found, true, requirePresence);
+
+  if (!found) return base;
+
+  if (!hasProducerAddress(found)) {
+    const addressNote =
+      `Producer name found but no recognizable address on the label. TTB requires bottler name and address (27 CFR Parts 4, 5, 7).`;
+    if (base.verdict === "pass") {
+      return result("producer", "warn", expected ?? null, found, addressNote);
+    }
+    if (base.verdict === "warn") {
+      return result(
+        "producer",
+        "warn",
+        expected ?? null,
+        found,
+        `${base.message} ${addressNote}`,
+      );
+    }
+    if (requirePresence) {
+      return result("producer", "warn", expected ?? null, found, addressNote);
+    }
+  }
+
+  return base;
+}
+
+function matchOrigin(
+  expected: string | undefined,
+  found: string | null,
+  label: ExtractedLabel,
+  labelOnly: boolean,
+): FieldResult {
   const field: FieldKey = "originCountry";
   if (!expected) {
-    // Nothing in the application to verify against, so this is "not checked" — not
-    // a green pass (origin is only required for imports, and an unchecked field
-    // shouldn't read as a confirmed compliance result on the record).
-    return found
-      ? result(field, "na", null, found, `Not checked — no origin in the application; label shows "${found}".`)
-      : result(field, "na", null, null, `Not checked — not provided, and only required for imported products.`);
+    const imported = suggestsImport(label);
+
+    if (found) {
+      return imported || labelOnly
+        ? result(field, "pass", null, found, `Label shows country of origin: "${found}".`)
+        : result(field, "na", null, found, `Not checked — no origin in the application; label shows "${found}".`);
+    }
+
+    if (imported && labelOnly) {
+      return result(
+        field,
+        "fail",
+        null,
+        null,
+        `Label appears to be an imported product but no country of origin was found — required for imports (27 CFR Parts 4, 5, 7).`,
+      );
+    }
+    if (imported) {
+      return result(
+        field,
+        "warn",
+        null,
+        null,
+        `Label suggests an import but no country of origin was detected — verify origin is declared on the label.`,
+      );
+    }
+    return result(field, "na", null, null, `Not checked — only required for imported products.`);
   }
   if (!found) {
     return result(field, "fail", expected, null, `Application lists origin "${expected}" but the label shows no country of origin.`);
@@ -780,21 +1097,19 @@ export function validate(
   const abvType: BeverageType =
     app.beverageType === "auto" ? inferType(label) ?? "other" : app.beverageType;
 
-  // Label-only screen (batch): there's no application to compare against, so the
-  // tool instead checks that the *core required elements are present on the label
-  // itself* — a missing brand or class/type is a real compliance fail, not just
-  // "nothing to check". Producer/origin stay informational (placement varies;
-  // origin is imports-only). ABV and the warning already fail-when-required.
+  // Label-only screen (batch): no application to compare against — check that
+  // universal on-label elements are present (brand, class, net contents, producer,
+  // import origin when applicable). ABV and the warning already fail-when-required.
   const requireCore = opts.labelOnly === true;
 
   const fields: FieldResult[] = [
     matchIdentity("brandName", "brandName", app.brandName, label.brandName, false, requireCore),
     matchBeverageType(app.beverageType, label),
     matchIdentity("classType", "classType", app.classType, label.classType, false, requireCore),
-    matchAbv(app.alcoholContent, label.alcoholContent, abvType),
-    matchNetContents(app.netContents, label.netContents),
-    matchIdentity("producer", "producer", app.producer, label.producer, true),
-    matchOrigin(app.originCountry, label.originCountry),
+    matchAbv(app.alcoholContent, label.alcoholContent, abvType, label, requireCore),
+    matchNetContents(app.netContents, label.netContents, requireCore),
+    matchProducer(app.producer, label.producer, requireCore),
+    matchOrigin(app.originCountry, label.originCountry, label, requireCore),
     matchWarning(label.governmentWarning, label.imageQuality, label.warningLegible),
   ];
 

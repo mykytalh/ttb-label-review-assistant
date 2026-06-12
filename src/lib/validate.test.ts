@@ -370,6 +370,98 @@ describe("beverage type changes ABV requirements", () => {
     const r = validate(appWith({ brandName: app.brandName, beverageType: "beer" }), label({ alcoholContent: null }));
     expect(verdictOf(r, "alcoholContent")).toBe("na");
   });
+
+  it("allows table wine to omit ABV", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine" }),
+      label({ classType: "California Table Wine", alcoholContent: null }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("na");
+  });
+
+  it("WARNs in batch when wine omits ABV without a table/light designation", () => {
+    const r = validate(
+      appWith({ brandName: undefined, beverageType: "auto" }),
+      label({ classType: "Chardonnay", beverageType: "wine", alcoholContent: null }),
+      { labelOnly: true },
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("warn");
+  });
+
+  it("FAILS in batch when fortified wine omits ABV", () => {
+    const r = validate(
+      appWith({ brandName: undefined, beverageType: "auto" }),
+      label({ classType: "Ruby Port", beverageType: "wine", alcoholContent: null }),
+      { labelOnly: true },
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("fail");
+  });
+});
+
+describe("ABV — TTB tolerances by beverage type", () => {
+  it("spirits: passes within ±0.3% (27 CFR 5.66)", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "spirits", alcoholContent: "40%" }),
+      label({ alcoholContent: "40.2% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("pass");
+  });
+
+  it("spirits: fails outside ±0.3%", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "spirits", alcoholContent: "40%" }),
+      label({ alcoholContent: "40.5% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("fail");
+  });
+
+  it("wine ≤14%: passes within ±1.5%", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine", alcoholContent: "12%" }),
+      label({ alcoholContent: "13.4% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("pass");
+  });
+
+  it("wine >14%: passes within ±1%", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine", alcoholContent: "15%" }),
+      label({ alcoholContent: "15.9% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("pass");
+  });
+
+  it("wine >14%: fails outside ±1%", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine", alcoholContent: "15%" }),
+      label({ alcoholContent: "16.2% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("fail");
+  });
+
+  it("beer: passes within ±0.3% when stated (27 CFR 7.65)", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "beer", alcoholContent: "5.0%" }),
+      label({ alcoholContent: "5.2% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("pass");
+  });
+
+  it("matches application value inside a label range", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine", alcoholContent: "13%" }),
+      label({ alcoholContent: "12% to 14% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("pass");
+  });
+
+  it("fails when application value is outside a label range", () => {
+    const r = validate(
+      appWith({ brandName: "X", beverageType: "wine", alcoholContent: "15%" }),
+      label({ alcoholContent: "12% to 14% Alc./Vol." }),
+    );
+    expect(verdictOf(r, "alcoholContent")).toBe("fail");
+  });
 });
 
 describe("producer — ignores regulatory lead-in phrases", () => {
@@ -494,6 +586,67 @@ describe("edge cases — regressions", () => {
     it("still runs the strict government-warning check", () => {
       const r = validate(batchApp, label({ governmentWarning: null }), { labelOnly: true });
       expect(verdictOf(r, "governmentWarning")).toBe("fail");
+    });
+
+    it("FAILS when net contents are missing on the label", () => {
+      const r = validate(batchApp, label({ netContents: null }), { labelOnly: true });
+      expect(verdictOf(r, "netContents")).toBe("fail");
+    });
+
+    it("FAILS when producer is missing on the label", () => {
+      const r = validate(batchApp, label({ producer: null }), { labelOnly: true });
+      expect(verdictOf(r, "producer")).toBe("fail");
+    });
+
+    it("WARNs when producer has no recognizable address", () => {
+      const r = validate(batchApp, label({ producer: "Old Tom Distillery" }), { labelOnly: true });
+      expect(verdictOf(r, "producer")).toBe("warn");
+    });
+
+    it("FAILS when an import shows no country of origin", () => {
+      const r = validate(
+        batchApp,
+        label({ producer: "Imported by Euro Spirits LLC, New York, NY", originCountry: null }),
+        { labelOnly: true },
+      );
+      expect(verdictOf(r, "originCountry")).toBe("fail");
+    });
+
+    it("passes origin when import is declared on the label", () => {
+      const r = validate(
+        batchApp,
+        label({ producer: "Imported by Euro Spirits LLC", originCountry: "Product of France" }),
+        { labelOnly: true },
+      );
+      expect(verdictOf(r, "originCountry")).toBe("pass");
+    });
+  });
+
+  describe("producer — address heuristic", () => {
+    it("warns when a matching producer omits an address", () => {
+      const r = validate(
+        appWith({ brandName: app.brandName, producer: "Old Tom Distillery" }),
+        label({ producer: "Old Tom Distillery" }),
+      );
+      expect(verdictOf(r, "producer")).toBe("warn");
+    });
+  });
+
+  describe("origin — import detection without application value", () => {
+    it("warns in single review when the label suggests an import", () => {
+      const r = validate(
+        appWith({ brandName: "X" }),
+        label({ producer: "Imported by Global Wines Inc., San Francisco, CA", originCountry: null }),
+      );
+      expect(verdictOf(r, "originCountry")).toBe("warn");
+    });
+
+    it("stays not-checked for a domestic label with no origin", () => {
+      const r = validate(
+        appWith({ brandName: "X" }),
+        label({ producer: "Distilled and Bottled by Old Tom Distillery, Bardstown, KY", originCountry: null }),
+      );
+      expect(verdictOf(r, "originCountry")).toBe("na");
     });
   });
 

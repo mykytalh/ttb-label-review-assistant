@@ -60,8 +60,10 @@ export const FIELD_LABELS: Record<FieldKey, string> = {
 /**
  * The application data an agent types in (or that COLA would supply). Every field
  * is optional: the single-review UI asks for a brand to compare against, but the
- * batch screen has no application at all — it just reads each label and checks it
- * against the universal rules. A missing field is read off the label, never failed.
+ * batch screen has no application at all — it reads each label and checks universal
+ * on-artwork rules (presence of brand, class, net contents, producer, import
+ * origin, ABV for spirits, government warning). A missing optional field in single
+ * review is read off the label when possible, not failed.
  */
 export interface ApplicationData {
   brandName?: string;
