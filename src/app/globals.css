@@ -15,6 +15,13 @@
  */
 
 :root {
+  /* Text-role accent inks. On light backgrounds these are the primary blues
+     themselves; the dark theme swaps them for the readable member of the same
+     family (#73b3e7), because navy text is illegible on a dark surface while
+     navy FILLS (buttons, bands, underlines) stay on-brand in both themes. */
+  --accent-text: #005ea2;
+  --accent-text-strong: #1a4480;
+
   /* Sticky masthead height — coordinates offsets for the sticky help nav and
      anchor scroll margins. Keep in sync with the masthead's actual height. */
   --masthead-h: 56px;
@@ -122,6 +129,9 @@
      strongly on the black canvas and on navy fills. */
   --on-primary: #d7dfe9;
   --on-dark: #d7dfe9;
+  /* Text-role accents go to the family's readable blue; navy stays in fills. */
+  --accent-text: #73b3e7;
+  --accent-text-strong: #73b3e7;
   /* Solid fills share the same blue; hover deepens like light mode. */
   --navy-fill: #005ea2;
   --navy-fill-hover: #1a4480;
@@ -257,7 +267,7 @@ h3 {
 }
 
 a {
-  color: var(--primary);
+  color: var(--accent-text);
 }
 
 .container {
@@ -483,7 +493,7 @@ a {
 .hiw-trigger[aria-expanded="true"] {
   background: #fff;
   border-color: #fff;
-  color: var(--primary);
+  color: var(--accent-text);
 }
 .hiw-trigger[aria-expanded="true"]:hover {
   background: var(--primary-lightest);
@@ -493,12 +503,12 @@ a {
    selected (open) state fills with the federal blue, white ink. */
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"] {
   background: var(--primary-dark);
-  border-color: var(--primary);
+  border-color: var(--accent-text);
   color: var(--on-primary);
 }
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"]:hover {
   background: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--accent-text);
   color: var(--on-primary);
 }
 /* Solid primary fills carry the real navy in dark mode (the steel-blue token
@@ -532,7 +542,7 @@ a {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--primary);
+  color: var(--accent-text);
   font: inherit;
   font-weight: 600;
   padding: 0;
@@ -608,7 +618,7 @@ a {
   color: var(--ink);
 }
 .docs-nav-link.active {
-  border-left-color: var(--primary);
+  border-left-color: var(--accent-text);
   color: var(--ink);
   background: var(--fill);
   font-weight: 700;
@@ -645,7 +655,7 @@ a {
   font-size: 1.12rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
   margin: var(--space-6) 0 var(--space-2);
 }
 .docs-lead {
@@ -705,7 +715,7 @@ a {
 }
 .callout.note .callout-title,
 .callout.note .callout-icon {
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
 }
 /* Important (amber) */
 .callout.important {
@@ -732,11 +742,11 @@ a {
   margin: 0 0 var(--space-4);
 }
 .docs-link {
-  color: var(--primary);
+  color: var(--accent-text);
   text-decoration: underline;
 }
 .docs-link:hover {
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
 }
 
 /* Numbered steps (used in the docs single-column). */
@@ -791,7 +801,7 @@ a {
 .docs-inline-icon {
   display: inline-flex;
   vertical-align: text-bottom;
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
 }
 
 /* ---------- Help drawer (phones) ----------
@@ -917,11 +927,11 @@ a {
   margin-bottom: -1px;
 }
 .tab:hover {
-  color: var(--primary);
+  color: var(--accent-text);
 }
 .tab[aria-selected="true"] {
   color: var(--ink);
-  border-bottom-color: var(--primary);
+  border-bottom-color: var(--accent-text);
 }
 
 /* ---------- Two-column workspace ---------- */
@@ -1018,12 +1028,12 @@ a {
 .more-details > summary {
   cursor: pointer;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--accent-text);
   list-style: none;
   padding: 4px 0;
 }
 .more-details > summary:hover {
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -1076,7 +1086,7 @@ a {
   width: 24px;
   height: 24px;
   border: 3px solid var(--base-lighter);
-  border-top-color: var(--primary);
+  border-top-color: var(--accent-text);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -1101,7 +1111,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
   margin-bottom: 4px;
 }
 
@@ -1158,7 +1168,7 @@ input[type="text"]::placeholder {
 }
 input[type="text"]:focus,
 select:focus {
-  border-color: var(--primary-dark);
+  border-color: var(--accent-text-strong);
   box-shadow: 0 0 0 2px var(--primary-dark);
   outline: none;
 }
@@ -1445,7 +1455,7 @@ select:focus {
   background: var(--fill-hover);
 }
 .dropzone.drag {
-  border-color: var(--primary);
+  border-color: var(--accent-text);
   background: color-mix(in srgb, var(--primary) 8%, var(--surface));
 }
 .dropzone .icon {
@@ -1496,7 +1506,7 @@ select:focus {
   appearance: none;
   background: none;
   border: none;
-  color: var(--primary);
+  color: var(--accent-text);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -1649,7 +1659,7 @@ select:focus {
     color var(--transition), transform 0.06s ease;
 }
 .tool-btn svg {
-  color: var(--primary);
+  color: var(--accent-text);
   transition: color var(--transition);
 }
 .tool-btn:hover:not(:disabled) {
@@ -1663,7 +1673,7 @@ select:focus {
 .tool-btn.active {
   background: var(--primary);
   color: var(--on-primary);
-  border-color: var(--primary);
+  border-color: var(--accent-text);
 }
 .tool-btn.active svg {
   color: var(--on-primary);
@@ -1774,7 +1784,7 @@ select:focus {
 }
 .btn:hover {
   background: var(--primary-dark);
-  border-color: var(--primary-dark);
+  border-color: var(--accent-text-strong);
 }
 .btn:active {
   transform: translateY(1px);
@@ -2206,7 +2216,7 @@ select:focus {
 }
 .ai-extract-label {
   font-weight: 700;
-  color: var(--primary-dark);
+  color: var(--accent-text-strong);
 }
 .ai-extract-quality {
   margin-left: auto;
@@ -2408,7 +2418,7 @@ select:focus {
   appearance: none;
   border: 1px solid var(--hairline);
   background: var(--fill);
-  color: var(--primary);
+  color: var(--accent-text);
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -2420,7 +2430,7 @@ select:focus {
 }
 .info-tip-trigger:hover {
   background: var(--primary-lightest);
-  border-color: var(--primary);
+  border-color: var(--accent-text);
 }
 .info-tip-trigger:focus-visible {
   outline: none;
@@ -2720,14 +2730,14 @@ select:focus {
   color: var(--error-darker);
 }
 .filter-chip:not(.v-pass):not(.v-warn):not(.v-fail).filter-chip--active {
-  border-color: var(--primary-dark);
+  border-color: var(--accent-text-strong);
   background: var(--primary-lightest);
   color: var(--primary-darker);
 }
 [data-theme="dark"] .filter-chip:not(.v-pass):not(.v-warn):not(.v-fail).filter-chip--active {
   background: var(--fill-hover);
   color: var(--ink);
-  border-color: var(--primary);
+  border-color: var(--accent-text);
   box-shadow: inset 0 0 0 1px var(--primary);
 }
 .filter-chip-label {
