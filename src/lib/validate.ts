@@ -95,12 +95,33 @@ function describeWarningDifference(afterPrefix: string): string | null {
     // tail (too short) to have failed.
     return `the warning appears cut off or incomplete; the full required statement was not read`;
   }
-  const expectedWord = WARNING_BODY_WORDS[i];
   const foundWord = best[i];
   if (foundWord === undefined) {
-    return `the warning is missing words starting at “${expectedWord}”${near}`;
+    return `the warning is missing words starting at “${WARNING_BODY_WORDS[i]}”${near}`;
   }
-  return `expected “${expectedWord}” but the label shows “${foundWord}”${near}`;
+
+  // Classify the divergence so the agent reads a plain-language finding, not a
+  // token collision. Look a few words ahead on each side: if the required word
+  // reappears shortly in the label, the label INSERTED words ("U.S." before
+  // "Surgeon"); if the label's word appears shortly in the required text, the
+  // label SKIPPED words ("during pregnancy"). Otherwise it's a substitution.
+  const LOOKAHEAD = 4;
+  const phrase = (words: string[]) => words.join(" ");
+
+  const insertEnd = best.slice(i, i + LOOKAHEAD + 1).indexOf(WARNING_BODY_WORDS[i]);
+  if (insertEnd > 0) {
+    return `the label adds “${phrase(best.slice(i, i + insertEnd))}” before “${WARNING_BODY_WORDS[i]}”${near} — the required text does not include it`;
+  }
+
+  const skipEnd = WARNING_BODY_WORDS.slice(i, i + LOOKAHEAD + 1).indexOf(foundWord);
+  if (skipEnd > 0) {
+    return `the label skips the required words “${phrase(WARNING_BODY_WORDS.slice(i, i + skipEnd))}”${near}`;
+  }
+
+  // Substitution: quote a couple of words of what the label shows so a split
+  // token ("u s") still reads as text rather than a stray letter.
+  const shown = phrase(best.slice(i, i + 2));
+  return `the required text reads “${WARNING_BODY_WORDS[i]}” here, but the label shows “${shown}”${near}`;
 }
 
 /**

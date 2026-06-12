@@ -355,6 +355,29 @@ describe("government warning — strict", () => {
     expect(verdictOf(r, "governmentWarning")).toBe("fail");
   });
 
+  it("describes an inserted word in plain language (U.S. Surgeon General)", () => {
+    // Real label: "ACCORDING TO THE U.S. SURGEON GENERAL". The statute has no
+    // "U.S." — an insertion into text required verbatim. The old message
+    // reported the normalized token collision ("expected 'surgeon' but the
+    // label shows 'u'"), which read as nonsense; it must name the addition.
+    const inserted = GOVERNMENT_WARNING.replace("According to the Surgeon General", "According to the U.S. Surgeon General");
+    const r = validate(appWith({ brandName: app.brandName }), label({ governmentWarning: inserted }));
+    expect(verdictOf(r, "governmentWarning")).toBe("fail");
+    const msg = r.fields.find((f) => f.field === "governmentWarning")!.message;
+    expect(msg).toContain("adds");
+    expect(msg).toContain("u s");
+    expect(msg).toContain("surgeon");
+  });
+
+  it("describes skipped words in plain language (missing 'during pregnancy')", () => {
+    const skipped = GOVERNMENT_WARNING.replace("alcoholic beverages during pregnancy because", "alcoholic beverages because");
+    const r = validate(appWith({ brandName: app.brandName }), label({ governmentWarning: skipped }));
+    expect(verdictOf(r, "governmentWarning")).toBe("fail");
+    const msg = r.fields.find((f) => f.field === "governmentWarning")!.message;
+    expect(msg).toContain("skips");
+    expect(msg).toContain("during pregnancy");
+  });
+
   it("pinpoints the exact altered word in the fail message", () => {
     // "alcoholic beverages" → "alcohol": the message should name the diverging word
     // so the agent doesn't re-read the whole paragraph.
