@@ -138,6 +138,12 @@ export default function SingleReview() {
       // image. If it's still in flight, awaiting it here reuses the one call
       // (form-first agents who submit immediately after uploading) instead of
       // firing a duplicate. A failed preload resolves null and falls through.
+      //
+      // Race note: preload.srcUrl and editedUrl are compared from the same
+      // render's closure, so they can't drift mid-function. An edit made
+      // WHILE this await runs yields a verdict for the image that was
+      // analyzed, displayed as the result image — exactly the classic server
+      // path's semantics, where the photo can also change during the request.
       const preload = preloadRef.current;
       if (preload && preload.srcUrl === editedUrl) {
         const outcome = await preload.promise;
