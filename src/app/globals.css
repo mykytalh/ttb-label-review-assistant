@@ -110,13 +110,14 @@
   --base-darkest: #e6edf3;
   --ink: #e6edf3;
 
-  /* Accent: burnt-orange for links, active tab, focus, and primary actions. */
-  --primary: #d4761a; /* burnt orange */
-  --primary-dark: #e88b2c;
+  /* Accent: the federal blue family (same lineage as the masthead line), at a
+     brightness that holds AA on the dark canvas for links, tabs, and focus. */
+  --primary: #58a6ff;
+  --primary-dark: #79c0ff; /* hover — lighter, dark-mode convention */
   --primary-darker: #0a0d12; /* near-black masthead/footer band */
-  --primary-light: #d4761a;
-  --primary-lightest: #1d1409;
-  --on-primary: #0c0f14; /* dark ink on the orange fill (AA-safe) */
+  --primary-light: #58a6ff;
+  --primary-lightest: #0d1f33; /* navy tint for fills/selected states */
+  --on-primary: #0c0f14; /* dark ink on the blue fill (AA-safe) */
 
   /* Muted forest/sage greens — less neon than the default GitHub palette. */
   --success: #3a6b4f;
