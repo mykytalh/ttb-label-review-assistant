@@ -515,17 +515,33 @@ describe("country of origin (imports)", () => {
     // Real bug: the extractor routed the class line "AGAVE WINE WITH NATURAL
     // FLAVORS" into the origin field on an imported margarita, and the field
     // passed as "label shows country of origin". Presence is not a declaration.
-    it("WARNS when the origin text names no recognizable country", () => {
+    it("WARNS when junk origin text meets an imported-looking label", () => {
+      // "Imported & bottled by …" makes this an import; the origin field holding
+      // a class line instead of a country is then worth a human look.
       const r = validate(
         appWith({ brandName: app.brandName }),
-        label({ originCountry: "AGAVE WINE WITH NATURAL FLAVORS", producer: "Produced by TC Spirits, Jalisco, México" }),
+        label({
+          originCountry: "AGAVE WINE WITH NATURAL FLAVORS",
+          producer: "Imported & bottled by Sebastiani Next Episode, Napa, California",
+        }),
       );
       expect(verdictOf(r, "originCountry")).toBe("warn");
     });
 
-    it("WARNS on junk origin text in batch mode too", () => {
-      const r = validate({ beverageType: "other" }, label({ originCountry: "WITH NATURAL FLAVORS" }), { labelOnly: true });
-      expect(verdictOf(r, "originCountry")).toBe("warn");
+    it("stays quiet (na) on domestic appellation text in the origin field", () => {
+      // "California Rosé Wine" / "2022 Washington State" are appellations, not
+      // origin claims — origin is only required for imports, so flagging every
+      // domestic label for review would be noise.
+      const rose = validate(appWith({ brandName: app.brandName }), label({ originCountry: "California Rosé Wine" }));
+      expect(verdictOf(rose, "originCountry")).toBe("na");
+
+      const wa = validate(appWith({ brandName: app.brandName }), label({ originCountry: "2022 Washington State" }));
+      expect(verdictOf(wa, "originCountry")).toBe("na");
+    });
+
+    it("does not read domestic appellation origin text as an import cue in batch", () => {
+      const r = validate({ beverageType: "wine" }, label({ originCountry: "California Rosé Wine" }), { labelOnly: true });
+      expect(["na", "pass"]).toContain(verdictOf(r, "originCountry"));
     });
 
     it("still passes a real origin statement, diacritics included ('Hecho en México')", () => {

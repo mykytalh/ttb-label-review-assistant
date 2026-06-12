@@ -684,17 +684,27 @@ function suggestsImport(label: ExtractedLabel): boolean {
   ) as string[];
   const text = parts.join(" ");
 
-  if (/\b(imported\s+by|imported\s+from|sole\s+(?:distributor|importer)|imported\s+and)\b/i.test(text)) {
+  // "imported by / from / and / &" — labels print both "IMPORTED AND BOTTLED BY"
+  // and "IMPORTED & BOTTLED BY".
+  if (/\bimported\s+(?:by|from|and\b|&)|\bsole\s+(?:distributor|importer)\b/i.test(text)) {
     return true;
   }
 
+  // A US state counts as domestic: "Produced in Washington State" or a
+  // "California Rosé Wine" appellation must not read as an import cue.
+  const domesticPlace = (s: string) => DOMESTIC_ORIGIN.test(s) || US_STATE_NAME.test(stripDiacritics(s));
+
   const productOf = text.match(/\bproduct\s+of\s+([^.,;]+)/i);
-  if (productOf && !DOMESTIC_ORIGIN.test(productOf[1])) return true;
+  if (productOf && !domesticPlace(productOf[1])) return true;
 
   const madeIn = text.match(/\b(?:distilled|bottled|produced|made|vinted)\s+in\s+([^.,;]+)/i);
-  if (madeIn && !DOMESTIC_ORIGIN.test(madeIn[1])) return true;
+  if (madeIn && !domesticPlace(madeIn[1])) return true;
 
-  if (label.originCountry && !DOMESTIC_ORIGIN.test(label.originCountry)) return true;
+  // Text in the origin field is only a cue when it actually reads as an origin
+  // statement — the extractor sometimes routes nearby appellation text here.
+  if (label.originCountry && looksLikeOriginStatement(label.originCountry) && !domesticPlace(label.originCountry)) {
+    return true;
+  }
 
   return false;
 }
@@ -815,15 +825,26 @@ function matchOrigin(
 
     if (found) {
       // A pass here asserts "the label declares an origin" — so the text must
-      // actually read as one, not just occupy the field.
+      // actually read as one, not just occupy the field. When it doesn't,
+      // flag it only if the label otherwise appears imported: a domestic
+      // appellation ("California Rosé Wine") is not a missing-origin problem,
+      // and routing every domestic label to review would be noise.
       if (!looksLikeOriginStatement(found)) {
-        return result(
-          field,
-          "warn",
-          null,
-          found,
-          `Text found near the origin ("${found}") doesn't name a recognizable country — verify the origin statement by eye.`,
-        );
+        return imported
+          ? result(
+              field,
+              "warn",
+              null,
+              found,
+              `Text found near the origin ("${found}") doesn't name a recognizable country, and the label appears to be an import — verify the origin statement by eye.`,
+            )
+          : result(
+              field,
+              "na",
+              null,
+              found,
+              `Not checked — "${found}" reads as appellation or marketing text, not an origin statement; country of origin is only required for imported products.`,
+            );
       }
       return imported || labelOnly
         ? result(field, "pass", null, found, `Label shows country of origin: "${found}".`)
