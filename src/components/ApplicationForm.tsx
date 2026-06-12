@@ -71,7 +71,7 @@ export default function ApplicationForm({
         </summary>
         <p className="more-details-note">
           Enter the values from the application and the tool will compare them to
-          the label. Leave blank to just read what&rsquo;s on the label.
+          the label.
         </p>
 
         {/* One responsive grid: wide screens pack these five into two rows
