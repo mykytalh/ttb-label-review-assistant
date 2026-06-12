@@ -377,16 +377,6 @@ a {
   letter-spacing: 0;
   font-weight: 700;
 }
-/* Eyebrow above the product title: small gold monospace uppercase. */
-.masthead-eyebrow {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin: 0 0 3px;
-}
 /* Subtitle under the product title. */
 .masthead-org {
   font-family: var(--mono);
@@ -2097,6 +2087,13 @@ select:focus {
   background: var(--error-darker);
   color: #fff;
   border-color: var(--error-darker);
+}
+/* "Not checked" renders a pill too (class is built from the verdict) — muted
+   gray so it reads as deliberately neutral, not unstyled. */
+.pill.v-na {
+  background: var(--base);
+  color: #fff;
+  border-color: var(--base);
 }
 .field-result .fr-msg {
   margin: 8px 0 0;

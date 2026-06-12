@@ -93,6 +93,13 @@ const EXTRACTION_SCHEMA = {
 /** Hard ceiling on the extraction call so a hung upstream can't wedge a request. */
 const EXTRACT_TIMEOUT_MS = 20_000;
 
+/**
+ * The extraction contract: transcribe, never reconstruct. Rules 1–5 are the
+ * anti-hallucination core (null over guess, no memory completion of the
+ * warning, legibility gate, heading capture, one continuous pass) — every one
+ * traces to a failure mode caught in eval. Edit only via the tuning protocol
+ * in docs/PROMPT_TUNING.md.
+ */
 const SYSTEM_PROMPT =
   "You are a transcription assistant for alcohol-label compliance review. " +
   "You are given a photo of a beverage label. Transcribe the requested fields " +

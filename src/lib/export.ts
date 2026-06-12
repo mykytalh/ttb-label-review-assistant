@@ -154,39 +154,3 @@ export function batchResultsToCsv(
 
   return lines.join("\r\n");
 }
-
-/**
- * Plain-text summary of a single review — for printing or saving to the file.
- * Deterministic and human-readable.
- */
-export function singleResultToText(
-  fileName: string,
-  result: ReviewResult,
-  timestamp: string,
-): string {
-  const lines: string[] = [];
-  lines.push("ALCOHOL LABEL REVIEW — RESULT SUMMARY");
-  lines.push("=".repeat(40));
-  lines.push(`File:           ${fileName}`);
-  lines.push(`Reviewed:       ${timestamp}`);
-  lines.push(`Overall:        ${result.overall.toUpperCase()}`);
-  lines.push(`Image quality:  ${result.imageQuality}`);
-  if (result.notes) lines.push(`Notes:          ${result.notes}`);
-  lines.push("");
-  lines.push("FIELD RESULTS");
-  lines.push("-".repeat(40));
-  for (const f of result.fields) {
-    lines.push(`[${f.verdict.toUpperCase().padEnd(4)}] ${FIELD_LABELS[f.field]}`);
-    lines.push(`       ${f.message}`);
-    if (f.expected !== null || f.found !== null) {
-      lines.push(`       Application: ${f.expected ?? "—"}`);
-      lines.push(`       On label:    ${f.found ?? "—"}`);
-    }
-  }
-  lines.push("");
-  lines.push(
-    "This is an AI-assisted screening to support an agent's review. It does not " +
-      "constitute a final compliance determination.",
-  );
-  return lines.join("\n");
-}

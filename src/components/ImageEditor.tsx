@@ -2,8 +2,10 @@
 
 /**
  * Image editor for label photos: rotate, crop, zoom, and hover magnifier.
- * Rotate and crop are destructive (baked via canvas and sent to the model).
- * Zoom and magnifier are view-only. Magnifier is disabled under prefers-reduced-motion.
+ * Rotate and crop are destructive (baked via canvas and sent to the model);
+ * zoom and magnifier are view-only. viewOnly mode (the result view) keeps the
+ * view tools and hides the destructive ones. Magnifier is disabled under
+ * prefers-reduced-motion, and phones get a compact rotate-only toolbar.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import {

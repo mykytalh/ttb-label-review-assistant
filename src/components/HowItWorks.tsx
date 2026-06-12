@@ -1,6 +1,10 @@
 "use client";
 
-/** In-app help view with sidebar navigation. Opened from the header "How to use" link. */
+/**
+ * In-app help view, opened from the header "How to use" link. Desktop shows a
+ * sticky left sidebar of sections; phones get a pinned top strip whose toggle
+ * opens a right slide-in drawer with the section list.
+ */
 import { useEffect, useRef, useState } from "react";
 import { GOVERNMENT_WARNING } from "@/lib/warning";
 import { InfoIcon, VerdictIcon } from "./Icon";

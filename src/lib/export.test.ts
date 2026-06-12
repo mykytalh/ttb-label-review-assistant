@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { csvCell, batchResultsToCsv, singleResultToText } from "./export";
+import { csvCell, batchResultsToCsv } from "./export";
 import { ReviewResult } from "./types";
 
 function fullResult(overall: ReviewResult["overall"]): ReviewResult {
@@ -181,15 +181,5 @@ describe("batchResultsToCsv", () => {
       { labelNumber: 1, fileName: "lot,42.png", status: "complete", result: fullResult("pass") },
     ]);
     expect(csv).toContain('"lot,42.png"');
-  });
-});
-
-describe("singleResultToText", () => {
-  it("includes the verdict, file, timestamp, and a non-determination disclaimer", () => {
-    const txt = singleResultToText("a.png", fullResult("warn"), "2024-01-01 10:00");
-    expect(txt).toContain("Overall:        WARN");
-    expect(txt).toContain("a.png");
-    expect(txt).toContain("2024-01-01 10:00");
-    expect(txt.toLowerCase()).toContain("does not constitute a final compliance determination");
   });
 });

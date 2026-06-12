@@ -1,7 +1,10 @@
 /**
  * Pure helpers for the extracted-label shape — separated from the network-bound
  * extractor so the "don't trust the model" guard is plain, dependency-free, and
- * unit-tested in isolation.
+ * unit-tested in isolation. coerceExtractedLabel normalizes whatever JSON the
+ * model emitted: missing keys and wrong types degrade to null/defaults, sentinel
+ * phrases ("not visible") become null instead of label text, notes are scrubbed
+ * of field-name leakage and capped at a sentence boundary.
  */
 import { ExtractedLabel } from "./types";
 

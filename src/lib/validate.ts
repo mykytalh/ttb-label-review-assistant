@@ -4,8 +4,8 @@
  * Each field uses the matching strictness its compliance rule calls for: brand,
  * class, and producer match fuzzily (case/punctuation/possessive insensitive);
  * alcohol content matches numerically with a tolerance; the government warning
- * must be verbatim. Every field returns one of pass, warn, or fail. See
- * docs/APPROACH.md for the rationale behind the per-field rules.
+ * must be verbatim. Every field returns pass, warn, fail, or na (nothing to
+ * check). See docs/APPROACH.md for the rationale behind the per-field rules.
  */
 import {
   ApplicationData,
@@ -369,9 +369,13 @@ function abvTolerance(beverageType: BeverageType, referencePct: number): number 
   }
 }
 
+/** Designations that exempt a wine at or below 14% from stating ABV — the
+ *  label must actually carry one of them (27 CFR 4.36(a)). */
 const TABLE_WINE_EXEMPT = /\b(table\s+wine|light\s+wine)\b/i;
 
-/** Fortified / dessert wine classes that typically exceed 14% and must state ABV. */
+/** Fortified / dessert wine classes that typically exceed 14% and must state
+ *  ABV (27 CFR 4.36(a)) — the batch-mode heuristic for requiring ABV when
+ *  there's no application value to compare against. */
 const HIGH_ALCOHOL_WINE_CLASS =
   /\b(port|sherry|madeira|marsala|vermouth|dessert\s+wine|fortified|liqueur|angelica|muscatel)\b/i;
 
