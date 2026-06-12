@@ -1495,17 +1495,6 @@ select:focus {
   align-items: stretch;
   gap: var(--space-2);
 }
-.preview-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.preview-name {
-  font-family: var(--mono);
-  font-size: var(--text-sm);
-  color: var(--base-dark);
-  word-break: break-all;
-}
 
 /* ---------- Image editor (stage + tool strip + loupe) ---------- */
 .img-editor {
@@ -1709,9 +1698,6 @@ select:focus {
   display: none;
 }
 @media (max-width: 768px) {
-  .rotate-hint--full {
-    display: none;
-  }
   .rotate-hint--compact {
     display: block;
   }

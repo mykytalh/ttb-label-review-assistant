@@ -191,17 +191,12 @@ export default function SingleReview() {
                   setEditedUrl(null);
                 }}
               />
-              <div className="preview-meta">
-                <div className="preview-name">{file?.name}</div>
-                <p className="rotate-hint rotate-hint--full">
-                  Use the tools to straighten, crop, zoom, or magnify the label so
-                  the text reads clearly before reviewing.
-                </p>
-                <p className="rotate-hint rotate-hint--compact">
-                  Use <strong>Rotate</strong> if the photo is sideways. Zoom and crop
-                  are available on a larger screen.
-                </p>
-              </div>
+              {/* Desktop needs no caption — the tool buttons are labeled. The
+                  phone hint stays: it explains why zoom/crop are absent there. */}
+              <p className="rotate-hint rotate-hint--compact">
+                Use <strong>Rotate</strong> if the photo is sideways. Zoom and crop
+                are available on a larger screen.
+              </p>
             </div>
           ) : (
             <div
