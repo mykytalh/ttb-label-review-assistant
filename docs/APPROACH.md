@@ -23,7 +23,7 @@ only; it does not replace judgment.
 
 | Constraint | Response |
 |---|---|
-| ~5s per label | One vision call, tight `max_tokens`, client downscale, Haiku 4.5 |
+| ~5s per label | One vision call, tight `max_tokens`, client downscale, Haiku 4.5; extraction preloads in the background on photo upload, so the submitted single review is typically instant |
 | Low tech comfort | Large type, icon+word+color verdicts, in-app help, focus rings |
 | Bulk uploads (200–300 in production) | Batch tab, concurrency 2, export; demo caps at 10 (one API call each) |
 | Firewalled networks | `LabelExtractor` interface — swappable on-prem OCR |

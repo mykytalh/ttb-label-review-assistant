@@ -176,6 +176,33 @@ export async function postReview(
   return data;
 }
 
+/**
+ * Background extraction call for the single-label preload. Unlike postReview
+ * this never surfaces errors to the UI — any failure (network, 4xx/5xx,
+ * malformed body) resolves to null and the caller falls back to the classic
+ * review path. AbortSignal lets an invalidated preload stop waiting.
+ */
+export async function postExtract(
+  base64: string,
+  mediaType: string,
+  signal?: AbortSignal,
+): Promise<{ label: unknown; elapsedMs?: number } | null> {
+  try {
+    const res = await fetch("/api/extract", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageBase64: base64, mediaType }),
+      signal,
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { label?: unknown; elapsedMs?: number };
+    if (!data || typeof data !== "object" || data.label == null) return null;
+    return { label: data.label, elapsedMs: data.elapsedMs };
+  } catch {
+    return null; // abort or network failure — the fallback path covers it
+  }
+}
+
 /** Guard against malformed or partial API responses before the UI renders them. */
 function isReviewResult(data: unknown): data is ReviewResult {
   if (!data || typeof data !== "object") return false;

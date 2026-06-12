@@ -36,7 +36,9 @@ npm run build
 required input. The AI reads everything off the label itself; beverage type
 defaults to auto-detect, and the optional application fields (class/type, ABV,
 net contents, producer, origin) exist only to cross-check the label against
-what the application claims. Results are summary-first: failures and reviews
+what the application claims. Extraction starts in the background the moment
+the photo lands, so by the time the brand name is typed the verdict is usually
+instant. Results are summary-first: failures and reviews
 open with expected-vs-found detail, verified fields collapse into a checklist,
 and the raw AI extraction sits under the photo for verify-by-eye. Every review
 can be printed as a structured record.
