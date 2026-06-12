@@ -99,7 +99,6 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
     window.scrollTo({ top: 0 });
   };
 
-  const activeLabel = NAV.find((s) => s.id === active)?.label ?? "Help";
 
   return (
     <div
@@ -122,15 +121,15 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
         <button
           type="button"
           ref={drawerToggleRef}
-        className="docs-drawer-handle"
+          className="docs-drawer-handle"
           aria-expanded={drawerOpen}
           aria-controls="docs-drawer"
+          aria-label="Help sections"
           onClick={() => setDrawerOpen(true)}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
           </svg>
-          <span>{activeLabel}</span>
         </button>
       </div>
 

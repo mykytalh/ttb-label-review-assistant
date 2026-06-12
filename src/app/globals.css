@@ -813,23 +813,15 @@ a {
   .docs-drawer-handle {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-width: 0;
+    justify-content: center;
+    min-width: 44px;
     min-height: 44px;
     background: var(--fill);
     color: var(--ink);
     border: 1px solid var(--hairline);
     border-radius: var(--radius);
-    padding: 8px 12px;
-    font: inherit;
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 0;
     cursor: pointer;
-  }
-  .docs-drawer-handle span {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
   .docs-topbar .hiw-back {
     min-height: 44px;
