@@ -308,6 +308,9 @@ export default function BatchReview() {
 
       {rows.length > 0 && (
         <section className="card" aria-label="Batch queue">
+          {/* Toolbar + filter chips pin below the masthead while scrolling the
+              queue, so Stop/Download/filters stay reachable on a long batch. */}
+          <div className="batch-sticky">
           <div className="batch-toolbar">
             <div className="batch-toolbar-head">
               <h2>
@@ -403,6 +406,7 @@ export default function BatchReview() {
               )}
             </div>
           )}
+          </div>
 
           {filter !== "all" && visibleRows.length === 0 && (
             <p className="meta batch-filter-empty">No labels match this filter.</p>
@@ -543,9 +547,16 @@ function BatchCard({
   onRemove: () => void;
 }) {
   const tally = row.result ? fieldTally(row.result) : null;
+  const cardRef = useRef<HTMLLIElement>(null);
+
+  // Opening Details aligns the card under the sticky toolbar (scroll-margin in
+  // CSS) so the expanded result starts in view instead of below the fold.
+  useEffect(() => {
+    if (expanded) cardRef.current?.scrollIntoView({ block: "start" });
+  }, [expanded]);
 
   return (
-    <li className={`batch-card batch-card--${row.status}`}>
+    <li ref={cardRef} className={`batch-card batch-card--${row.status}`}>
       <div className="batch-card-main">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="batch-card-thumb" src={row.thumbUrl} alt="" />

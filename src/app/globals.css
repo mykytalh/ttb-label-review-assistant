@@ -1220,6 +1220,28 @@ select:focus {
     margin-top: 4px;
   }
 
+  /* On phones the full batch toolbar is too tall to pin — only the filter
+     chips (the queue navigation) stay stuck below the masthead. */
+  .batch-sticky {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+  }
+  .batch-summary {
+    position: sticky;
+    top: var(--masthead-h);
+    z-index: 30;
+    background: var(--surface);
+    margin: 0 -16px 16px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06);
+  }
+  .batch-card {
+    scroll-margin-top: calc(var(--masthead-h) + 56px);
+  }
+
   /* Docs — burger nav. The picker stays pinned under the masthead while the
      agent scrolls a long help section, so switching sections never requires
      scrolling back to the top. */
@@ -2404,11 +2426,27 @@ select:focus {
   gap: 8px;
   align-items: center;
 }
+/* Toolbar + filter chips pin below the sticky masthead while the agent works
+   a long queue — Stop/Download/filters and the count never scroll away. Bleeds
+   over the card padding so queue rows pass cleanly underneath. */
+.batch-sticky {
+  position: sticky;
+  top: var(--masthead-h);
+  z-index: 30;
+  background: var(--surface);
+  margin: -28px -28px 0;
+  padding: 24px 28px 4px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
 .batch-summary {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+}
+/* Expanded Details aligns below the pinned toolbar (see BatchCard effect). */
+.batch-card {
+  scroll-margin-top: calc(var(--masthead-h) + 132px);
 }
 .batch-list {
   list-style: none;
