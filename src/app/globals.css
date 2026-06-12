@@ -856,15 +856,9 @@ a {
   color: var(--primary);
   list-style: none;
   padding: 4px 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-/* Keep the disclosure arrow and label together on the left; space-between
-   sends the ⓘ to the row's right edge. */
-.more-details > summary .more-details-label {
-  margin-right: auto;
+  gap: 8px;
 }
 /* Compact trigger inside the summary line. */
 .more-details > summary .info-tip-trigger {
