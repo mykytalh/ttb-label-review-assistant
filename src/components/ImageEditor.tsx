@@ -270,8 +270,16 @@ export default function ImageEditor({
               )}
             </>
           )}
-          {!viewOnly && isEdited && (
-            <button type="button" className="tool-btn" onClick={resetAll} disabled={busy} title="Reset to original">
+          {!viewOnly && (
+            /* Always rendered: popping in on first edit shifted the centered
+               toolbar and moved Zoom in out from under the cursor mid-click. */
+            <button
+              type="button"
+              className="tool-btn"
+              onClick={resetAll}
+              disabled={busy || !isEdited}
+              title={isEdited ? "Reset to original" : "Nothing to reset yet"}
+            >
               <ResetIcon />
               <span>Reset</span>
             </button>
