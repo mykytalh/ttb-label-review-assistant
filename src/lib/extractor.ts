@@ -38,16 +38,25 @@ const EXTRACTION_SCHEMA = {
         "The product's beverage category, judged from the whole label: 'spirits' (whiskey, vodka, rum, gin, tequila, brandy, liqueur), 'wine' (incl. sparkling, champagne, vermouth, sake, fortified wine), 'beer' (incl. lager, ale, IPA, malt beverage), or 'other' for anything that doesn't fit those three (hard seltzer, canned cocktail, flavored malt/wine beverage, cider). Use 'unknown' only if you genuinely cannot tell.",
     },
     classType: { type: ["string", "null"], description: "Class/type designation, e.g. 'Kentucky Straight Bourbon Whiskey'. Null if not legibly visible." },
-    alcoholContent: { type: ["string", "null"], description: "Alcohol content exactly as printed, e.g. '45% Alc./Vol. (90 Proof)'. Null if not legibly visible." },
+    alcoholContent: {
+      type: ["string", "null"],
+      description:
+        "Alcohol content exactly as printed, e.g. '45% Alc./Vol. (90 Proof)'. Never infer or recall a typical ABV or proof for a recognized brand or beverage type — report only a statement you can actually read in THIS image. Null if not legibly visible.",
+    },
     netContents: { type: ["string", "null"], description: "Net contents, e.g. '750 mL'. Null if not legibly visible." },
     producer: { type: ["string", "null"], description: "Bottler/producer name and address as printed. Null if not legibly visible." },
-    originCountry: { type: ["string", "null"], description: "Country-of-origin statement for imports, e.g. 'Product of Scotland'. Null if none/not visible." },
+    originCountry: {
+      type: ["string", "null"],
+      description:
+        "The explicit country-of-origin statement, e.g. 'Product of Scotland', 'Hecho en México', 'Imported from France' — it must name a country. Do NOT put class/type lines, ingredient phrases, or marketing text here. Null if no origin statement is visible.",
+    },
     governmentWarning: {
       type: ["string", "null"],
       description:
         "Transcribe ONLY the government warning text that is actually legible in THIS image, character-for-character, preserving capitalization and wording. " +
         "START your transcription at the heading: if the words 'GOVERNMENT WARNING' (usually in bold capitals) are printed on the label, you MUST include them verbatim at the beginning — do not begin at '(1)' and skip the heading. " +
-        "Then transcribe the numbered body. Do NOT complete, reconstruct, correct, or fill in any part from your own knowledge of the standard warning. If part of it is obscured, transcribe only the legible part. If none of it is legible, return null.",
+        "Then transcribe the numbered body. Do NOT complete, reconstruct, correct, or fill in any part from your own knowledge of the standard warning. If part of it is obscured, transcribe only the legible part. If none of it is legible, return null. " +
+        "This field is ONLY for a government warning statement (federal or state). Pressure cautions ('Contents under pressure'), sulfite declarations, 'drink responsibly' slogans, and other cautionary or marketing text do NOT belong here — if the label shows no government warning, return null even when other caution text is visible.",
     },
     warningLegible: {
       type: "boolean",
@@ -103,7 +112,12 @@ const SYSTEM_PROMPT =
   "heading verbatim if it is printed on the label (it usually is, in bold " +
   "capitals). A common mistake is to start at '(1)' and omit the heading — do " +
   "not do that; the heading is part of the required statement and must be " +
-  "captured when present.\n\n" +
+  "captured when present.\n" +
+  "5. Transcribe the warning in ONE CONTINUOUS PASS, following each printed line " +
+  "to the next — the statement wraps mid-sentence, and the words at a line break " +
+  "are part of the sentence, so do not skip them when moving to the next line. If " +
+  "words in between are genuinely unreadable, stop at the last word you can " +
+  "actually read and set warningLegible=false — never bridge a gap from memory.\n\n" +
   "The label may be photographed at an angle, under glare, in poor lighting, or " +
   "ROTATED — many phone photos are sideways (90°/180°) or the text wraps around a " +
   "curved can. Mentally rotate the image as needed and read text in ANY " +
