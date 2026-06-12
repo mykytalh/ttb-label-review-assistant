@@ -110,14 +110,19 @@
   --base-darkest: #e6edf3;
   --ink: #e6edf3;
 
-  /* Accent: the federal blue family (same lineage as the masthead line), at a
-     brightness that holds AA on the dark canvas for links, tabs, and focus. */
-  --primary: #58a6ff;
-  --primary-dark: #79c0ff; /* hover — lighter, dark-mode convention */
+  /* Accent: the light theme's federal navy. The true band navy (#1d3a66) is
+     too dark to read as text on this canvas, so the split is: solid fills use
+     the real navy with white text (see the dark fill overrides below); text,
+     borders, and focus use a steel blue from the same family at AA brightness. */
+  --primary: #5b97d4;
+  --primary-dark: #7cb1e3; /* hover — lighter, dark-mode convention */
   --primary-darker: #0a0d12; /* near-black masthead/footer band */
-  --primary-light: #58a6ff;
-  --primary-lightest: #0d1f33; /* navy tint for fills/selected states */
-  --on-primary: #0c0f14; /* dark ink on the blue fill (AA-safe) */
+  --primary-light: #5b97d4;
+  --primary-lightest: #16243a; /* navy tint for fills/selected states */
+  --on-primary: #ffffff; /* fills are deep navy in dark mode — white ink */
+  /* The light theme's masthead/footer navy, used for solid fills in dark mode. */
+  --navy-fill: #1d3a66;
+  --navy-fill-hover: #1a4480;
 
   /* Muted forest/sage greens — less neon than the default GitHub palette. */
   --success: #3a6b4f;
@@ -483,15 +488,29 @@ a {
   border-color: var(--primary-lightest);
 }
 /* Dark theme: a white pill glares on the near-black band — the lit state is
-   the app's dark blue with light text instead. */
+   the light theme's band navy with white text instead. */
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"] {
-  background: var(--primary-dark);
-  border-color: var(--primary-light);
+  background: var(--navy-fill);
+  border-color: var(--primary);
   color: #fff;
 }
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"]:hover {
-  background: var(--primary);
-  border-color: var(--primary-light);
+  background: var(--navy-fill-hover);
+  border-color: var(--primary);
+}
+/* Solid primary fills carry the real navy in dark mode (the steel-blue token
+   is for text/borders, where the navy itself would be unreadable). */
+[data-theme="dark"] .btn:not(.secondary):not(:disabled) {
+  background: var(--navy-fill);
+  border-color: #2a4f85;
+  color: #fff;
+}
+[data-theme="dark"] .btn:not(.secondary):hover:not(:disabled) {
+  background: var(--navy-fill-hover);
+}
+[data-theme="dark"] .docs-drawer-handle {
+  background: var(--navy-fill);
+  color: #fff;
 }
 
 .hiw-trigger-icon {
