@@ -486,16 +486,27 @@ a {
   background: var(--primary-lightest);
   border-color: var(--primary-lightest);
 }
-/* Dark theme: a white pill glares on the near-black band — the lit state is
-   the light theme's band navy with white text instead. */
+/* Dark theme: the How-to-use pill wears the federal blue at rest with
+   near-black ink; the lit (open) state steps to the deeper navy with white
+   ink so open vs closed stays unmistakable. */
+[data-theme="dark"] .hiw-trigger {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #0a0d12;
+}
+[data-theme="dark"] .hiw-trigger:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #0a0d12;
+}
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"] {
-  background: var(--navy-fill);
+  background: var(--navy-fill-hover);
   border-color: var(--primary);
   color: #fff;
 }
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"]:hover {
   background: var(--navy-fill-hover);
-  border-color: var(--primary);
+  border-color: var(--primary-dark);
 }
 /* Solid primary fills carry the real navy in dark mode (the steel-blue token
    is for text/borders, where the navy itself would be unreadable). */
