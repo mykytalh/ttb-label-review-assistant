@@ -36,6 +36,8 @@ const CONCURRENCY = 2;
 const BEVERAGE_DEFAULT = "auto" as const;
 /** Prototype cap — each label is one paid API call. Production can raise this. */
 const MAX_BATCH = 10;
+/** Queue page size. Five cards fit a laptop viewport under the pinned toolbar. */
+const PAGE_SIZE = 5;
 const DEFAULT_BACKOFF_MS = 5_000;
 const MAX_RL_RETRIES = 2;
 
@@ -50,6 +52,8 @@ export default function BatchReview() {
   const [notice, setNotice] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<number | null>(null);
   const [filter, setFilter] = useState<BatchFilter>("all");
+  const [page, setPage] = useState(0);
+  const queueRef = useRef<HTMLElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -206,6 +210,7 @@ export default function BatchReview() {
     setExpanded(null);
     setNotice(null);
     setFilter("all");
+    setPage(0);
   };
 
   const downloadCsv = () => {
@@ -243,6 +248,29 @@ export default function BatchReview() {
     if (filter === "error") return r.status === "error";
     return r.status === "done" && r.result?.overall === filter;
   });
+
+  // Pages of 5 keep the queue workable at production volume — importers dump
+  // 200–300 labels at once, and a flat list at that size is unusable. The page
+  // is clamped so removals/filters never strand the view past the end.
+  const pageCount = Math.max(1, Math.ceil(visibleRows.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount - 1);
+  const pagedRows = visibleRows.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
+  const firstShown = visibleRows.length === 0 ? 0 : safePage * PAGE_SIZE + 1;
+  const lastShown = Math.min(visibleRows.length, (safePage + 1) * PAGE_SIZE);
+
+  const applyFilter = (f: BatchFilter) => {
+    setFilter(f);
+    setPage(0);
+    setExpanded(null);
+  };
+
+  const goToPage = (p: number) => {
+    setPage(Math.max(0, Math.min(pageCount - 1, p)));
+    setExpanded(null);
+    // Land at the top of the queue so the new page starts in view under the
+    // pinned toolbar (scroll-margin on the section clears the sticky bars).
+    queueRef.current?.scrollIntoView({ block: "start" });
+  };
 
   return (
     <div className="batch-flow">
@@ -307,7 +335,7 @@ export default function BatchReview() {
       </section>
 
       {rows.length > 0 && (
-        <section className="card" aria-label="Batch queue">
+        <section className="card batch-queue" aria-label="Batch queue" ref={queueRef}>
           {/* Toolbar + filter chips pin below the masthead while scrolling the
               queue, so Stop/Download/filters stay reachable on a long batch. */}
           <div className="batch-sticky">
@@ -364,14 +392,14 @@ export default function BatchReview() {
             <div className="batch-summary" role="group" aria-label="Filter results">
               <FilterChip
                 active={filter === "all"}
-                onClick={() => setFilter("all")}
+                onClick={() => applyFilter("all")}
                 label="All"
                 count={rows.filter((r) => r.status === "done" || r.status === "error").length}
               />
               {counts.pass > 0 && (
                 <FilterChip
                   active={filter === "pass"}
-                  onClick={() => setFilter("pass")}
+                  onClick={() => applyFilter("pass")}
                   label="Passed"
                   count={counts.pass}
                   verdict="pass"
@@ -380,7 +408,7 @@ export default function BatchReview() {
               {counts.warn > 0 && (
                 <FilterChip
                   active={filter === "warn"}
-                  onClick={() => setFilter("warn")}
+                  onClick={() => applyFilter("warn")}
                   label="Needs review"
                   count={counts.warn}
                   verdict="warn"
@@ -389,7 +417,7 @@ export default function BatchReview() {
               {counts.fail > 0 && (
                 <FilterChip
                   active={filter === "fail"}
-                  onClick={() => setFilter("fail")}
+                  onClick={() => applyFilter("fail")}
                   label="Failed"
                   count={counts.fail}
                   verdict="fail"
@@ -398,7 +426,7 @@ export default function BatchReview() {
               {errorCount > 0 && (
                 <FilterChip
                   active={filter === "error"}
-                  onClick={() => setFilter("error")}
+                  onClick={() => applyFilter("error")}
                   label="Errors"
                   count={errorCount}
                   verdict="fail"
@@ -413,7 +441,7 @@ export default function BatchReview() {
           )}
 
           <ul className="batch-list">
-            {visibleRows.map((r) => (
+            {pagedRows.map((r) => (
               <BatchCard
                 key={r.id}
                 row={r}
@@ -424,6 +452,33 @@ export default function BatchReview() {
               />
             ))}
           </ul>
+
+          {visibleRows.length > PAGE_SIZE && (
+            <nav className="batch-pager" aria-label="Queue pages">
+              <button
+                type="button"
+                className="btn secondary compact"
+                onClick={() => goToPage(safePage - 1)}
+                disabled={safePage === 0}
+                aria-label="Previous page"
+              >
+                <span aria-hidden="true">‹</span> Prev
+              </button>
+              <span className="batch-pager-status" aria-live="polite">
+                {firstShown}–{lastShown} of {visibleRows.length}
+                {filter !== "all" ? " in this filter" : ""} · page {safePage + 1} of {pageCount}
+              </span>
+              <button
+                type="button"
+                className="btn secondary compact"
+                onClick={() => goToPage(safePage + 1)}
+                disabled={safePage >= pageCount - 1}
+                aria-label="Next page"
+              >
+                Next <span aria-hidden="true">›</span>
+              </button>
+            </nav>
+          )}
         </section>
       )}
     </div>

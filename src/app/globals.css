@@ -213,7 +213,9 @@ body {
 }
 
 html {
-  overflow-x: hidden;
+  /* clip, not hidden: hidden turns the element into a scroll container and
+     silently disables position:sticky for every descendant. */
+  overflow-x: clip;
 }
 body {
   background: var(--canvas);
@@ -224,7 +226,7 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
   /* Full-height column so the footer sits at the bottom of the viewport on
      short pages instead of leaving scrollable dead space below it. */
   min-height: 100vh;
@@ -2330,6 +2332,13 @@ select:focus {
   position: relative;
   flex-shrink: 0;
 }
+/* While open (or hovered/focused), the popover outranks the pinned batch
+   toolbar (z 30) but stays under the masthead (z 90). */
+.info-tip--open,
+.info-tip:focus-within,
+.info-tip:hover {
+  z-index: 45;
+}
 .info-tip-trigger {
   appearance: none;
   border: 1px solid var(--hairline);
@@ -2356,7 +2365,7 @@ select:focus {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  z-index: 30;
+  z-index: 45;
   width: min(340px, calc(100vw - 48px));
   padding: 14px 16px;
   background: var(--surface);
@@ -2447,6 +2456,23 @@ select:focus {
 /* Expanded Details aligns below the pinned toolbar (see BatchCard effect). */
 .batch-card {
   scroll-margin-top: calc(var(--masthead-h) + 132px);
+}
+/* Page changes land the queue heading just under the masthead. */
+.batch-queue {
+  scroll-margin-top: calc(var(--masthead-h) + 8px);
+}
+/* Prev / status / Next under the queue list. */
+.batch-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+.batch-pager-status {
+  font-size: var(--text-sm);
+  color: var(--base-dark);
+  text-align: center;
 }
 .batch-list {
   list-style: none;
