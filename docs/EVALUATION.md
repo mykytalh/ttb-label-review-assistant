@@ -10,16 +10,21 @@ measure consistency.
 
 > **TL;DR.** On 88 real bottle/can photos, every one hand-labeled and every
 > disagreement audited by eye, the tool reads a government warning that is physically
-> present **98.8%** of the time, recognizes the verbatim federal statement **90.5%**
-> (strict majority vote) / **94.0%** (read on at least one run), and reads a shown ABV
-> **97.7%** strict / **96.8%** reach. Median latency is **3.3s** per label (p95 4.8s)
-> against the 5-second requirement. Where it does miss, it misses *safely*: on a
+> present **97.7%** of the time (100% run-to-run consistency), recognizes the verbatim
+> federal statement **88.1%** (strict majority vote) / **94.0%** (read on at least one
+> run), and reads a shown ABV **94.3%** strict / **95.2%** reach. Median latency is
+> **3.6s** per label against the 5-second requirement (p95 fluctuates with API load —
+> 4.8–5.9s across runs). Where it does miss, it misses *safely*: on a
 > small/glared/curved-print warning it declines to auto-confirm and routes to "verify
 > by eye" rather than guessing.
 
 ## What's in the dataset
 
-88 real photos — cropped to the label, no duplicates — spanning:
+88 real photos, every one taken by me — retail bottles and cans shot
+specifically to reproduce the conditions the discovery interviews describe
+(glare on glass, weird angles, bad lighting, warnings wrapped around curved
+cans, sideways phone shots) — then cropped to the label, deduplicated, and
+hand-labeled individually. The set spans:
 
 - **Every beverage class** — distilled spirits (Patrón, Captain Morgan, Grey Goose,
   Drambuie), wine (19 Crimes, Ste. Michelle, Ménage à Trois, Chandon, Mer Soleil,
@@ -70,22 +75,25 @@ numbers, now guarded against).
 
 ## Results
 
-**88 photos, 3 runs each (after the label audit and prompt-scoping fixes below):**
+**88 photos, 3 runs each — the committed run in `eval/results.json`, scored
+against the audited labels with the exact shipped prompt:**
 
 | Signal | Strict (majority-of-3) | Consistency | Detection reach (≥1 of 3) |
 |---|---|---|---|
-| warningPresent | 97.7% (86/88) | 98% | **98.8%** (83/84) |
-| warningFederal | 90.5% (76/84) | 93% | **94.0%** (78/83) |
-| abv | 97.7% (86/88) | 94% | **96.8%** (61/63) |
+| warningPresent | 97.7% (86/88) | 100% | **97.6%** (82/84) |
+| warningFederal | 88.1% (74/84) | 87% | **94.0%** (78/83) |
+| abv | 94.3% (83/88) | 97% | **95.2%** (60/63) |
 
-Median wall latency 3.3s per label, p95 4.8s — under the 5-second requirement that
-the prior vendor failed at 30–40s. The reach column is the capability ceiling; the
-strict column demands the tool agree with itself 2-of-3 times on fine print.
+Median wall latency 3.6s per label — under the 5-second requirement the prior
+vendor failed at 30–40s (p95 moves with API load: 4.8–5.9s across runs). The
+reach column is the capability ceiling; the strict column demands the tool agree
+with itself 2-of-3 times on fine print.
 
-(Two of the 31 label corrections below were found while reviewing this run's own
-misses; the run was re-scored against the corrected labels — the model's recorded
-predictions were not touched. An earlier identical run before those two corrections
-scored warningPresent 97.7 / warningFederal 90.5 / abv 95.5.)
+Repeated full runs of the same prompt land within a band — strict
+`warningFederal` ~88–91% and `abv` ~94–98% across runs — because a handful of
+fine-print reads flicker between runs. The committed run is reported as-is
+rather than the best of several; the reach numbers, which flicker barely moves,
+are the stable figure.
 
 ## What the audit found (and fixed)
 
@@ -178,7 +186,7 @@ state-warning photo) showed zero guard regressions.
 - **abv:** 2 misses, both fine print the model under-reads on the majority of
   runs (the Bota Box sulfite line, a side-cropped can).
 
-We deliberately did **not** chase the last few percent by loosening extraction.
+I deliberately did **not** chase the last few percent by loosening extraction.
 Forcing text out of illegible print is exactly what re-introduces hallucination — the
 model "completing" a warning it can't actually read, a real bug caught and fixed with
 the `warningLegible` gate (see `docs/SECURITY.md` and the validation tests). A
@@ -188,6 +196,10 @@ legibility; the documented future-work fix is cylinder-unwrap preprocessing, not
 looser matcher.
 
 ## Reproducing
+
+The photos aren't committed; download the set from
+[Google Drive](https://drive.google.com/drive/folders/1hCq_woq7IwyrOwbi_9XLHeSUsduSUxjN?usp=sharing)
+into `public/samples/alcohol/`, then:
 
 ```bash
 npm run dev                  # serve the pipeline (needs an API key in the env)

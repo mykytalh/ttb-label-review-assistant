@@ -22,9 +22,6 @@ traceability table at the top of [`docs/APPROACH.md`](docs/APPROACH.md).
 | [`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md) | Prompt constraints and iteration summary |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | Threat model |
 
-**Submitting?** Live app: [ttb-label-review-assistant.vercel.app](https://ttb-label-review-assistant.vercel.app/).
-Grant reviewers access to the private GitHub repo (or make it public for the review window).
-
 ## Setup
 
 **Prerequisites:** Node 18+ · [Anthropic API key](https://console.anthropic.com/)
@@ -36,26 +33,21 @@ npm run dev                  # http://localhost:3000
 ```
 
 ```bash
-npm test              # 148 unit tests (no API key)
+npm test              # unit tests — no API key required
 npm run test:coverage
 npm run lint
 npm run build
 ```
 
-### Sample label images (88 photos)
+### Evaluation photo set
 
-Photos are **not** in the repository (`public/samples/alcohol/` is gitignored).
-Download the evaluation set from
-[Google Drive](https://drive.google.com/drive/folders/1hCq_woq7IwyrOwbi_9XLHeSUsduSUxjN?usp=sharing)
-into `public/samples/alcohol/` for local review, batch upload, or the eval harness.
-
-Committed artifacts: `eval/ground-truth-clean.json` (labels),
-`eval/results.json` (last scored run, 88 × 3), `eval/run.mjs` (harness),
-`eval/tuning-set.json` (frozen prompt-tuning subset — see
-[`docs/PROMPT_TUNING.md`](docs/PROMPT_TUNING.md)).
-
-Optional accuracy re-run: [`docs/EVALUATION.md`](docs/EVALUATION.md) (dev server +
-API key + sample photos above).
+The accuracy numbers are measured against 88 photos I took of retail bottles
+and cans, shot deliberately under the conditions the discovery interviews call
+out — glare, odd angles, bad lighting, curved cans, fine print — and
+hand-labeled individually. The photos themselves aren't committed (real product
+imagery); the ground truth, harness, scored results, and frozen tuning subset
+are, under `eval/`. To reproduce the numbers or load the samples locally, see
+[`docs/EVALUATION.md`](docs/EVALUATION.md) § Reproducing.
 
 ## Usage
 

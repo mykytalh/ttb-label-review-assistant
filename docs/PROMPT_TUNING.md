@@ -60,7 +60,7 @@ replayable subset instead of eyeballed full runs:
 | Iter 5 | Serving-size confusion — a 750 mL bottle's "Serving size: 150 mL" reported as net contents (user-reported) | Schema scope: net contents = container TOTAL, never the Serving Facts size; *(validator)* clean-multiple mismatches (5 × 150 = 750) name the serving-size suspicion in the fail message | Accepted: 0 of 9 guards regressed; the bug photo reads 750 mL |
 | Final | Curved cans, faint print | No prompt loosening (reintroduces hallucination) | Remaining misses are **safe** — verify by eye |
 
-We did **not** chase the last few percent by instructing the model to complete
+I did **not** chase the last few percent by instructing the model to complete
 illegible text. A confident wrong pass is the catastrophic failure mode. Two
 deliberate omissions from Iter 1: the prompt does **not** name the commonly-dropped
 phrase ("during pregnancy") — telling the model what *should* be there is a
