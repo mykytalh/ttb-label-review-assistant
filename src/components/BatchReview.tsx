@@ -255,8 +255,6 @@ export default function BatchReview() {
   const pageCount = Math.max(1, Math.ceil(visibleRows.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount - 1);
   const pagedRows = visibleRows.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
-  const firstShown = visibleRows.length === 0 ? 0 : safePage * PAGE_SIZE + 1;
-  const lastShown = Math.min(visibleRows.length, (safePage + 1) * PAGE_SIZE);
 
   const applyFilter = (f: BatchFilter) => {
     setFilter(f);
@@ -464,9 +462,10 @@ export default function BatchReview() {
               >
                 <span aria-hidden="true">‹</span> Prev
               </button>
+              {/* Plain words, not a bare "1/2" — the audience reads "Page 1
+                  of 2" instantly, and the filter chips already carry counts. */}
               <span className="batch-pager-status" aria-live="polite">
-                {firstShown}–{lastShown} of {visibleRows.length}
-                {filter !== "all" ? " in this filter" : ""} · page {safePage + 1} of {pageCount}
+                Page {safePage + 1} of {pageCount}
               </span>
               <button
                 type="button"
