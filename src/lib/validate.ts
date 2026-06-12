@@ -462,12 +462,15 @@ function missingAbvResult(
         : `No ABV on the label. Fortified/dessert wines over 14% must state alcohol content (${cfr}(a)).`;
       return result(field, labelOnly ? "fail" : "warn", expected ?? null, null, msg);
     }
+    // No exemption applies: a wine label with no ABV and no table/light-wine
+    // designation is short of 27 CFR 4.36 even when the application left the
+    // field blank — warn (not fail: this photo may not show every panel).
     const msg = expected
       ? `Application states "${expected}" but no ABV on the label — required if over 14%; at or below 14% may be omitted only with "table wine" or "light wine" on the label (${cfr}(a)).`
       : labelOnly
         ? `No ABV on the label. Required if over 14% ABV; at or below 14% may be omitted only when "table wine" or "light wine" appears on the label (${cfr}(a)).`
-        : `Not shown — wine at or below 14% may omit ABV when labeled as table/light wine (${cfr}(a)).`;
-    return result(field, labelOnly ? "warn" : "na", expected ?? null, null, msg);
+        : `No ABV found in this photo and the label isn't designated table/light wine — wine must state alcohol content unless that designation applies (${cfr}(a)). Check the other panel or the bottle itself.`;
+    return result(field, "warn", expected ?? null, null, msg);
   }
 
   if (beverageType === "beer") {
@@ -645,6 +648,21 @@ const FOREIGN_COUNTRY =
 const DOMESTIC_ORIGIN = /\b(usa|u\.?\s?s\.?a?\.?|united\s+states(\s+of\s+america)?|america)\b/i;
 
 /**
+ * Does a string actually read as a country-of-origin statement? The extractor
+ * occasionally routes nearby label text into the origin field (e.g. a class
+ * line like "AGAVE WINE WITH NATURAL FLAVORS"), so presence alone is not
+ * evidence of an origin declaration. Require either a recognizable country
+ * name (domestic or foreign, diacritics-insensitive so "México" counts) or an
+ * origin framing phrase ("product of …", "made in …") for countries outside
+ * the known list.
+ */
+function looksLikeOriginStatement(s: string): boolean {
+  const t = stripDiacritics(s);
+  if (FOREIGN_COUNTRY.test(t) || DOMESTIC_ORIGIN.test(t)) return true;
+  return /\b(?:product|produce)\s+of\s+\S|made\s+in\s+\S|imported\s+from\s+\S/i.test(t);
+}
+
+/**
  * Heuristic: does a bottler/producer string include a recognizable address?
  * TTB requires name and address on the label (27 CFR Parts 4, 5, 7). We look for
  * a US ZIP, state, or a foreign country — not full street-level parsing.
@@ -691,6 +709,10 @@ function matchNetContents(
     if (found) {
       return result(field, "pass", null, found, `Not provided; label shows "${found}".`);
     }
+    // Net contents is mandatory label information on every container
+    // (27 CFR 4.32 / 5.63 / 7.63), so absence is never a clean "not checked":
+    // batch fails it outright; single review warns, since one photo may not
+    // show the panel that carries the fill volume.
     return requirePresence
       ? result(
           field,
@@ -699,7 +721,13 @@ function matchNetContents(
           null,
           `No net contents found on the label — required on all alcohol beverages (27 CFR Parts 4, 5, 7). Check the fill volume is clearly shown and in frame.`,
         )
-      : result(field, "na", null, null, `Not provided in the application and not detected on the label.`);
+      : result(
+          field,
+          "warn",
+          null,
+          null,
+          `No net contents found in this photo — required on every container (27 CFR Parts 4, 5, 7). Verify the fill volume appears on the label or glass.`,
+        );
   }
   if (!found) {
     return result(field, "fail", expected, null, `Expected "${expected}" but no net contents found on the label.`);
@@ -786,6 +814,17 @@ function matchOrigin(
     const imported = suggestsImport(label);
 
     if (found) {
+      // A pass here asserts "the label declares an origin" — so the text must
+      // actually read as one, not just occupy the field.
+      if (!looksLikeOriginStatement(found)) {
+        return result(
+          field,
+          "warn",
+          null,
+          found,
+          `Text found near the origin ("${found}") doesn't name a recognizable country — verify the origin statement by eye.`,
+        );
+      }
       return imported || labelOnly
         ? result(field, "pass", null, found, `Label shows country of origin: "${found}".`)
         : result(field, "na", null, found, `Not checked — no origin in the application; label shows "${found}".`);

@@ -118,12 +118,15 @@ describe("warning anti-hallucination gate", () => {
 });
 
 describe("'not checked' (na) — nothing to compare", () => {
-  it("marks a field na (not warn/fail) when neither provided nor on the label", () => {
+  it("warns (not na) on a missing net contents — it is mandatory on every container", () => {
+    // Net contents is mandatory label information (27 CFR 4.32/5.63/7.63), so
+    // its absence is a "verify by eye", never a clean not-checked — even when
+    // the application leaves the field blank.
     const r = validate(
       appWith({ brandName: "X" }),
       label({ netContents: null }), // not provided in app, not on label
     );
-    expect(verdictOf(r, "netContents")).toBe("na");
+    expect(verdictOf(r, "netContents")).toBe("warn");
   });
 
   it("na fields do not drag the overall verdict down", () => {
@@ -149,8 +152,8 @@ describe("empty / minimal application", () => {
 describe("beverage type × missing ABV — full matrix", () => {
   const cases: Array<[BeverageType, "fail" | "warn" | "na"]> = [
     ["spirits", "fail"], // spirits must state ABV
-    ["wine", "na"], // wine ABV optional within a tolerance band
-    ["beer", "na"], // malt beverage ABV optional
+    ["wine", "warn"], // required unless designated table/light wine — verify by eye
+    ["beer", "na"], // malt beverage ABV optional federally
     ["other", "warn"], // unclassified — ask the agent to confirm
   ];
   for (const [type, expected] of cases) {

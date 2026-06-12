@@ -139,14 +139,15 @@ describe("beverage type cross-check", () => {
     expect(verdictOf(r, "beverageType")).toBe("pass");
   });
 
-  it("auto: a wine detected from the label makes a missing ABV 'na' (not a spirits fail)", () => {
-    // Auto mode: missing ABV on wine should not fail like spirits
-    // on a product the label shows is wine.
+  it("auto: a wine detected from the label makes a missing ABV a warn (not a spirits fail)", () => {
+    // Auto mode: missing ABV on wine must not fail like spirits — but a bare
+    // "Chardonnay" with no ABV and no table/light designation is short of
+    // 27 CFR 4.36, so it warns instead of passing silently.
     const r = validate(
       appWith({ brandName: "X", beverageType: "auto", alcoholContent: undefined }),
       label({ classType: "Chardonnay", alcoholContent: null, brandName: "X" }),
     );
-    expect(verdictOf(r, "alcoholContent")).toBe("na");
+    expect(verdictOf(r, "alcoholContent")).toBe("warn");
   });
 
   it("does not hard-fail a type mismatch (warn, never fail)", () => {
@@ -376,9 +377,11 @@ describe("beverage type changes ABV requirements", () => {
     expect(verdictOf(r, "alcoholContent")).toBe("fail");
   });
 
-  it("only marks missing ABV as not-checked for wine", () => {
+  it("warns on missing ABV for wine without a table/light designation", () => {
+    // Wine may omit ABV only when "table wine"/"light wine" appears on the
+    // label (27 CFR 4.36(a)); with no designation the omission needs eyes.
     const r = validate(appWith({ brandName: app.brandName, beverageType: "wine" }), label({ alcoholContent: null }));
-    expect(verdictOf(r, "alcoholContent")).toBe("na");
+    expect(verdictOf(r, "alcoholContent")).toBe("warn");
   });
 
   it("only marks missing ABV as not-checked for beer", () => {
@@ -506,6 +509,34 @@ describe("country of origin (imports)", () => {
   it("fails a mismatched origin", () => {
     const r = validate(appWith({ brandName: app.brandName, originCountry: "Scotland" }), label({ originCountry: "Product of Ireland" }));
     expect(verdictOf(r, "originCountry")).toBe("fail");
+  });
+
+  describe("a found origin must actually read as one (no pass on mere presence)", () => {
+    // Real bug: the extractor routed the class line "AGAVE WINE WITH NATURAL
+    // FLAVORS" into the origin field on an imported margarita, and the field
+    // passed as "label shows country of origin". Presence is not a declaration.
+    it("WARNS when the origin text names no recognizable country", () => {
+      const r = validate(
+        appWith({ brandName: app.brandName }),
+        label({ originCountry: "AGAVE WINE WITH NATURAL FLAVORS", producer: "Produced by TC Spirits, Jalisco, México" }),
+      );
+      expect(verdictOf(r, "originCountry")).toBe("warn");
+    });
+
+    it("WARNS on junk origin text in batch mode too", () => {
+      const r = validate({ beverageType: "other" }, label({ originCountry: "WITH NATURAL FLAVORS" }), { labelOnly: true });
+      expect(verdictOf(r, "originCountry")).toBe("warn");
+    });
+
+    it("still passes a real origin statement, diacritics included ('Hecho en México')", () => {
+      const r = validate(appWith({ brandName: app.brandName }), label({ originCountry: "Hecho en México" }));
+      expect(["pass", "na"]).toContain(verdictOf(r, "originCountry"));
+    });
+
+    it("accepts 'Product of …' framing for a country outside the known list", () => {
+      const r = validate({ beverageType: "other" }, label({ originCountry: "Product of Fiji" }), { labelOnly: true });
+      expect(verdictOf(r, "originCountry")).toBe("pass");
+    });
   });
 });
 
