@@ -92,15 +92,8 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
       </h2>
       {/* Pinned under the sticky masthead — the way back is always at the
           top-left, at any scroll depth. */}
-      <button
-        ref={backRef}
-        type="button"
-        className="hiw-back hiw-back--bar"
-        onClick={onClose}
-        aria-label="Back to the tool"
-        title="Back to the tool"
-      >
-        <span aria-hidden="true">←</span>
+      <button ref={backRef} type="button" className="hiw-back hiw-back--bar" onClick={onClose}>
+        <span aria-hidden="true">←</span> Back to the tool
       </button>
 
       <button
