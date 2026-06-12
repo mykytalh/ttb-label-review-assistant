@@ -96,8 +96,15 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
       </h2>
       {/* Phone exit: pinned strip under the masthead (the sidebar that hosts
           the desktop link is a collapsed dropdown on small screens). */}
-      <button ref={backRef} type="button" className="hiw-back hiw-back--bar" onClick={onClose}>
-        Back to the tool
+      <button
+        ref={backRef}
+        type="button"
+        className="hiw-back hiw-back--bar"
+        onClick={onClose}
+        aria-label="Back to the tool"
+        title="Back to the tool"
+      >
+        <span aria-hidden="true">←</span>
       </button>
 
       <button
@@ -141,8 +148,15 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
           </ul>
           {/* Desktop exit lives with the navigation — the sidebar is sticky,
               so the way back is always in view. */}
-          <button ref={navBackRef} type="button" className="hiw-back hiw-back--nav" onClick={onClose}>
-            Back to the tool
+          <button
+            ref={navBackRef}
+            type="button"
+            className="hiw-back hiw-back--nav"
+            onClick={onClose}
+            aria-label="Back to the tool"
+            title="Back to the tool"
+          >
+            <span aria-hidden="true">←</span>
           </button>
         </nav>
 

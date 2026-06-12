@@ -506,6 +506,11 @@ a {
 .hiw-back:hover {
   text-decoration: underline;
 }
+/* Icon-only back control: a bigger glyph so it stays an easy target. */
+.hiw-back span {
+  font-size: 1.25rem;
+  line-height: 1;
+}
 /* Phone variant: pinned strip under the sticky masthead so the way back never
    scrolls away (the sidebar holding the desktop link collapses on phones). */
 .hiw-back--bar {
