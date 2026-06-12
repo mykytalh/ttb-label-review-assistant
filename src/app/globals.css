@@ -118,7 +118,10 @@
   --primary-darker: #0a0d12; /* near-black masthead/footer band */
   --primary-light: #73b3e7; /* identical to light mode */
   --primary-lightest: #0e2238; /* navy tint for fills/selected states */
-  --on-primary: #ffffff;
+  /* No pure white in dark mode: a soft blue-gray ink that still reads
+     strongly on the black canvas and on navy fills. */
+  --on-primary: #d7dfe9;
+  --on-dark: #d7dfe9;
   /* Solid fills share the same blue; hover deepens like light mode. */
   --navy-fill: #005ea2;
   --navy-fill-hover: #1a4480;
@@ -489,28 +492,28 @@ a {
 /* Dark theme: resting pill keeps the quiet translucent band look; the
    selected (open) state fills with the federal blue, white ink. */
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"] {
-  background: var(--primary);
+  background: var(--primary-dark);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 [data-theme="dark"] .hiw-trigger[aria-expanded="true"]:hover {
-  background: var(--navy-fill-hover);
+  background: var(--primary);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 /* Solid primary fills carry the real navy in dark mode (the steel-blue token
    is for text/borders, where the navy itself would be unreadable). */
 [data-theme="dark"] .btn:not(.secondary):not(:disabled) {
   background: var(--navy-fill);
   border-color: #2a4f85;
-  color: #fff;
+  color: var(--on-primary);
 }
 [data-theme="dark"] .btn:not(.secondary):hover:not(:disabled) {
   background: var(--navy-fill-hover);
 }
 [data-theme="dark"] .docs-drawer-handle {
   background: var(--navy-fill);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .hiw-trigger-icon {
@@ -978,7 +981,7 @@ a {
   flex-wrap: wrap;
   padding: 12px 18px;
   background: var(--primary-darker);
-  color: #fff;
+  color: var(--on-dark);
   border: none;
   border-radius: var(--radius);
   margin-bottom: 16px;
