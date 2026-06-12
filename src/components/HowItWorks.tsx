@@ -257,8 +257,11 @@ function Review() {
         Left on <strong>Auto</strong> (the default), the tool detects the type from
         the label — including products outside the three classic classes, like a
         hard seltzer or canned cocktail. This also sets the alcohol-content rule:
-        distilled spirits must state ABV; wine and beer may leave it off. If you
-        pick a specific type and it doesn&rsquo;t match what the label looks like,
+        distilled spirits must state ABV (±0.3% tolerance); wine over 14% must
+        state it (±1% tolerance), and wine at or below 14% may omit it only with
+        a <strong>table wine</strong> or <strong>light wine</strong> designation;
+        malt beverages may omit it federally (±0.3% when stated). If you pick a
+        specific type and it doesn&rsquo;t match what the label looks like,
         the tool flags it for you to confirm. When in doubt, leave it on Auto.
       </p>
     </>
@@ -283,8 +286,9 @@ function Batch() {
         icon next to <strong>Upload label photos</strong> for
         a quick summary. Batch has <strong>no application form</strong> — the AI reads
         each label and checks what federal rules require on the artwork itself.
-        Producer, net contents, and origin are captured when visible but not
-        hard-failed when absent.
+        Batch checks universal on-label elements: net contents and bottler name and
+        address must be present; country of origin is required when the label
+        indicates an import.
       </Callout>
       <h3 className="docs-h3">Working the queue</h3>
       <ol className="hiw-steps">
@@ -441,12 +445,21 @@ function Regulations() {
       <ul className="docs-list">
         <li><strong>Brand name</strong></li>
         <li><strong>Class / type designation</strong></li>
-        <li><strong>Alcohol content</strong> (required for spirits; optional within limits for some wine and beer)</li>
+        <li><strong>Alcohol content</strong> — spirits mandatory (±0.3%); wine over 14% mandatory (±1%);
+          wine at or below 14% may omit with table/light wine; malt beverages optional (±0.3% when stated)</li>
         <li><strong>Net contents</strong></li>
         <li><strong>Bottler / producer name and address</strong></li>
         <li><strong>Country of origin</strong> (imports)</li>
         <li><strong>Government health warning</strong> (all alcohol beverages)</li>
       </ul>
+      <h3 className="docs-h3">What batch enforces</h3>
+      <p>
+        With no application form, batch mode checks that these elements appear on the
+        artwork: brand, class/type, net contents, bottler name and address, alcohol
+        content for spirits, country of origin when the label indicates an import, and
+        the government warning. Single-label mode compares anything you type in against
+        the label and warns when an import appears to lack origin.
+      </p>
       <h3 className="docs-h3">Government warning (27 CFR 16.21)</h3>
       <p>
         The warning must appear <strong>word for word</strong>, led by{" "}
@@ -479,6 +492,14 @@ function Why() {
         Case, punctuation, and accents are normalized before comparing.{" "}
         <strong>STONE&rsquo;S THROW</strong> and <strong>Stone&rsquo;s Throw</strong>{" "}
         are treated as a match. A close typo returns <strong>Review</strong>, not Fail.
+      </p>
+      <h3 className="docs-h3">Alcohol content by type</h3>
+      <p>
+        Comparisons use TTB labeling tolerances, not exact string equality: distilled
+        spirits ±0.3% (<strong>27 CFR 5.66</strong>), wine ±1.5% at or below 14% and
+        ±1% above (<strong>27 CFR 4.36</strong>), malt beverages ±0.3% when stated
+        (<strong>27 CFR 7.65</strong>). Stated ranges are matched inclusively. Proof
+        is checked for internal consistency (US proof = 2 × ABV).
       </p>
       <h3 className="docs-h3">Strict warning</h3>
       <p>

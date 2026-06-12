@@ -34,12 +34,28 @@ only; it does not replace judgment.
 ## Validation rules
 
 - **Brand, class, producer** — normalize case/punctuation; close typo → review.
-- **Alcohol content** — numeric ABV + proof check; required for spirits, softer for wine/beer.
-- **Net contents** — normalized volumes (`750 mL` = `750ml`).
-- **Country of origin** — whole-word match; not checked when application omits it.
-- **Government warning** — present, correct heading, verbatim body (OCR noise only).
+- **Alcohol content** — TTB tolerances by type: spirits ±0.3% (5.66); wine ±1%/±1.5%
+  by band + range support (4.36); beer ±0.3% when stated (7.65); table/light wine
+  may omit ABV at ≤14%.
+- **Net contents** — normalized volumes (`750 mL` = `750ml`); required on label in batch mode.
+- **Producer address** — name + address heuristic (ZIP, US state, or country token).
+- **Country of origin** — whole-word match when application provides it; import heuristic
+  (`imported by`, `product of`, etc.) requires origin in batch, warns in single review.
+- **Government warning** — present, correct heading, verbatim body (OCR noise only); 27 CFR 16.21.
 
-Pure synchronous `validate()` — 148 unit tests, no I/O.
+Pure synchronous `validate()` — unit tests, no I/O.
+
+## TTB coverage matrix
+
+| Element | CFR basis | Single review | Batch (label-only) | Limits |
+|---------|-----------|---------------|--------------------|--------|
+| Brand name | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Fuzzy match only; no COLA brand registry |
+| Class / type | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Presence + fuzzy; no standard-of-identity rules |
+| Alcohol content | **4.36**, **5.66**, **7.65** | TTB tolerance compare | Spirits **fail** if missing; wine **fail** if fortified/>14% cues; wine **warn** otherwise | Bold/type-size not verified; tax-class overlap not checked |
+| Net contents | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Volume math only; no type-size minimums |
+| Bottler / producer | Parts 4, 5, 7 | Compare if entered | **Fail if missing; warn if no address** | Heuristic address; not full street validation |
+| Country of origin | Parts 4, 5, 7 (imports) | Compare if entered | **Fail if import cues and missing** | Import inferred from label text |
+| Government warning | **27 CFR 16.21** | Always strict | Always strict | Bold and type-size not verified from text |
 
 ## Architecture
 
@@ -57,9 +73,10 @@ could plug on-prem OCR without changing the validator or UI.
 ## Batch mode
 
 No per-label application form. Reads each label and checks **on-artwork requirements**:
-brand/class fail if missing; ABV by detected type; full government-warning check.
-Net contents and producer captured when visible, not hard-failed when absent. Full
-application-to-label matching is single-label mode (or future COLA integration).
+brand, class, net contents, and producer must be present; producer address is
+heuristic-checked; import cues require country of origin; ABV by detected type;
+full government-warning check. Full application-to-label matching is single-label
+mode (or future COLA integration).
 
 ## UI and accessibility
 

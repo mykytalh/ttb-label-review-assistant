@@ -470,16 +470,21 @@ function BatchInfoTip() {
             present on the label
           </li>
           <li>
-            <strong>Alcohol content</strong> is required for spirits (detected
-            beverage type sets the rule)
+            <strong>Alcohol content</strong> — required for spirits; required for
+            wine over 14% or fortified types; optional for table/light wine at or
+            below 14% (detected beverage type sets the rule)
           </li>
           <li>
             <strong>Government warning</strong> — heading, all-caps{" "}
             <strong>GOVERNMENT WARNING:</strong>, and verbatim wording
           </li>
           <li>
-            Producer, net contents, and origin are captured when visible but not
-            hard-failed when absent
+            <strong>Net contents</strong> and <strong>bottler / producer</strong>{" "}
+            (name and address) must be present on the label
+          </li>
+          <li>
+            <strong>Country of origin</strong> is required when the label indicates
+            an import
           </li>
         </ul>
       </div>
