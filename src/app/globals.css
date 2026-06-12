@@ -484,6 +484,7 @@ a {
 .hiw-back {
   appearance: none;
   border: none;
+  border-bottom: 1px solid var(--hairline);
   cursor: pointer;
   position: sticky;
   top: var(--masthead-h);
@@ -493,10 +494,12 @@ a {
   align-items: center;
   gap: 6px;
   color: var(--primary);
-  background: var(--canvas);
+  /* White bar with blue text — reads as a location strip: you're in help,
+     and this is the way back. */
+  background: var(--surface);
   font: inherit;
   font-weight: 600;
-  padding: 8px 0;
+  padding: 9px 10px;
   margin-bottom: var(--space-2);
 }
 .hiw-back:hover {
