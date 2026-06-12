@@ -274,21 +274,21 @@ function Review() {
         <li>
           <span className="hiw-num" aria-hidden="true">1</span>
           <span>
-            <strong>Type the brand name</strong> as it appears on the label — this
-            is the only field you must fill in. Open{" "}
-            <strong>Add more label details</strong> to also enter the class/type, alcohol %,
-            net contents, bottler, or country of origin. The tool compares anything
-            you enter against the label; leave a field blank and it simply reads
-            what the label shows.
+            <strong>Add a photo of the label.</strong> Click the upload box or drag
+            a photo in. The back label usually carries the government warning, so
+            include it. You don&rsquo;t need to shrink the photo — the tool resizes
+            it for you.
           </span>
         </li>
         <li>
           <span className="hiw-num" aria-hidden="true">2</span>
           <span>
-            <strong>Add a photo of the label.</strong> Click the upload box or drag
-            a photo in. The back label usually carries the government warning, so
-            include it. You don&rsquo;t need to shrink the photo — the tool resizes
-            it for you.
+            <strong>Type the brand name</strong> as it appears on the application —
+            this is the only field you must fill in. Open{" "}
+            <strong>Add more label details</strong> to also enter the class/type, alcohol %,
+            net contents, bottler, or country of origin. The tool compares anything
+            you enter against the label; leave a field blank and it simply reads
+            what the label shows.
           </span>
         </li>
         <li>
@@ -478,8 +478,8 @@ function Results() {
           nothing to compare.
         </li>
         <li>
-          <strong>AI extraction</strong> — a collapsed panel shows what the model read off
-          the label, field by field.
+          <strong>AI extraction</strong> — a collapsed panel directly under the label
+          photo shows what the model read, field by field, for verify-by-eye.
         </li>
       </ul>
       <p>

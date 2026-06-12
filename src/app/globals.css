@@ -2196,6 +2196,7 @@ select:focus {
   font-size: var(--text-2xs);
   letter-spacing: 0.1em;
   color: var(--base);
+  text-align: right;
 }
 
 /* AI extraction readout — the model's raw read, framed as instrument data. */
