@@ -110,18 +110,17 @@
   --base-darkest: #e6edf3;
   --ink: #e6edf3;
 
-  /* Accent: the light theme's federal navy. The true band navy (#1d3a66) is
-     too dark to read as text on this canvas, so the split is: solid fills use
-     the real navy with white text (see the dark fill overrides below); text,
-     borders, and focus use a steel blue from the same family at AA brightness. */
-  --primary: #5b97d4;
-  --primary-dark: #7cb1e3; /* hover — lighter, dark-mode convention */
+  /* Accent: the SAME federal blue as light mode (#005ea2 — the active-tab
+     underline color), unchanged across themes so the identity doesn't shift
+     when the theme does. */
+  --primary: #005ea2;
+  --primary-dark: #2a77c0; /* hover — one step lighter on the dark canvas */
   --primary-darker: #0a0d12; /* near-black masthead/footer band */
-  --primary-light: #5b97d4;
-  --primary-lightest: #16243a; /* navy tint for fills/selected states */
-  --on-primary: #ffffff; /* fills are deep navy in dark mode — white ink */
-  /* The light theme's masthead/footer navy, used for solid fills in dark mode. */
-  --navy-fill: #1d3a66;
+  --primary-light: #2a77c0;
+  --primary-lightest: #0e2238; /* navy tint for fills/selected states */
+  --on-primary: #ffffff;
+  /* Solid fills share the same blue; hover deepens like light mode. */
+  --navy-fill: #005ea2;
   --navy-fill-hover: #1a4480;
 
   /* Muted forest/sage greens — less neon than the default GitHub palette. */
