@@ -52,7 +52,7 @@ Pure synchronous `validate()` — unit tests, no I/O.
 | Brand name | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Fuzzy match only; no COLA brand registry |
 | Class / type | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Presence + fuzzy; no standard-of-identity rules |
 | Alcohol content | **4.36**, **5.66**, **7.65** | TTB tolerance compare | Spirits **fail** if missing; wine **fail** if fortified/>14% cues; wine **warn** otherwise | Bold/type-size not verified; tax-class overlap not checked |
-| Net contents | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Volume math only; no type-size minimums |
+| Net contents | Parts 4, 5, 7 | Compare if entered | **Fail if missing** | Volume math only; no type-size minimums. Extraction reports the container total, not Serving Facts sizes; a crop showing only the serving panel falls to verify-by-eye |
 | Bottler / producer | Parts 4, 5, 7 | Compare if entered | **Fail if missing; warn if no address** | Heuristic address; not full street validation |
 | Country of origin | Parts 4, 5, 7 (imports) | Compare if entered | **Fail if import cues and missing** | Import inferred from label text |
 | Government warning | **27 CFR 16.21** | Always strict | Always strict | Bold and type-size not verified from text |

@@ -599,6 +599,24 @@ describe("edge cases — regressions", () => {
       const r = validate(appWith({ brandName: "X", netContents: "750" }), label({ netContents: "750 gallon" }));
       expect(verdictOf(r, "netContents")).toBe("fail");
     });
+    it("flags a clean-multiple mismatch as a likely serving size", () => {
+      // Real bug: a 750 mL bottle with a Serving Facts panel ("5 servings ×
+      // 150 mL") had the extractor report 150 mL as the net contents. The
+      // verdict is a fail either way; the message must aim the agent at the
+      // Serving Facts panel instead of reading as a bare mismatch.
+      const r = validate(appWith({ brandName: "X", netContents: "750 mL" }), label({ netContents: "150 mL" }));
+      expect(verdictOf(r, "netContents")).toBe("fail");
+      const msg = r.fields.find((f) => f.field === "netContents")!.message;
+      expect(msg).toContain("per-serving");
+      expect(msg).toContain("5 × 150 mL");
+    });
+
+    it("does not cry serving-size on a non-multiple mismatch", () => {
+      const r = validate(appWith({ brandName: "X", netContents: "750 mL" }), label({ netContents: "700 mL" }));
+      const msg = r.fields.find((f) => f.field === "netContents")!.message;
+      expect(msg).not.toContain("per-serving");
+    });
+
     it("converts US units: 1 pint ≈ 473 mL", () => {
       const r = validate(appWith({ brandName: "X", netContents: "1 pint" }), label({ netContents: "473 mL" }));
       expect(verdictOf(r, "netContents")).toBe("pass");

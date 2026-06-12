@@ -43,7 +43,11 @@ const EXTRACTION_SCHEMA = {
       description:
         "Alcohol content exactly as printed, e.g. '45% Alc./Vol. (90 Proof)'. Never infer or recall a typical ABV or proof for a recognized brand or beverage type — report only a statement you can actually read in THIS image. Null if not legibly visible.",
     },
-    netContents: { type: ["string", "null"], description: "Net contents, e.g. '750 mL'. Null if not legibly visible." },
+    netContents: {
+      type: ["string", "null"],
+      description:
+        "The TOTAL net contents of the container, e.g. '750 mL', '1 L', '12 FL OZ'. Do NOT report the per-serving size from a Serving Facts or Nutrition Facts panel ('Serving size: 150 mL' is not the net contents) — when both appear, report the container total. Null if not legibly visible.",
+    },
     producer: { type: ["string", "null"], description: "Bottler/producer name and address as printed. Null if not legibly visible." },
     originCountry: {
       type: ["string", "null"],

@@ -772,12 +772,20 @@ function matchNetContents(
     if (Math.abs(expMl - foundMl) < 0.5) {
       return result(field, "pass", expected, found, `Match (${found}).`);
     }
+    // A clean integer multiple is the serving-size signature: a label showing
+    // "150 mL" against a 750 mL application usually means the extractor read
+    // the Serving Facts panel, not the fill statement. Point the agent there.
+    const ratio = expMl / foundMl;
+    const servingHint =
+      foundMl > 0 && ratio >= 2 && ratio <= 24 && Math.abs(ratio - Math.round(ratio)) < 0.01
+        ? ` The label value may be a per-serving size (${Math.round(ratio)} × ${foundMl} mL = ${expMl} mL) — check the Serving Facts panel against the container's total fill statement.`
+        : "";
     return result(
       field,
       "fail",
       expected,
       found,
-      `Net contents differ: label "${found}" (${foundMl} mL) vs application "${expected}" (${expMl} mL).`,
+      `Net contents differ: label "${found}" (${foundMl} mL) vs application "${expected}" (${expMl} mL).${servingHint}`,
     );
   }
 
