@@ -293,8 +293,9 @@ function Review() {
         <li>
           <span className="hiw-num" aria-hidden="true">3</span>
           <span>
-            Press <strong>Check this label</strong>. In a few seconds you&rsquo;ll see
-            the result, and you can <strong>Print</strong> a formal record.
+            Press <strong>Check this label</strong>. The label was already being
+            read in the background while you typed, so the result usually appears
+            right away — and you can <strong>Print</strong> a formal record.
           </span>
         </li>
       </ol>

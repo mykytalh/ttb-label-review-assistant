@@ -1,14 +1,17 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ApplicationData, ReviewResult } from "@/lib/types";
 import {
   fileToBase64,
   prepareImageFromDataUrl,
+  postExtract,
   postReview,
   ACCEPTED_IMAGE_TYPES,
   isAcceptedImageType,
 } from "@/lib/client";
+import { validate } from "@/lib/validate";
+import { coerceExtractedLabel } from "@/lib/extracted-label";
 import ApplicationForm, { emptyApplication } from "./ApplicationForm";
 import ReviewResults from "./ReviewResults";
 import ImageEditor from "./ImageEditor";
@@ -38,6 +41,54 @@ export default function SingleReview() {
   // Display-only review ID and timestamp; not persisted.
   const [reviewRef, setReviewRef] = useState<{ id: string; at: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // ---- Speculative extraction (preload) ----
+  // The expensive step is the model reading the label (~3-4s); typing the brand
+  // name takes longer than that. So the moment a photo is ready — and again
+  // after each rotate/crop — extraction fires in the background, and submit
+  // validates instantly against the already-read label. This is purely an
+  // accelerator: any failure, staleness, or in-flight miss falls back to the
+  // classic /api/review request, so the worst case is exactly the old behavior.
+  type Preload = {
+    srcUrl: string; // the editedUrl this preload was prepared from
+    sentUrl: string; // the downscaled image actually sent (result display)
+    promise: Promise<{ label: unknown; elapsedMs?: number } | null>;
+  };
+  const preloadRef = useRef<Preload | null>(null);
+  const preloadTokenRef = useRef(0);
+  const preloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const preloadAbortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    // Invalidate whatever was in flight — the image changed (or went away).
+    preloadTokenRef.current++;
+    preloadAbortRef.current?.abort();
+    preloadRef.current = null;
+    if (preloadTimerRef.current) clearTimeout(preloadTimerRef.current);
+    if (!editedUrl) return;
+
+    // Debounce so rapid rotate clicks collapse into one extraction.
+    const token = preloadTokenRef.current;
+    preloadTimerRef.current = setTimeout(async () => {
+      try {
+        const prepared = await prepareImageFromDataUrl(editedUrl);
+        if (token !== preloadTokenRef.current) return; // edited again meanwhile
+        const controller = new AbortController();
+        preloadAbortRef.current = controller;
+        preloadRef.current = {
+          srcUrl: editedUrl,
+          sentUrl: prepared.dataUrl,
+          promise: postExtract(prepared.base64, prepared.mediaType, controller.signal),
+        };
+      } catch {
+        // Preparation failed — no preload; submit takes the classic path.
+      }
+    }, 500);
+
+    return () => {
+      if (preloadTimerRef.current) clearTimeout(preloadTimerRef.current);
+    };
+  }, [editedUrl]);
 
   const pickFile = useCallback(async (f: File) => {
     setError(null);
@@ -80,8 +131,29 @@ export default function SingleReview() {
     setError(null);
     setResult(null);
     try {
-      const { base64, mediaType, dataUrl: sentUrl } = await prepareImageFromDataUrl(editedUrl);
-      const r = await postReview(app, base64, mediaType);
+      let r: ReviewResult | null = null;
+      let sentUrl: string | null = null;
+
+      // Preferred path: the background extraction already read this exact
+      // image. If it's still in flight, awaiting it here reuses the one call
+      // (form-first agents who submit immediately after uploading) instead of
+      // firing a duplicate. A failed preload resolves null and falls through.
+      const preload = preloadRef.current;
+      if (preload && preload.srcUrl === editedUrl) {
+        const outcome = await preload.promise;
+        if (outcome) {
+          r = validate(app, coerceExtractedLabel(outcome.label));
+          r.elapsedMs = outcome.elapsedMs;
+          sentUrl = preload.sentUrl;
+        }
+      }
+
+      // Classic path — also the fallback for any preload miss or failure.
+      if (!r) {
+        const prepared = await prepareImageFromDataUrl(editedUrl);
+        r = await postReview(app, prepared.base64, prepared.mediaType);
+        sentUrl = prepared.dataUrl;
+      }
       const now = new Date();
       setReviewRef({
         // Reference built from the date + a short random suffix — looks like a
@@ -89,7 +161,7 @@ export default function SingleReview() {
         id: `LR-${now.getFullYear()}-${String(Math.floor(Math.random() * 1e6)).padStart(6, "0")}`,
         at: now.toLocaleString(),
       });
-      setResultImageUrl(sentUrl);
+      setResultImageUrl(sentUrl ?? editedUrl);
       setResult(r);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
