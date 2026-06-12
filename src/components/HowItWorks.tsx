@@ -26,7 +26,11 @@ const NAV: { id: SectionId; label: string }[] = [
 
 export default function HowItWorks({ onClose }: { onClose: () => void }) {
   const [active, setActive] = useState<SectionId>("start");
-  const [navOpen, setNavOpen] = useState(false);
+  // Phone navigation lives in a slide-in drawer (section list + back button)
+  // opened from a fixed edge tab — no permanent pinned bars eating the screen.
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const drawerOpenRef = useRef(false);
+  drawerOpenRef.current = drawerOpen;
   const panelRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLButtonElement>(null);
 
@@ -42,7 +46,9 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        // Escape peels one layer: drawer first, then the help view itself.
+        if (drawerOpenRef.current) setDrawerOpen(false);
+        else onClose();
         return;
       }
       if (e.key !== "Tab") return;
@@ -71,7 +77,7 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
 
   const selectSection = (id: SectionId) => {
     setActive(id);
-    setNavOpen(false);
+    setDrawerOpen(false);
     // Switching mid-article must show the new section from its start — without
     // this, a reader deep in a long section lands in the middle of the next one.
     window.scrollTo({ top: 0 });
@@ -96,28 +102,60 @@ export default function HowItWorks({ onClose }: { onClose: () => void }) {
         <span aria-hidden="true">←</span> <span className="hiw-back-text">Back to the tool</span>
       </button>
 
+      {/* Phone: fixed edge tab opens the section drawer. Hidden on desktop. */}
       <button
         type="button"
-        className="docs-menu-toggle"
-        aria-expanded={navOpen}
-        aria-controls="docs-nav-panel"
-        onClick={() => setNavOpen((open) => !open)}
+        className="docs-drawer-handle"
+        aria-expanded={drawerOpen}
+        aria-controls="docs-drawer"
+        onClick={() => setDrawerOpen(true)}
       >
-        <span className="docs-menu-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-          </svg>
-        </span>
-        <span className="docs-menu-label">{activeLabel}</span>
-        <span className="docs-menu-caret" aria-hidden="true">
-          {navOpen ? "▲" : "▼"}
-        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+        </svg>
+        <span>{activeLabel}</span>
       </button>
+
+      {drawerOpen && (
+        <>
+          <div className="docs-drawer-backdrop" onClick={() => setDrawerOpen(false)} aria-hidden="true" />
+          <div id="docs-drawer" className="docs-drawer" role="dialog" aria-label="Help sections">
+            <div className="docs-drawer-head">
+              <p className="docs-nav-title">Help &amp; documentation</p>
+              <button
+                type="button"
+                className="docs-drawer-close"
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Close section list"
+              >
+                ✕
+              </button>
+            </div>
+            <ul className="docs-drawer-list">
+              {NAV.map((s) => (
+                <li key={s.id}>
+                  <button
+                    type="button"
+                    className={`docs-nav-link${active === s.id ? " active" : ""}`}
+                    aria-current={active === s.id ? "page" : undefined}
+                    onClick={() => selectSection(s.id)}
+                  >
+                    {s.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="docs-drawer-back" onClick={onClose}>
+              <span aria-hidden="true">←</span> Back to the tool
+            </button>
+          </div>
+        </>
+      )}
 
       <div className="docs-layout">
         <nav
           id="docs-nav-panel"
-          className={`docs-nav${navOpen ? " open" : ""}`}
+          className="docs-nav"
           aria-label="Help sections"
         >
           <p className="docs-nav-title">Help &amp; documentation</p>
