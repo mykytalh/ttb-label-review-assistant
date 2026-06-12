@@ -1687,23 +1687,24 @@ select:focus {
   top: var(--space-3);
   right: var(--space-3);
 }
-/* Filename chip, top-left of the stage — same finish as the corner controls
-   but read-only. Truncates so a long phone filename never crowds Replace. */
+/* Filename chip, bottom-left of the stage — quiet metadata, not a control:
+   fainter than Replace/Remove so it never competes for attention. Truncates
+   so a long phone filename never crowds the frame. */
 .img-stage-name {
   position: absolute;
-  top: var(--space-3);
+  bottom: var(--space-3);
   left: var(--space-3);
   z-index: 4;
   max-width: 45%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background: rgba(0, 0, 0, 0.62);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.85);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
+  padding: 4px 8px;
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   backdrop-filter: blur(2px);
 }
 .img-corner.bottom-right {
