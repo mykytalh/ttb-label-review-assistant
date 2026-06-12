@@ -70,33 +70,23 @@ export default function Home() {
             </p>
           </div>
           <div className="masthead-actions">
-            {/* While help is open this becomes the always-visible way back —
-                the masthead is sticky, so the agent can never scroll away from
-                the exit (the in-page "Back to the tool" link still exists for
-                the reading flow). */}
             <button
               ref={helpTriggerRef}
               type="button"
               className="hiw-trigger"
-              onClick={showHelp ? closeHelp : openHelp}
+              onClick={openHelp}
               aria-expanded={showHelp}
               aria-controls="main-content"
-              aria-label={showHelp ? "Close help and return to the tool" : "How to use this tool"}
+              aria-label="How to use this tool"
             >
               <span className="hiw-trigger-icon" aria-hidden="true">
-                {showHelp ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-                  </svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 11v5" strokeLinecap="round" />
-                    <circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none" />
-                  </svg>
-                )}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v5" strokeLinecap="round" />
+                  <circle cx="12" cy="7.5" r="0.6" fill="currentColor" stroke="none" />
+                </svg>
               </span>
-              <span className="hiw-trigger-label">{showHelp ? "Close help" : "How to use"}</span>
+              <span className="hiw-trigger-label">How to use</span>
             </button>
             <ThemeToggle />
           </div>
