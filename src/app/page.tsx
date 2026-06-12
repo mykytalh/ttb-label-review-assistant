@@ -94,39 +94,37 @@ export default function Home() {
       </header>
 
       <main id="main-content" className="container">
-        {showHelp ? (
-          <HowItWorks onClose={closeHelp} />
-        ) : (
-          <>
-            <div className="tabs" role="tablist" aria-label="Review mode">
-              {TAB_ORDER.map((m) => (
-                <button
-                  key={m}
-                  id={`tab-${m}`}
-                  className="tab"
-                  role="tab"
-                  aria-selected={mode === m}
-                  aria-controls={`panel-${m}`}
-                  tabIndex={mode === m ? 0 : -1}
-                  onClick={() => setMode(m)}
-                  onKeyDown={onTabKeyDown}
-                >
-                  {TAB_LABEL[m]}
-                </button>
-              ))}
-            </div>
+        {showHelp && <HowItWorks onClose={closeHelp} />}
+        {/* The tool stays MOUNTED while help is open (and both tab panels stay
+            mounted behind the inactive tab) — hidden, not unmounted. An agent
+            who checks the guide mid-review must come back to their typed
+            fields, photo, and batch results, not a reset screen. */}
+        <div hidden={showHelp}>
+          <div className="tabs" role="tablist" aria-label="Review mode">
+            {TAB_ORDER.map((m) => (
+              <button
+                key={m}
+                id={`tab-${m}`}
+                className="tab"
+                role="tab"
+                aria-selected={mode === m}
+                aria-controls={`panel-${m}`}
+                tabIndex={mode === m ? 0 : -1}
+                onClick={() => setMode(m)}
+                onKeyDown={onTabKeyDown}
+              >
+                {TAB_LABEL[m]}
+              </button>
+            ))}
+          </div>
 
-            {mode === "single" ? (
-              <div id="panel-single" role="tabpanel" aria-labelledby="tab-single">
-                <SingleReview />
-              </div>
-            ) : (
-              <div id="panel-batch" role="tabpanel" aria-labelledby="tab-batch">
-                <BatchReview />
-              </div>
-            )}
-          </>
-        )}
+          <div id="panel-single" role="tabpanel" aria-labelledby="tab-single" hidden={mode !== "single"}>
+            <SingleReview />
+          </div>
+          <div id="panel-batch" role="tabpanel" aria-labelledby="tab-batch" hidden={mode !== "batch"}>
+            <BatchReview />
+          </div>
+        </div>
       </main>
     </>
   );
