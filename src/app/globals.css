@@ -856,19 +856,9 @@ a {
   color: var(--primary);
   list-style: none;
   padding: 4px 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-/* Compact trigger inside the summary line. */
-.more-details > summary .info-tip-trigger {
-  width: 26px;
-  height: 26px;
 }
 .more-details > summary:hover {
   color: var(--primary-dark);
-}
-.more-details > summary:hover .more-details-label {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -883,6 +873,11 @@ a {
 }
 .more-details[open] > summary::before {
   content: "▾";
+}
+.more-details-note {
+  color: var(--base-dark);
+  font-size: 0.9rem;
+  margin: 4px 0 12px;
 }
 .result-header {
   display: flex;
