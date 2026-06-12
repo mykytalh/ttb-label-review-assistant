@@ -1,6 +1,15 @@
 {
+  "mode": "full",
+  "subset": null,
   "runs": 3,
   "count": 88,
+  "scored": 88,
+  "latency": {
+    "p50Ms": 3305,
+    "p95Ms": 4765,
+    "calls": 264
+  },
+  "estCostUSD": 1.11,
   "perPhoto": [
     {
       "file": "IMG_6220.jpg",
@@ -78,10 +87,10 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
-          "pred": false,
+          "truth": true,
+          "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         }
       },
       "quality": "fair"
@@ -103,10 +112,10 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -134,7 +143,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6234.jpg",
@@ -150,7 +159,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -184,7 +193,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6239.jpg",
@@ -234,7 +243,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -262,7 +271,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -290,7 +299,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -346,10 +355,10 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
-          "pred": false,
-          "any": false,
-          "flip": 0
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
         }
       },
       "quality": "fair"
@@ -390,16 +399,22 @@
       "errors": 0,
       "scored": {
         "warningPresent": {
-          "truth": false,
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
         },
         "abv": {
-          "truth": false,
-          "pred": false,
-          "any": false,
-          "flip": 0
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
         }
       },
       "quality": "fair"
@@ -430,7 +445,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6258.jpg",
@@ -449,7 +464,7 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
           "truth": false,
@@ -458,7 +473,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6259.jpg",
@@ -475,7 +490,7 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": false,
+          "pred": true,
           "any": true,
           "flip": 1
         },
@@ -486,7 +501,7 @@
           "flip": 0
         }
       },
-      "quality": "good"
+      "quality": "fair"
     },
     {
       "file": "IMG_6260.jpg",
@@ -561,10 +576,10 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -598,7 +613,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6264.jpg",
@@ -636,19 +651,25 @@
       "errors": 0,
       "scored": {
         "warningPresent": {
-          "truth": false,
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": false,
           "any": false,
           "flip": 0
         }
       },
-      "quality": "good"
+      "quality": "fair"
     },
     {
       "file": "IMG_6266.jpg",
@@ -676,7 +697,7 @@
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6267.jpg",
@@ -686,19 +707,25 @@
       "errors": 0,
       "scored": {
         "warningPresent": {
-          "truth": false,
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
         }
       },
-      "quality": "fair"
+      "quality": "good"
     },
     {
       "file": "IMG_6268.jpg",
@@ -748,7 +775,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 1
@@ -835,10 +862,10 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         }
       },
-      "quality": "good"
+      "quality": "fair"
     },
     {
       "file": "IMG_6278.jpg",
@@ -850,14 +877,14 @@
         "warningPresent": {
           "truth": false,
           "pred": false,
-          "any": false,
-          "flip": 0
+          "any": true,
+          "flip": 1
         },
         "abv": {
           "truth": false,
           "pred": false,
-          "any": false,
-          "flip": 0
+          "any": true,
+          "flip": 1
         }
       },
       "quality": "fair"
@@ -910,7 +937,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -966,7 +993,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1022,7 +1049,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1039,18 +1066,18 @@
       "scored": {
         "warningPresent": {
           "truth": false,
-          "pred": true,
-          "any": true,
-          "flip": 1
+          "pred": false,
+          "any": false,
+          "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
         }
       },
-      "quality": "good"
+      "quality": "fair"
     },
     {
       "file": "IMG_6293.jpg",
@@ -1069,7 +1096,7 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
           "truth": true,
@@ -1179,12 +1206,12 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": true,
+          "pred": false,
           "any": true,
           "flip": 1
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1240,7 +1267,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1324,7 +1351,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1352,7 +1379,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1464,9 +1491,9 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
-          "pred": false,
-          "any": false,
+          "truth": true,
+          "pred": true,
+          "any": true,
           "flip": 0
         }
       },
@@ -1522,8 +1549,8 @@
         "abv": {
           "truth": false,
           "pred": false,
-          "any": true,
-          "flip": 1
+          "any": false,
+          "flip": 0
         }
       },
       "quality": "fair"
@@ -1621,24 +1648,24 @@
       "scored": {
         "warningPresent": {
           "truth": true,
-          "pred": true,
-          "any": true,
-          "flip": 0
-        },
-        "warningFederal": {
-          "truth": true,
           "pred": false,
           "any": true,
           "flip": 1
         },
-        "abv": {
-          "truth": false,
+        "warningFederal": {
+          "truth": true,
           "pred": false,
           "any": false,
           "flip": 0
+        },
+        "abv": {
+          "truth": false,
+          "pred": false,
+          "any": true,
+          "flip": 1
         }
       },
-      "quality": "poor"
+      "quality": "fair"
     },
     {
       "file": "IMG_6325.jpg",
@@ -1648,10 +1675,16 @@
       "errors": 0,
       "scored": {
         "warningPresent": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
+        },
+        "warningFederal": {
+          "truth": true,
+          "pred": true,
+          "any": true,
+          "flip": 1
         },
         "abv": {
           "truth": false,
@@ -1735,7 +1768,7 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
           "truth": true,
@@ -1817,7 +1850,7 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": false,
+          "pred": true,
           "any": true,
           "flip": 1
         },
@@ -1845,8 +1878,8 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": false,
-          "any": false,
+          "pred": true,
+          "any": true,
           "flip": 0
         },
         "abv": {
@@ -1878,7 +1911,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -1990,7 +2023,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -2046,7 +2079,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -2099,7 +2132,7 @@
           "truth": true,
           "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
           "truth": true,
@@ -2130,7 +2163,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -2186,7 +2219,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -2214,7 +2247,7 @@
           "flip": 0
         },
         "abv": {
-          "truth": false,
+          "truth": true,
           "pred": true,
           "any": true,
           "flip": 0
@@ -2332,7 +2365,7 @@
           "flip": 0
         }
       },
-      "quality": "good"
+      "quality": "fair"
     },
     {
       "file": "IMG_6354.jpg",
@@ -2349,7 +2382,7 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": true,
+          "pred": false,
           "any": true,
           "flip": 1
         },
@@ -2377,15 +2410,15 @@
         },
         "warningFederal": {
           "truth": true,
-          "pred": false,
+          "pred": true,
           "any": true,
-          "flip": 1
+          "flip": 0
         },
         "abv": {
           "truth": false,
           "pred": false,
-          "any": true,
-          "flip": 1
+          "any": false,
+          "flip": 0
         }
       },
       "quality": "fair"
@@ -2421,28 +2454,28 @@
   ],
   "agg": {
     "warningPresent": {
-      "correct": 82,
+      "correct": 86,
       "total": 88,
-      "flips": 1,
+      "flips": 2,
       "flipTotal": 88,
-      "anyCorrect": 79,
-      "anyTotal": 80
+      "anyCorrect": 83,
+      "anyTotal": 84
     },
     "warningFederal": {
-      "correct": 70,
-      "total": 80,
-      "flips": 13,
-      "flipTotal": 80,
-      "anyCorrect": 74,
-      "anyTotal": 79
+      "correct": 76,
+      "total": 84,
+      "flips": 6,
+      "flipTotal": 84,
+      "anyCorrect": 78,
+      "anyTotal": 83
     },
     "abv": {
-      "correct": 65,
+      "correct": 86,
       "total": 88,
       "flips": 5,
       "flipTotal": 88,
-      "anyCorrect": 35,
-      "anyTotal": 36
+      "anyCorrect": 61,
+      "anyTotal": 63
     }
   }
 }

@@ -8,12 +8,14 @@ eye on a few clean mockups, it is evaluated like an ML system — against a
 hand-labeled set of real photographs, scored automatically, run multiple times to
 measure consistency.
 
-> **TL;DR.** On 88 real bottle/can photos, every one hand-labeled, the tool reads a
-> government warning that is physically present **98.8%** of the time, recognizes the
-> verbatim federal statement **87.5%** (strict majority vote) / **93.7%** (read on at
-> least one run), and reads a shown ABV on **97.2%** of photos where one is present.
-> Where it does miss, it misses *safely*: on a small/glared/curved-print warning it
-> declines to auto-confirm and routes to "verify by eye" rather than guessing.
+> **TL;DR.** On 88 real bottle/can photos, every one hand-labeled and every
+> disagreement audited by eye, the tool reads a government warning that is physically
+> present **98.8%** of the time, recognizes the verbatim federal statement **90.5%**
+> (strict majority vote) / **94.0%** (read on at least one run), and reads a shown ABV
+> **97.7%** strict / **96.8%** reach. Median latency is **3.3s** per label (p95 4.8s)
+> against the 5-second requirement. Where it does miss, it misses *safely*: on a
+> small/glared/curved-print warning it declines to auto-confirm and routes to "verify
+> by eye" rather than guessing.
 
 ## What's in the dataset
 
@@ -30,9 +32,11 @@ measure consistency.
 - **Every photo condition** — flat clean back labels, steep angles, glare, curved
   cans where the warning wraps around the cylinder, sideways phone shots, and
   fine print on serving-facts panels.
-- **Negative / in-frame controls** — 8 photos are front or marketing panels where
-  **no warning is in frame** (Modelo, Coors, Matua, Bota Box, Bar West…); the tool
-  must *not* invent a warning for these.
+- **Negative / in-frame controls** — 4 photos are front or marketing panels where
+  **no warning is in frame** (Modelo, Coors, La Marca…); the tool must *not* invent
+  a warning for these. (This set started at 8 — the label audit below found that on
+  4 of them the warning actually *is* in frame, in fine print the original labeling
+  pass missed.)
 
 Imperfect photos are not noise to be filtered out — handling them *is* the job, so
 they are deliberately in the eval. The realistic target is strong-but-not-perfect:
@@ -66,21 +70,28 @@ numbers, now guarded against).
 
 ## Results
 
-**88 photos, 3 runs each:**
+**88 photos, 3 runs each (after the label audit and prompt-scoping fixes below):**
 
 | Signal | Strict (majority-of-3) | Consistency | Detection reach (≥1 of 3) |
 |---|---|---|---|
-| warningPresent | 93.2% (82/88) | 99% | **98.8%** (79/80) |
-| warningFederal | 87.5% (70/80) | 84% | **93.7%** (74/79) |
-| abv | 73.9% (65/88) | 94% | **97.2%** (35/36) |
+| warningPresent | 97.7% (86/88) | 98% | **98.8%** (83/84) |
+| warningFederal | 90.5% (76/84) | 93% | **94.0%** (78/83) |
+| abv | 97.7% (86/88) | 94% | **96.8%** (61/63) |
 
-The reach column is the headline capability; the strict column is what you get if
-you demand the tool agree with itself 2-of-3 times on fine print.
+Median wall latency 3.3s per label, p95 4.8s — under the 5-second requirement that
+the prior vendor failed at 30–40s. The reach column is the capability ceiling; the
+strict column demands the tool agree with itself 2-of-3 times on fine print.
+
+(Two of the 31 label corrections below were found while reviewing this run's own
+misses; the run was re-scored against the corrected labels — the model's recorded
+predictions were not touched. An earlier identical run before those two corrections
+scored warningPresent 97.7 / warningFederal 90.5 / abv 95.5.)
 
 ## What the audit found (and fixed)
 
 The discipline that matters more than the headline number: every disagreement was
-inspected individually. Three findings, two of which turned into fixes.
+inspected individually — and then re-inspected when the explanation didn't hold up.
+Four findings.
 
 ### 1. The verbatim matcher was rejecting OCR rendering noise as wording violations
 
@@ -111,25 +122,61 @@ heading must still fail): the prompt and schema now explicitly instruct the mode
 include the "GOVERNMENT WARNING" heading verbatim when present and not to start at
 "(1)". Lifted `warningFederal` to its current **87.5% / 93.7%**.
 
-### 3. ABV's 73.9% is a voting artifact, not a reading limit
+### 3. The "ABV weakness" was the ground truth being wrong — audit round two
 
-`abv` strict accuracy looks soft at 73.9% — but **22 of the 23 strict-misses are
-recovered on at least one run** (hence 97.2% reach), and probing each q=good miss
-individually, the model read a clean ABV every time ("12% BY VOL", "5% ALC/VOL",
-"37.5% (75 proof)"). The failures are run-to-run flicker on small serving-facts
-print colliding with the 2-of-3 majority requirement — not an inability to read.
-Reporting both numbers is the honest way to show this rather than letting the strict
-figure imply a weakness that isn't there.
+`abv` strict accuracy sat at 73.9% for most of development. The first explanation —
+majority-vote flicker on small print — didn't survive scrutiny: pulling per-photo
+data showed **22 stable false positives**, the model reporting an ABV on photos
+hand-labeled "not visible," with the *same* value on every run. Values like
+"37.5% (75 proof)" and "ALC. 14.9% BY VOL." are too specific and too consistent to
+be invented, so before touching the prompt, every flagged photo was re-examined by
+eye, zoomed to the fine print.
+
+The model was right and the label was wrong in all but two of the investigated
+disagreements — **31 label fields corrected across 28 photos** (27 `abvVisible`,
+4 `warningPresent`): the ABV (or warning) genuinely is in frame — in Serving Facts panels, sulfite lines,
+and corner fine print the original labeling pass missed. Each corrected entry in
+`eval/ground-truth-clean.json` records what is printed and where. This is the
+second time on this project that auditing the eval beat tuning the model (the
+first: `abvVisible` labels that were never legible at 1024px) — and this time the
+error ran in the opposite direction. The two disagreements that *were* model errors
+(caution text scoped into the warning field; a proof recalled from brand memory)
+are finding 4. The lesson generalizes: **never tune against an unaudited eval**,
+in either direction.
+
+### 4. The real model errors were scoping and memory — fixed by tightening, not loosening
+
+The audit left a small set of genuine model errors, each verified by eye and each
+fixed by making the extraction *stricter* (full iteration log in
+[`PROMPT_TUNING.md`](PROMPT_TUNING.md)):
+
+- **Caution text in the warning field** — "Contents under pressure…" transcribed
+  as the government warning on a panel with no warning. Schema now scopes the
+  field to warning statements only; the photo returns null on 3/3 runs.
+- **A proof recalled from memory** — Drambuie's back label shows no proof
+  statement, yet the model reported "86 PROOF" (and "43 Proof" on another run).
+  The schema now forbids recalling a typical ABV/proof for a recognized brand.
+- **A class line as the origin** — "AGAVE WINE WITH NATURAL FLAVORS" landed in
+  the origin field and passed as an origin. Fixed at both layers: the schema
+  requires an origin statement naming a country, and the validator independently
+  warns when origin text doesn't read as one.
+
+Every change was accepted only after a frozen 22-photo tuning subset (all current
+misses + 9 zero-flip regression guards, including the negative controls and a
+state-warning photo) showed zero guard regressions.
 
 ## The remaining misses are safe misses
 
-- **warningPresent:** 5 of the 6 "misses" are the no-warning-in-frame controls
-  scoring *correctly* (the tool rightly finds no warning on a front/marketing panel).
-  The one true miss (Baron Herzog) is faint federal text on a fair-quality photo.
-- **warningFederal:** the residual misses are genuine small-print/curved-can reads
-  (Rainier under glare, La Marca / Ménage à Trois where "during pregnancy" didn't
-  come through cleanly) where the strict verbatim matcher correctly declines to
-  auto-pass and routes to "verify by eye." It fails *safe*, not silent.
+- **warningPresent:** 2 misses — faint federal text at the bottom of a
+  fair-quality photo (Baron Herzog) and a warning wrapped around a curved can
+  (Elysian, recovered on 1 of 3 runs).
+- **warningFederal:** 8 misses, all small-print/curved-can/glare reads (Rainier
+  wrapped around the cylinder, La Marca under glass glare, a Bud Light side crop)
+  where the transcription drops or garbles a few words — most often "during
+  pregnancy" at a line wrap — and the strict verbatim matcher correctly declines
+  to auto-pass and routes to "verify by eye." It fails *safe*, not silent.
+- **abv:** 2 misses, both fine print the model under-reads on the majority of
+  runs (the Bota Box sulfite line, a side-cropped can).
 
 We deliberately did **not** chase the last few percent by loosening extraction.
 Forcing text out of illegible print is exactly what re-introduces hallucination — the
