@@ -217,7 +217,7 @@ function matchIdentity(
     // field) there is nothing to check.
     const name = FIELD_LABELS[field].toLowerCase();
     return requirePresence
-      ? result(field, "fail", null, null, `No ${name} found on the label — this is a required element. Check it's clearly shown and in frame.`)
+      ? result(field, "fail", null, null, `No ${name} found on the label — this is a required element. Verify it appears on the submitted artwork.`)
       : result(field, "na", null, null, `Not provided in the application and not detected on the label.`);
   }
   if (!found) {
@@ -228,7 +228,7 @@ function matchIdentity(
       expected,
       null,
       `The ${name} “${expected}” from the application was not found on the label. ` +
-        `Check it was entered correctly, and that the ${name} is clearly shown and in frame (it may be cut off or hard to read).`,
+        `Check it was entered correctly, and that the ${name} appears on the submitted label (it may be on another panel or hard to read).`,
     );
   }
 
@@ -494,7 +494,7 @@ function missingAbvResult(
       ? `Application states "${expected}" but no ABV on the label — required if over 14%; at or below 14% may be omitted only with "table wine" or "light wine" on the label (${cfr}(a)).`
       : labelOnly
         ? `No ABV on the label. Required if over 14% ABV; at or below 14% may be omitted only when "table wine" or "light wine" appears on the label (${cfr}(a)).`
-        : `No ABV found in this photo and the label isn't designated table/light wine — wine must state alcohol content unless that designation applies (${cfr}(a)). Check the other panel or the bottle itself.`;
+        : `No ABV found on the label and it isn't designated table/light wine — wine must state alcohol content unless that designation applies (${cfr}(a)). Check the other panels of the submitted artwork.`;
     return result(field, "warn", expected ?? null, null, msg);
   }
 
@@ -754,14 +754,14 @@ function matchNetContents(
           "fail",
           null,
           null,
-          `No net contents found on the label — required on all alcohol beverages (27 CFR Parts 4, 5, 7). Check the fill volume is clearly shown and in frame.`,
+          `No net contents found on the label — required on all alcohol beverages (27 CFR Parts 4, 5, 7). Verify the fill volume appears on the submitted artwork.`,
         )
       : result(
           field,
           "warn",
           null,
           null,
-          `No net contents found in this photo — required on every container (27 CFR Parts 4, 5, 7). Verify the fill volume appears on the label or glass.`,
+          `No net contents found on the label — required on every container (27 CFR Parts 4, 5, 7). Verify the fill volume appears on the submitted artwork.`,
         );
   }
   if (!found) {
@@ -959,18 +959,18 @@ function matchWarning(
   });
 
   if (!found || norm(found).length === 0) {
-    // Distinguish a *photo* problem from a *label* problem: if we couldn't read
-    // the warning, it may simply not be in frame (it's usually on the back/side
-    // panel) — don't assert the product is non-compliant.
+    // The mandatory warning isn't on the submitted label — a real finding. We
+    // can't reliably tell which panel an image shows, so we don't hand-wave it
+    // as "probably on the back"; the message points the agent there, but the
+    // tool flags it (the agent, advisory, decides whether to reject or request
+    // the full artwork).
     const msg =
       imageQuality === "poor"
-        ? `No government warning found — but the photo was hard to read. Make sure the panel with the warning is clearly in frame, then review again.`
-        : `No government warning found in this image. The warning is mandatory on all alcohol beverages and is usually on the back or side panel — make sure that panel is in frame.`;
+        ? `No government warning found — the submitted image was hard to read. It is mandatory (27 CFR 16.21) and usually on the back or side panel; confirm the full label was submitted.`
+        : `No government warning found on the submitted label — it is mandatory on all alcohol beverages (27 CFR 16.21) and usually on the back or side panel. If only the front was submitted, the full label artwork is required.`;
     return withSubs(
       result(field, "fail", "Mandatory government warning", null, msg),
-      "fail",
-      "na",
-      "na",
+      "fail", "na", "na",
     );
   }
 
@@ -1030,7 +1030,7 @@ function matchWarning(
           "warn",
           "Verbatim federal warning",
           found,
-          `The warning was only partially legible in this photo, so it could not be automatically confirmed — verify the full wording and that "GOVERNMENT WARNING:" is bold by eye, or retake the photo.`,
+          `The warning was only partially legible, so it could not be automatically confirmed — verify the full wording and that "GOVERNMENT WARNING:" is bold by eye on the submitted label.`,
         ),
         "pass",
         "warn",

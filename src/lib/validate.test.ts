@@ -279,12 +279,12 @@ describe("government warning — strict", () => {
     expect(verdictOf(r, "governmentWarning")).toBe("fail");
   });
 
-  it("frames a missing warning as a photo problem (not non-compliance) when the warning isn't in frame", () => {
+  it("frames a missing warning as possibly not-submitted (not non-compliance), pointing to the back/side panel", () => {
     // The warning is usually on a back/side panel; a missing one most often means
-    // it wasn't photographed, not that the product is non-compliant.
+    // that panel wasn't part of the submitted artwork, not that it's non-compliant.
     const r = validate(appWith({ brandName: app.brandName }), label({ governmentWarning: null }));
     const msg = r.fields.find((f) => f.field === "governmentWarning")!.message.toLowerCase();
-    expect(msg).toContain("in frame");
+    expect(msg).toContain("back or side panel");
   });
 
   it("on a poor-quality photo, attributes a missing warning to legibility", () => {

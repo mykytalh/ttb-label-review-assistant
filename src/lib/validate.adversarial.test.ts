@@ -165,13 +165,15 @@ describe("beverage type × missing ABV — full matrix", () => {
 });
 
 describe("all-fields-null label (model found nothing legible)", () => {
-  it("fails the mandatory warning and doesn't throw", () => {
-    const blank = label({
+  const blank = () =>
+    label({
       brandName: null, classType: null, alcoholContent: null,
       netContents: null, producer: null, originCountry: null,
       governmentWarning: null, imageQuality: "poor",
     });
-    const r = validate(appWith({ brandName: "Old Tom" }), blank);
+
+  it("fails the mandatory warning and doesn't throw", () => {
+    const r = validate(appWith({ brandName: "Old Tom" }), blank());
     expect(verdictOf(r, "governmentWarning")).toBe("fail");
     expect(r.overall).toBe("fail");
   });
