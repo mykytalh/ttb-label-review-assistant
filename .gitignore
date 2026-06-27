@@ -27,3 +27,6 @@ next-env.d.ts
 # Real bottle photos (88) — not in the repo; download into this folder locally:
 # https://drive.google.com/drive/folders/1hCq_woq7IwyrOwbi_9XLHeSUsduSUxjN?usp=sharing
 /public/samples/alcohol
+
+# COLA Cloud sample pack (build input for scripts/gen-mock-cola.mjs; output is committed)
+cola-sample-pack-v1/
