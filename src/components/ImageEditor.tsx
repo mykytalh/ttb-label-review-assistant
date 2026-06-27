@@ -499,7 +499,7 @@ function ImageStage({
       )}
       {!cropping && onRemove && (
         <button type="button" className="img-corner bottom-right" onClick={onRemove} title="Remove photo">
-          <span aria-hidden="true">✕</span> Remove
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg> Remove
         </button>
       )}
     </div>

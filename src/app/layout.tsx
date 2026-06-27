@@ -1,23 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Public_Sans, Source_Serif_4 } from "next/font/google";
-import SiteFooter from "@/components/SiteFooter";
+import { Inter } from "next/font/google";
+import ConsoleShell from "@/components/ConsoleShell";
 import "./globals.css";
 
-// Public Sans is the U.S. Web Design System typeface — used for all body text.
-const publicSans = Public_Sans({
+// Inter — a modern, highly legible UI typeface used throughout. The variable is
+// still named --font-public-sans so the existing stylesheet picks it up unchanged.
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-public-sans",
-});
-
-// Source Serif 4 for the product title only — the serif companion to Source
-// Sans, designed for federal/institutional documents. Gives the masthead a
-// "Treasury document" presence while the body stays in the official sans.
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["600", "700"],
-  variable: "--font-serif",
 });
 
 export const viewport: Viewport = {
@@ -26,9 +17,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Label Review Assistant",
+  title: "TTB Label Review Console",
   description:
-    "Check alcohol beverage labels against federal compliance requirements.",
+    "Agent-side review console for alcohol beverage label applications — pull a pending application, verify its label against the claim, record a disposition.",
   icons: {
     icon: "/logo.svg",
   },
@@ -40,24 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${publicSans.variable} ${sourceSerif.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Set the theme before first paint to avoid a flash: use the saved
-            choice if present, otherwise follow the OS preference. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(!t){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
-          }}
-        />
-      </head>
+    <html lang="en" className={inter.variable} data-theme="light" suppressHydrationWarning>
       <body>
         {/* Skip link — first focusable element, lets keyboard/screen-reader
-            users jump past the banner straight to the tool. */}
+            users jump past the navigation straight to the work area. */}
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        {children}
-        <SiteFooter />
+        <ConsoleShell>{children}</ConsoleShell>
       </body>
     </html>
   );

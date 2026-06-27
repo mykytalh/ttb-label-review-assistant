@@ -15,7 +15,6 @@ import { coerceExtractedLabel } from "@/lib/extracted-label";
 import ApplicationForm, { emptyApplication } from "./ApplicationForm";
 import ReviewResults from "./ReviewResults";
 import ImageEditor from "./ImageEditor";
-import PrintReport from "./PrintReport";
 import { UploadIcon } from "./Icon";
 
 /**
@@ -218,27 +217,15 @@ export default function SingleReview() {
             </span>
           </div>
           <div className="result-bar-actions">
-            <button className="btn secondary" onClick={() => window.print()}>
-              Print
-            </button>
             <button className="btn compact" onClick={reviewAnother}>
               Review another
             </button>
           </div>
         </div>
 
-        <section className="card screen-only" aria-live="polite" aria-label="Result">
+        <section className="card" aria-live="polite" aria-label="Result">
           <ReviewResults result={result} imageUrl={resultImageUrl ?? dataUrl ?? undefined} />
         </section>
-
-        {/* Formal record, shown only when printing. */}
-        <PrintReport
-          app={app}
-          result={result}
-          fileName={file?.name}
-          reviewRef={reviewRef}
-          imageUrl={resultImageUrl ?? dataUrl ?? undefined}
-        />
         {fileInput}
       </div>
     );
