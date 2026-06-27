@@ -17,10 +17,8 @@ export interface RateLimitResult {
 }
 
 /**
- * @param key       identifier to limit on (e.g. client IP)
- * @param limit     max requests per window
- * @param windowMs  window length in ms
- * @param now       current time override for deterministic tests
+ * Fixed-window per-key rate limiter (in-memory). `key` is typically the client
+ * IP; `now` is injectable so tests can advance the clock deterministically.
  */
 export function rateLimit(
   key: string,

@@ -25,38 +25,6 @@ const MAX_EDGE = 1024;
 const JPEG_QUALITY = 0.82;
 
 /**
- * Downscale and optionally rotate an image before upload. Returns base64 JPEG
- * and a preview data URL. Falls back to the raw file if canvas is unavailable.
- */
-export async function prepareImage(
-  file: File,
-  rotateDeg: 0 | 90 | 180 | 270 = 0,
-): Promise<{ base64: string; mediaType: string; dataUrl: string }> {
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
-    // Skip the round-trip entirely only when there's nothing to do.
-    if (scale >= 1 && rotateDeg === 0) return fileToBase64(file);
-
-    const sw = Math.round(bitmap.width * Math.min(scale, 1));
-    const sh = Math.round(bitmap.height * Math.min(scale, 1));
-    const swap = rotateDeg === 90 || rotateDeg === 270;
-    const canvas = document.createElement("canvas");
-    canvas.width = swap ? sh : sw;
-    canvas.height = swap ? sw : sh;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return fileToBase64(file);
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate((rotateDeg * Math.PI) / 180);
-    ctx.drawImage(bitmap, -sw / 2, -sh / 2, sw, sh);
-    const dataUrl = canvas.toDataURL("image/jpeg", JPEG_QUALITY);
-    return { base64: dataUrl.split(",")[1] ?? "", mediaType: "image/jpeg", dataUrl };
-  } catch {
-    return fileToBase64(file);
-  }
-}
-
-/**
  * Downscale an already-edited image (rotation/crop baked in by the editor),
  * supplied as a data URL, to the upload size. Returns base64 JPEG + the data URL
  * actually sent. Falls back to the input data URL if the canvas pipeline isn't
@@ -235,17 +203,4 @@ const ACCEPTED_IMAGE_TYPE_LIST = ACCEPTED_IMAGE_TYPES.split(",");
 /** True when the browser-reported MIME type is allowed for upload. */
 export function isAcceptedImageType(type: string): boolean {
   return ACCEPTED_IMAGE_TYPE_LIST.includes(type);
-}
-
-/** Trigger a client-side download of text content (CSV, summary, …). */
-export function downloadText(filename: string, content: string, mime = "text/plain") {
-  const blob = new Blob([content], { type: `${mime};charset=utf-8` });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
 }
