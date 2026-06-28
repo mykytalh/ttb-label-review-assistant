@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { postReview } from "@/lib/client";
 import { autoDisposition } from "@/lib/review-status";
 import type { ColaApplication } from "@/lib/mock-cola";
-import { decisionLabel, getDecisions, setDecision, storeResult, type Decision, type DecisionType } from "@/lib/decisions";
+import { decisionLabel, getDecisions, queueStats, setDecision, storeResult, type Decision, type DecisionType } from "@/lib/decisions";
 
 type StatusFilter = "all" | "pending" | "actioned" | "approved" | "rejected" | "needs_info";
 type SortKey = "submittedAt" | "brandName" | "priority";
@@ -149,13 +149,7 @@ export default function ReviewQueuePage() {
 
   const rows = filtered;
 
-  const stats = useMemo(() => {
-    const total = apps?.length ?? 0;
-    const decided = Object.keys(decisions).length;
-    const high = apps?.filter((a) => a.priority === "high" && !decisionFor(a.id)).length ?? 0;
-    return { total, pending: total - decided, decided, high };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apps, decisions]);
+  const stats = useMemo(() => queueStats(apps ?? [], decisions), [apps, decisions]);
 
   // Per-filter counts shown on the filter pills.
   const filterCounts = useMemo(() => {

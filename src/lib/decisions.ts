@@ -68,6 +68,30 @@ export function setDecision(id: string, decision: DecisionType, note: string | u
   return entry;
 }
 
+/** Queue tallies for the worklist header. */
+export interface QueueStats {
+  total: number;
+  decided: number;
+  pending: number;
+  high: number;
+}
+
+/**
+ * Derive the queue counts from the *current* applications and the stored
+ * decisions. Only decisions for applications still in the queue are counted as
+ * decided — a stored decision for an id no longer present (e.g. a record removed
+ * since it was actioned) is ignored, so `pending` can never go negative.
+ */
+export function queueStats(
+  apps: ReadonlyArray<{ id: string; priority?: string }>,
+  decisions: Record<string, Decision>,
+): QueueStats {
+  const total = apps.length;
+  const decided = apps.filter((a) => decisions[a.id]?.decision).length;
+  const high = apps.filter((a) => a.priority === "high" && !decisions[a.id]?.decision).length;
+  return { total, decided, pending: total - decided, high };
+}
+
 // --- Verification results ---
 // Persisted alongside decisions so re-opening an actioned application shows its
 // prior findings (no forced re-run). Same right-sized localStorage rationale.

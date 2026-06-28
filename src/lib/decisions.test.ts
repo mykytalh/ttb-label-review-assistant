@@ -7,7 +7,9 @@ import {
   decisionLabel,
   storeResult,
   getStoredResult,
+  queueStats,
 } from "./decisions";
+import type { Decision } from "./decisions";
 import type { ReviewResult } from "./types";
 
 // jsdom isn't installed, so shim window + an in-memory localStorage so the
@@ -78,6 +80,33 @@ describe("decisionLabel", () => {
     expect(decisionLabel("approved", "batch")).toBe("Auto-approved");
     expect(decisionLabel("rejected", "batch")).toBe("Auto-rejected");
     expect(decisionLabel("needs_info", "batch")).toBe("Auto-flagged");
+  });
+});
+
+describe("queueStats", () => {
+  const dec = (decision: Decision["decision"]): Decision => ({ decision, decidedAt: "t", source: "agent" });
+  const apps = [
+    { id: "a", priority: "high" },
+    { id: "b", priority: "normal" },
+    { id: "c", priority: "normal" },
+  ];
+
+  it("counts pending, decided, and outstanding high-priority", () => {
+    const s = queueStats(apps, { a: dec("approved") });
+    expect(s).toEqual({ total: 3, decided: 1, pending: 2, high: 0 });
+  });
+
+  it("counts an outstanding high-priority item until it is decided", () => {
+    expect(queueStats(apps, {}).high).toBe(1);
+    expect(queueStats(apps, { a: dec("rejected") }).high).toBe(0);
+  });
+
+  it("ignores ghost decisions for ids no longer in the queue (never goes negative)", () => {
+    // Every current app decided, plus a leftover decision for a removed record.
+    const decisions = { a: dec("approved"), b: dec("approved"), c: dec("approved"), removed: dec("approved") };
+    const s = queueStats(apps, decisions);
+    expect(s.decided).toBe(3);
+    expect(s.pending).toBe(0); // not -1
   });
 });
 
