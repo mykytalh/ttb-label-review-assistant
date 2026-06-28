@@ -3,12 +3,12 @@ import { Inter } from "next/font/google";
 import ConsoleShell from "@/components/ConsoleShell";
 import "./globals.css";
 
-// Inter — a modern, highly legible UI typeface used throughout. The variable is
-// still named --font-public-sans so the existing stylesheet picks it up unchanged.
+// Inter — a modern, highly legible UI typeface used throughout, exposed to the
+// stylesheet as the --font-sans CSS variable.
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-public-sans",
+  variable: "--font-sans",
 });
 
 export const viewport: Viewport = {
@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable} data-theme="light" suppressHydrationWarning>
+    <html lang="en" className={inter.variable}>
       <body>
         {/* Skip link — first focusable element, lets keyboard/screen-reader
             users jump past the navigation straight to the work area. */}

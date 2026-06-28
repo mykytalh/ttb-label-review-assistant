@@ -113,110 +113,6 @@
   --verdict-icon-on: #ffffff;
 }
 
-/* ---------- Dark theme ----------
-   Redefines the same tokens; components do not branch on theme. */
-[data-theme="dark"] {
-  --base-lightest: #1c2230;
-  --base-lighter: #2a313f;
-  --base-light: #4a5568;
-  --base: #8a93a3;
-  --base-dark: #aab2c0;
-  --base-darkest: #e6edf3;
-  --ink: #e6edf3;
-
-  /* Accent: the SAME federal blue as light mode (#005ea2 — the active-tab
-     underline color), unchanged across themes so the identity doesn't shift
-     when the theme does. */
-  --primary: #005ea2;
-  --primary-dark: #1a4480; /* identical to light mode — same ink, both themes */
-  --primary-darker: #0a0d12; /* near-black masthead/footer band */
-  --primary-light: #73b3e7; /* identical to light mode */
-  --primary-lightest: #0e2238; /* navy tint for fills/selected states */
-  /* No pure white in dark mode: a soft blue-gray ink that still reads
-     strongly on the black canvas and on navy fills. */
-  --on-primary: #d7dfe9;
-  --on-dark: #d7dfe9;
-  /* Text-role accents go to the family's readable blue; navy stays in fills. */
-  --accent-text: #73b3e7;
-  --accent-text-strong: #73b3e7;
-  /* Solid fills share the same blue; hover deepens like light mode. */
-  --navy-fill: #005ea2;
-  --navy-fill-hover: #1a4480;
-
-  /* Muted forest/sage greens — less neon than the default GitHub palette. */
-  --success: #3a6b4f;
-  --success-dark: #4a7d5c;
-  --success-darker: #a3b5ab;
-  --success-lighter: #121a15;
-
-  /* Muted amber — same restraint as the forest/sage pass greens. */
-  --warning: #8a7344;
-  --warning-dark: #9a8250;
-  --warning-darker: #c9b896;
-  --warning-lighter: #16140f;
-
-  /* Muted burgundy — same restraint as pass greens and warn amber. */
-  --error: #9e4a44;
-  --error-dark: #8a3f3a;
-  --error-darker: #d4a5a0;
-  --error-lighter: #160f0f;
-
-  --gold: #e3b341;
-  --on-dark: #c9d1d9; /* softer off-white on dark bands — easier on the eyes */
-
-  --surface: #0d1014;
-  --canvas: #050608;
-  --fill: #111419;
-  --fill-hover: #171b21;
-  --hairline: #242830; /* neutral gray border */
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
-
-  --verdict-icon-pass: #2d5440;
-  --verdict-icon-warn: #5c4e2e;
-  --verdict-icon-fail: #5c2e2e;
-  --verdict-icon-na: var(--base-light);
-  --verdict-icon-on: #d6e5dc;
-
-  color-scheme: dark;
-}
-
-/* In dark mode the filled status chips use a LIGHT semantic background, so their
-   text must be dark ink (not white) to keep AA contrast. */
-[data-theme="dark"] .pill.v-pass {
-  background: var(--verdict-icon-pass);
-  color: var(--verdict-icon-on);
-  border-color: var(--verdict-icon-pass);
-}
-[data-theme="dark"] .pill.v-warn {
-  background: var(--verdict-icon-warn);
-  color: var(--verdict-icon-on);
-  border-color: var(--verdict-icon-warn);
-}
-[data-theme="dark"] .pill.v-fail {
-  background: var(--verdict-icon-fail);
-  color: var(--verdict-icon-on);
-  border-color: var(--verdict-icon-fail);
-}
-[data-theme="dark"] .error-banner {
-  background: var(--fill);
-  color: var(--ink);
-  border-left-color: var(--error-dark);
-}
-[data-theme="dark"] .error-banner strong,
-[data-theme="dark"] .field-result.v-fail .fr-name {
-  color: var(--error-darker);
-}
-[data-theme="dark"] .quality-alert {
-  background: var(--fill);
-  color: var(--ink);
-  border-left-color: var(--warning-dark);
-}
-[data-theme="dark"] .quality-alert strong {
-  color: var(--base-dark);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -235,7 +131,7 @@ html {
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-public-sans), -apple-system, BlinkMacSystemFont,
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
   font-size: var(--text-base);
   line-height: 1.55;
@@ -254,11 +150,6 @@ body {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
-}
-/* Dark canvas: the navy ring measures ~1.8:1 there — use the family's light
-   blue (6.1:1) so keyboard focus is unmissable in both themes. */
-[data-theme="dark"] :focus-visible {
-  outline-color: var(--primary-light);
 }
 
 h1,
@@ -308,16 +199,6 @@ a {
 }
 .footer-link:hover {
   color: var(--accent-text-strong);
-}
-/* Solid primary fills carry the real navy in dark mode (the steel-blue token
-   is for text/borders, where the navy itself would be unreadable). */
-[data-theme="dark"] .btn:not(.secondary):not(:disabled) {
-  background: var(--navy-fill);
-  border-color: #2a4f85;
-  color: var(--on-primary);
-}
-[data-theme="dark"] .btn:not(.secondary):hover:not(:disabled) {
-  background: var(--navy-fill-hover);
 }
 
 /* ---------- Two-column workspace ---------- */
