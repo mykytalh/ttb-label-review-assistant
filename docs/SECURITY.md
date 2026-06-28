@@ -33,14 +33,14 @@ route its own instance, which is part of why production needs a shared store.)
 | **Hung upstream** | Extraction has a 20 s per-request timeout; the route sets `maxDuration`. |
 | **Clickjacking / MIME sniffing** | CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, HSTS. See `next.config.ts`. |
 | **Information leakage in errors** | Client responses use generic messages; Anthropic upstream 4xx/5xx text is never forwarded. Details are logged server-side only. See `src/app/api/review/route.ts` and `route.test.ts`. |
-| **Data retention** | Stateless: images and application data are processed in memory and not persisted between requests. |
+| **Data retention** | The server is stateless: images and application data are processed in memory and never persisted server-side. Agent dispositions and verification results persist **client-side only** (browser `localStorage`, `decisions.ts`) — a right-sized choice for a single-agent prototype, and no PII leaves the browser. |
 
 ## Out of scope for the prototype
 
 - **Authentication and authorization** — production would sit behind agency SSO.
 - **Distributed rate limiting** — in-memory limiter is single-instance only; production
   needs Redis or an edge policy.
-- **Audit logging** — production needs a tamper-evident review trail, which requires
-  persistence not included in the prototype.
+- **Server-side audit trail** — dispositions persist only in the agent's browser
+  (`localStorage`); production needs a tamper-evident, server-side review log.
 - **Secrets management** — key is an environment variable; production would use a
   managed secret store with rotation.

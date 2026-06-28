@@ -7,8 +7,8 @@ Assistant prototype.
 
 | Stakeholder need | Design decision | Where it lives |
 |---|---|---|
-| Sarah — fast, low-friction review | ~5s target, three-step flow, Haiku default, large verdicts | `SingleReview.tsx`, `extractor.ts` |
-| Dave — batch throughput | Bounded queue (10 cap in demo), streaming results, CSV export | `BatchReview.tsx`, `export.ts` |
+| Sarah — fast, low-friction review | ~5s target; application data + label preloaded from the queue (no typing); one-click verify; large verdicts | `page.tsx`, `review/[id]`, `extractor.ts` |
+| Dave — batch throughput | Multi-select **Auto-review** with live per-row progress + cancel; auto-disposition; a summary routes to the exceptions | `page.tsx`, `review-status.ts` |
 | Jenny — strict government warning | Verbatim body + `GOVERNMENT WARNING:` all caps with colon (27 CFR 16.21) | `validate.ts`, `warning.ts` |
 | Marcus — key security, no retention | Server-side API key, in-memory processing, rate limit, sanitized errors | `route.ts`, `SECURITY.md` |
 
@@ -25,7 +25,7 @@ only; it does not replace judgment.
 |---|---|
 | ~5s per label | One vision call, tight `max_tokens`, client downscale, Haiku 4.5; extraction preloads in the background on photo upload, so the submitted single review is typically instant |
 | Low tech comfort | Large type, icon+word+color verdicts, in-app help, focus rings |
-| Bulk uploads (200–300 in production) | Batch tab, concurrency 2, export; demo caps at 10 (one API call each) |
+| Bulk review (200–300 in production) | Select rows (or select-all) → Auto-review, concurrency-bounded + cancellable, then a triage summary; same per-label call underneath |
 | Firewalled networks | `LabelExtractor` interface — swappable on-prem OCR |
 | No retention | Stateless; images in memory only |
 | Fuzzy identity vs strict warning | Per-field rules below |
@@ -60,29 +60,39 @@ Pure synchronous `validate()` — unit tests, no I/O.
 ## Architecture
 
 ```
-image → LabelExtractor → ExtractedLabel → validate() → ReviewResult → UI
+queue (mock COLA) → application + label → LabelExtractor → validate() → ReviewResult → 5-status + recommendation → UI
 ```
 
 Extraction and validation are separate. Prototype uses Claude vision; production
-could plug on-prem OCR without changing the validator or UI.
+could plug on-prem OCR without changing the validator or UI. The queue is
+simulated with mock records behind a swappable `ColaSource` interface (a live
+COLA registry adapter would drop in unchanged); the five-status display and
+overall recommendation are pure derivations of the engine verdicts
+(`review-status.ts`). Agent dispositions and results persist in the browser
+(`decisions.ts`, localStorage) — production would use a server-side audit log.
 
 **Model:** Haiku 4.5 default (`LABEL_MODEL` for Opus). **Accuracy:**
 [`EVALUATION.md`](EVALUATION.md) + `eval/results.json`. **Prompt:**
 [`PROMPT_TUNING.md`](PROMPT_TUNING.md).
 
-## Batch mode
+## Bulk auto-review
 
-No per-label application form. Reads each label and checks **on-artwork requirements**:
-brand, class, net contents, and producer must be present; producer address is
-heuristic-checked; import cues require country of origin; ABV by detected type;
-full government-warning check. Full application-to-label matching is single-label
-mode (or future COLA integration).
+Selecting rows (or select-all) runs the same per-label verification across the
+set — concurrency-bounded and cancellable, with live per-row progress. Each
+result is auto-dispositioned from its recommendation — clean → approved, failing
+→ rejected, ambiguous → flagged for a human (`autoDisposition` in
+`review-status.ts`) — and an end-of-run summary routes the agent straight to the
+exceptions. Because each queue row already carries application data, this is full
+application-to-label matching, not label-only. (The engine still supports a
+label-only mode for Custom Test Mode uploads with no application fields.)
 
 ## UI and accessibility
 
-USWDS-inspired tokens and spacing. WCAG 2.1 AA / Section 508: verdicts use icon +
-word + color; keyboard tabs; skip link; `aria-live` for results; `prefers-reduced-motion`.
-Light/dark toggle (OS default on first visit, saved in `localStorage`).
+Modern light-blue / slate design tokens (Inter), a persistent collapsed sidebar,
+and a contextual selection bar for bulk actions. WCAG 2.1 AA / Section 508:
+status uses icon + word + color; keyboard-operable rows (via per-row link),
+sortable headers, filter pills, and dialogs (Escape + focus management); skip
+link; `aria-live` for results; `prefers-reduced-motion` honored.
 
 ## Tools used
 
