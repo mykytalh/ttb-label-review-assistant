@@ -124,8 +124,10 @@ Where the brief left gaps, these were filled deliberately:
 - **Prototype security posture per the IT interview**: no authentication, no
   retention, public demo deployment with a server-side API key. A production
   deployment would add FedRAMP-aligned hosting, audit logging, and SSO.
-- **The demo batch cap (10) bounds API spend only** — the architecture
-  (queue + concurrency + retry + CSV) is built for the stated 200–300 drops.
+- **Bulk Auto-review is concurrency-bounded (2 parallel workers), not item-capped**
+  — it runs over the whole selected set; the architecture (queue + bounded
+  concurrency + cancellation + per-IP rate limit) is built for the stated
+  200–300 drops while keeping API spend and load predictable.
 - **Retail bottle photos are a fair stand-in** for submitted label artwork when
   evaluating extraction accuracy — they are strictly harder (glare, curvature,
   angles) than flat artwork files.

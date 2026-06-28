@@ -1,8 +1,10 @@
 /*
- * Visual language: the U.S. Web Design System (USWDS). This is a federal tool,
- * so it should look and behave like one. Color tokens, typography (Public Sans),
- * and spacing follow USWDS; components are our own lightweight implementations
- * rather than the full @uswds/uswds package (right-sized for the prototype).
+ * Visual language: a modern, federal-grade design system inspired by USWDS
+ * principles (a single accent, generous spacing rhythm, AA contrast, clear focus)
+ * but with its own restrained palette — one confident light-blue accent over
+ * slate neutrals — and Inter for highly legible UI type. Components are our own
+ * lightweight implementations, not the @uswds/uswds package (right-sized for the
+ * prototype).
  *
  * Accessibility is treated as a hard requirement (Section 508 / WCAG 2.1 AA),
  * because the audience is older agents with varied vision and tech comfort, and
