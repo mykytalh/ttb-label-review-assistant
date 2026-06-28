@@ -315,7 +315,9 @@ export default function ReviewQueuePage() {
   // Jump from the summary dialog to a filtered view. Recent-batch marks persist
   // across all navigation until the next batch runs, so they're not cleared here.
   const goToFilter = (s: StatusFilter) => { setStatus(s); setSummary(null); };
-  const selectFilter = (s: StatusFilter) => setStatus(s);
+  // Switching tabs/stat cards scopes selection to the new view — no ghost
+  // selections from a tab you can no longer see.
+  const selectFilter = (s: StatusFilter) => { setStatus(s); setSelected(new Set()); };
 
   return (
     <div className="queue-page">
