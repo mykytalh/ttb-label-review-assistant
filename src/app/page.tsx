@@ -17,7 +17,7 @@ import { autoDisposition } from "@/lib/review-status";
 import type { ColaApplication } from "@/lib/mock-cola";
 import { decisionLabel, getDecisions, queueStats, setDecision, storeResult, type Decision, type DecisionType } from "@/lib/decisions";
 
-type StatusFilter = "all" | "pending" | "actioned" | "approved" | "rejected" | "needs_info";
+type StatusFilter = "all" | "pending" | "actioned" | "approved" | "rejected" | "needs_info" | "high";
 type SortKey = "submittedAt" | "brandName" | "priority";
 
 const BATCH_CONCURRENCY = 2;
@@ -25,6 +25,7 @@ const BATCH_CONCURRENCY = 2;
 /** Fetch a committed label image and base64-encode it for /api/review. */
 async function imageToBase64(url: string): Promise<string> {
   const res = await fetch(url);
+  if (!res.ok) throw new Error("Label image could not be loaded.");
   const bytes = new Uint8Array(await res.arrayBuffer());
   let binary = "";
   for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
@@ -129,6 +130,7 @@ export default function ReviewQueuePage() {
       if (q && !`${a.id} ${a.brandName} ${a.applicantName} ${a.productName ?? ""}`.toLowerCase().includes(q)) return false;
       const d = decisionFor(a.id);
       if (status === "all") return true;
+      if (status === "high") return d === null && a.priority === "high";
       if (status === "pending") return d === null;
       if (status === "actioned") return d !== null;
       return d === status;
@@ -148,6 +150,9 @@ export default function ReviewQueuePage() {
   }, [apps, decisions, query, status, sortKey, sortDir]);
 
   const rows = filtered;
+  // Selection acts only on what's visible — a row hidden by search or a filter
+  // is never silently included in the selected count or a bulk Auto-review.
+  const selectedVisible = useMemo(() => rows.filter((a) => selected.has(a.id)), [rows, selected]);
 
   const stats = useMemo(() => queueStats(apps ?? [], decisions), [apps, decisions]);
 
@@ -171,7 +176,7 @@ export default function ReviewQueuePage() {
         const v = JSON.parse(saved);
         if (v.status) setStatus(v.status);
         if (typeof v.query === "string") setQuery(v.query);
-        if (v.sortKey) setSortKey(v.sortKey);
+        if (v.sortKey === "submittedAt" || v.sortKey === "brandName" || v.sortKey === "priority") setSortKey(v.sortKey);
         if (v.sortDir) setSortDir(v.sortDir);
         if (typeof v.highlightRecent === "boolean") setHighlightRecent(v.highlightRecent);
         if (Array.isArray(v.lastBatchIds)) setLastBatchIds(new Set(v.lastBatchIds));
@@ -239,7 +244,7 @@ export default function ReviewQueuePage() {
     if (!apps) return;
     // Selected rows when the agent picked some; otherwise the whole pending set
     // (the default "review everything that needs it" action, intuitive at scale).
-    const targets = selected.size > 0 ? apps.filter((a) => selected.has(a.id)) : apps.filter((a) => !decisionFor(a.id));
+    const targets = selectedVisible.length > 0 ? selectedVisible : apps.filter((a) => !decisionFor(a.id));
     if (targets.length === 0) return;
     const ac = new AbortController();
     batchAbort.current = ac;
@@ -340,7 +345,7 @@ export default function ReviewQueuePage() {
           </span>
           <div className="stat-body"><span className="stat-label">Pending review</span><span className="stat-num">{stats.pending}</span></div>
         </button>
-        <button type="button" className={`stat-card${sortKey === "priority" ? " is-active" : ""}`} onClick={() => { selectFilter("all"); setSortKey("priority"); setSortDir("desc"); }} aria-pressed={sortKey === "priority"} title="Sort by priority (high first)">
+        <button type="button" className={`stat-card${status === "high" ? " is-active" : ""}`} onClick={() => selectFilter("high")} aria-pressed={status === "high"} title="Show high-priority pending applications">
           <span className="stat-icon stat-icon--red" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 21V4h13l-2.5 4 2.5 4H4" /></svg>
           </span>
@@ -389,10 +394,10 @@ export default function ReviewQueuePage() {
               <span className="bar-progress"><span className="spinner" aria-hidden="true" /> Verifying {batchProgress.done}/{batchProgress.total}</span>
               <button className="bar-cancel" type="button" onClick={cancelBatch}>Cancel</button>
             </div>
-          ) : selected.size > 0 ? (
+          ) : selectedVisible.length > 0 ? (
             <div className="bar-action">
               <button className="link-btn bar-clear" type="button" onClick={clearSelection}>Clear</button>
-              <button className="btn-verify bar-verify" type="button" onClick={runBatch}>Auto-review ({selected.size})</button>
+              <button className="btn-verify bar-verify" type="button" onClick={runBatch}>Auto-review ({selectedVisible.length})</button>
             </div>
           ) : null}
         </div>
