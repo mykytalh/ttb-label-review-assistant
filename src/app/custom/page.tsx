@@ -17,9 +17,9 @@ export default function CustomTestModePage() {
       <header className="page-head">
         <h1 className="page-title">Custom Test Mode</h1>
         <p className="page-sub">
-          Check an arbitrary label that isn’t in the review queue — upload a photo, optionally enter the application
-          fields to cross-check, and run verification. This is a testing tool; the day-to-day workflow is the{" "}
-          <Link href="/" className="footer-link">Review Queue</Link>.
+          Check an arbitrary label that isn’t in the queue — upload a photo, optionally enter the application
+          fields to cross-check, and run verification. This is a testing tool; the day-to-day workflow is{" "}
+          <Link href="/" className="footer-link">Label Approvals</Link>.
         </p>
       </header>
 

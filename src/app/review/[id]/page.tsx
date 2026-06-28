@@ -88,9 +88,11 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
 
   useEffect(() => {
     if (!lightbox) return;
+    const prev = document.activeElement as HTMLElement | null;
+    (document.querySelector(".lightbox-close") as HTMLElement | null)?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setLightbox(false);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); prev?.focus?.(); };
   }, [lightbox]);
 
   const runVerification = useCallback(async () => {
@@ -129,7 +131,7 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
   if (loadError) {
     return (
       <div>
-        <p className="breadcrumb"><Link href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>Review Queue</Link></p>
+        <p className="breadcrumb"><Link href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>Label Approvals</Link></p>
         <div className="console-empty">{loadError}</div>
       </div>
     );
@@ -151,7 +153,7 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="review-page">
-      <p className="breadcrumb"><Link href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>Review Queue</Link></p>
+      <p className="breadcrumb"><Link href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>Label Approvals</Link></p>
 
       <header className="review-head">
         <div className="review-head-id">
@@ -167,31 +169,33 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
       {/* Decision up top: recommendation + the agent's action, once verified. */}
       {result && rec && (
         <section className={`verdict-strip verdict-strip--${rec.key}`} aria-live="polite">
-          <span className="decision-icon" aria-hidden="true">{decisionIcon(rec.key)}</span>
-          <div className="verdict-text">
-            <p className="decision-title">{rec.title}</p>
-            <p className="decision-desc">{rec.description}</p>
+          <div className="verdict-row">
+            <span className="decision-icon" aria-hidden="true">{decisionIcon(rec.key)}</span>
+            <div className="verdict-text">
+              <p className="decision-title">{rec.title}</p>
+              <p className="decision-desc">{rec.description}</p>
+            </div>
+            <div className="verdict-buttons">
+              {DECISIONS.map((d) => (
+                <button
+                  key={d.key}
+                  className={`btn-decision ${d.cls}${decision?.decision === d.key ? " is-set" : ""}`}
+                  onClick={() => record(d.key)}
+                  disabled={savingDecision !== null}
+                >
+                  {savingDecision === d.key ? "Saving…" : d.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="verdict-actions">
-            <input
-              className="decision-note-inline"
-              placeholder="Note (optional)…"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              maxLength={500}
-              aria-label="Decision note"
-            />
-            {DECISIONS.map((d) => (
-              <button
-                key={d.key}
-                className={`btn-decision ${d.cls}${decision?.decision === d.key ? " is-set" : ""}`}
-                onClick={() => record(d.key)}
-                disabled={savingDecision !== null}
-              >
-                {savingDecision === d.key ? "Saving…" : d.label}
-              </button>
-            ))}
-          </div>
+          <input
+            className="decision-note-inline"
+            placeholder="Add a note (optional)…"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            maxLength={500}
+            aria-label="Decision note"
+          />
         </section>
       )}
 

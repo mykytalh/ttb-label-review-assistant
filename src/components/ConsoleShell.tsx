@@ -20,7 +20,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   {
     href: "/",
-    label: "Review Queue",
+    label: "Label Approvals",
     match: (p) => p === "/" || p.startsWith("/review"),
     icon: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -60,7 +60,8 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
         <Link href="/" className="console-brand">
           <span className="console-brand-mark" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              <path d="M12 2.5l7.5 2.7v5.6c0 4.7-3.2 8.3-7.5 9.7-4.3-1.4-7.5-5-7.5-9.7V5.2L12 2.5z" />
+              <path d="M8.6 12l2.3 2.3 4.5-4.6" />
             </svg>
           </span>
           <span className="console-brand-text">

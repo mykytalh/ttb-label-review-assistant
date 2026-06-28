@@ -18,10 +18,11 @@ import ImageEditor from "./ImageEditor";
 import { UploadIcon } from "./Icon";
 
 /**
- * Single-label review: application form + photo upload with edit tools
- * (rotate/crop/zoom), then the field-by-field result below. The image sent for
- * review is exactly the edited image the agent sees, and each run gets a
- * reference ID + timestamp for the printable record.
+ * Custom Test Mode: an ad-hoc label check that isn't in the queue — upload a
+ * photo (with rotate/crop/zoom edit tools), optionally enter the application
+ * fields to cross-check, then the field-by-field result below. The image sent
+ * for review is exactly the edited image the agent sees. A testing tool; the
+ * day-to-day workflow is the review queue.
  */
 export default function SingleReview() {
   const [app, setApp] = useState<ApplicationData>(emptyApplication());
