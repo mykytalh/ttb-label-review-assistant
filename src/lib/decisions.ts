@@ -9,9 +9,12 @@
  */
 import type { ReviewResult } from "./types";
 
+/** A disposition an agent (or a batch run) can apply to an application. */
 export type DecisionType = "approved" | "rejected" | "needs_info";
+/** Whether a disposition was made by the agent by hand or applied by a batch run. */
 export type DecisionSource = "agent" | "batch";
 
+/** A recorded disposition: the call, an optional note, who made it, and when. */
 export interface Decision {
   decision: DecisionType;
   note?: string;
@@ -46,10 +49,12 @@ export function decisionLabel(decision: DecisionType, source: DecisionSource): s
   return decision === "approved" ? "Approved" : decision === "rejected" ? "Rejected" : "Needs info";
 }
 
+/** Every stored disposition, keyed by application id. */
 export function getDecisions(): Record<string, Decision> {
   return readAll();
 }
 
+/** The stored disposition for one application, or undefined if none. */
 export function getDecision(id: string): Decision | undefined {
   return readAll()[id];
 }
@@ -78,10 +83,12 @@ function readResults(): Record<string, ReviewResult> {
   }
 }
 
+/** The cached verification result for one application, if it has been reviewed. */
 export function getStoredResult(id: string): ReviewResult | undefined {
   return readResults()[id];
 }
 
+/** Cache a verification result so re-opening the application shows it without a re-run. */
 export function storeResult(id: string, result: ReviewResult): void {
   try {
     const all = readResults();

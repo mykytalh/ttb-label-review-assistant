@@ -159,8 +159,8 @@ export default function ReviewResults({
         </div>
 
         {/* The tool advises; the person decides. Make the advisory nature explicit
-            on screen (the printed report carries the same note) so a confident
-            green "all checks passed" is never mistaken for an official decision. */}
+            on screen, so a confident green "all checks passed" is never mistaken for an
+            official decision. */}
         <p className="advisory-note">
           AI-assisted review — confirm by eye before making a decision.
         </p>

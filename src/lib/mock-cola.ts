@@ -12,7 +12,9 @@
 import seed from "../data/mock-cola.json";
 import { ApplicationData, BeverageType } from "./types";
 
+/** Workflow status of a queued application. */
 export type ApplicationStatus = "Pending Review" | "Needs Review" | "Ready" | "Reviewed";
+/** Review priority flag for a queued application. */
 export type Priority = "normal" | "high";
 
 /** One pending application in the review queue. */
@@ -45,6 +47,7 @@ export interface ColaApplication {
   expected?: string;
 }
 
+/** The seeded mock review queue (generated at build time from the COLA Cloud sample). */
 export const MOCK_APPLICATIONS = seed as ColaApplication[];
 
 /**

@@ -10,6 +10,7 @@ interface Window {
 
 const buckets = new Map<string, Window>();
 
+/** Outcome of a per-key rate-limit check. */
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;

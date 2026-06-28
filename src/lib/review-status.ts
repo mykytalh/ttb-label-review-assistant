@@ -21,6 +21,7 @@ export type DisplayStatus =
   | "missing" // a required element absent from the label
   | "not_checked"; // nothing to compare
 
+/** Human-readable labels for each of the five (plus two) display statuses. */
 export const DISPLAY_STATUS_LABELS: Record<DisplayStatus, string> = {
   match: "Matched",
   acceptable_variation: "Acceptable variation",

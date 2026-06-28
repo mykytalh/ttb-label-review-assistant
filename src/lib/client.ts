@@ -188,6 +188,7 @@ function isReviewResult(data: unknown): data is ReviewResult {
   );
 }
 
+/** Human-readable labels for the engine's four verdicts. */
 export const VERDICT_LABEL: Record<Verdict, string> = {
   pass: "Pass",
   warn: "Review",
