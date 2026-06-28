@@ -318,26 +318,6 @@
     "expected": "Ready for Approval"
   },
   {
-    "id": "COLA-2026-017",
-    "ttbId": "25357001000389",
-    "applicantName": "Cavarena Estate Imports LLC",
-    "brandName": "Villa Cavarena",
-    "beverageType": "wine",
-    "alcoholContent": "12.5%",
-    "netContents": "750 mL",
-    "originCountry": "Italy",
-    "productName": "Soave",
-    "registryClass": "table white wine",
-    "permitNumber": "CT-I-21055",
-    "sourceLabel": "imported",
-    "status": "Pending Review",
-    "priority": "normal",
-    "submittedAt": "2025-12-23",
-    "labelImage": "/mock-labels/25357001000389.jpg",
-    "scenario": "Clean import — all fields match.",
-    "expected": "Ready for Approval"
-  },
-  {
     "id": "COLA-2026-018",
     "ttbId": "25357001000559",
     "applicantName": "Trader Joe's Company",

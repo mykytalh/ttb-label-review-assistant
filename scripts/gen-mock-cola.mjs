@@ -142,12 +142,6 @@ const SPEC = [
     scenario: "Clean domestic wine — all fields match.", expected: "Ready for Approval",
   },
   {
-    id: "COLA-2026-017", ttbImageId: "25357001000389_0", priority: "normal",
-    applicantName: "Cavarena Estate Imports LLC",
-    claim: { brandName: "Villa Cavarena", beverageType: "wine", alcoholContent: "12.5%", netContents: "750 mL", originCountry: "Italy" },
-    scenario: "Clean import — all fields match.", expected: "Ready for Approval",
-  },
-  {
     id: "COLA-2026-018", ttbImageId: "25357001000559_1", priority: "normal",
     applicantName: "Trader Joe's Company",
     claim: { brandName: "Trader Joe's", beverageType: "wine", alcoholContent: "14.5%", netContents: "750 mL" },
