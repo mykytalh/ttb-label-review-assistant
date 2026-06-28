@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { fieldDisplayStatus, overallRecommendation } from "./review-status";
-import { FieldResult, ReviewResult, Verdict } from "./types";
+import { fieldDisplayStatus, overallRecommendation, autoDisposition } from "./review-status";
+import { FieldResult, ReviewResult, Verdict, FIELD_LABELS } from "./types";
 
 function field(verdict: Verdict, expected: string | null, found: string | null, key: FieldResult["field"] = "brandName"): FieldResult {
   return { field: key, verdict, expected, found, message: "" };
@@ -74,5 +74,36 @@ describe("overallRecommendation", () => {
 
   it("an all-unchecked review still routes to a human rather than auto-clearing", () => {
     expect(overallRecommendation(review("na")).key).toBe("review");
+  });
+
+  it("an all-unchecked review carries the 'na' tone, not 'warn'", () => {
+    expect(overallRecommendation(review("na")).tone).toBe("na");
+  });
+});
+
+describe("autoDisposition", () => {
+  it("a clean review auto-approves", () => {
+    const d = autoDisposition(review("pass"));
+    expect(d.decision).toBe("approved");
+    expect(d.note).toMatch(/matched the label/i);
+  });
+
+  it("a failure auto-rejects and names the failing field(s)", () => {
+    const r: ReviewResult = { overall: "fail", fields: [field("fail", "45%", "50.5%", "alcoholContent")], imageQuality: "good" };
+    const d = autoDisposition(r);
+    expect(d.decision).toBe("rejected");
+    expect(d.note).toContain(FIELD_LABELS.alcoholContent);
+  });
+
+  it("a soft finding is flagged for a human and names the field(s)", () => {
+    const r: ReviewResult = { overall: "warn", fields: [field("warn", null, null, "netContents")], imageQuality: "good" };
+    const d = autoDisposition(r);
+    expect(d.decision).toBe("needs_info");
+    expect(d.note).toContain(FIELD_LABELS.netContents);
+  });
+
+  it("falls back to generic wording when no specific field is implicated", () => {
+    expect(autoDisposition(review("fail")).note).toMatch(/missing or conflicts/i);
+    expect(autoDisposition(review("warn")).note).toMatch(/verify by eye/i);
   });
 });

@@ -8,7 +8,8 @@
  * These are pure derivations of the existing `FieldResult`, so the engine and its
  * tests are untouched; this is the only place the five-way display status lives.
  */
-import { FieldResult, ReviewResult, Verdict } from "./types";
+import { FieldResult, ReviewResult, Verdict, FIELD_LABELS } from "./types";
+import type { DecisionType } from "./decisions";
 
 /** The field-level status the console shows, one step finer than the verdict. */
 export type DisplayStatus =
@@ -119,4 +120,22 @@ export function overallRecommendation(result: ReviewResult): Recommendation {
         description: "Some fields need a human check before this application can be cleared.",
       };
   }
+}
+
+/**
+ * Derive a batch auto-disposition from a review result: a clean review is
+ * auto-approved, a hard failure auto-rejected, anything ambiguous flagged for a
+ * human — each with a note naming the fields involved. The agent can override.
+ */
+export function autoDisposition(result: ReviewResult): { decision: DecisionType; note: string } {
+  const rec = overallRecommendation(result);
+  if (rec.key === "ready") {
+    return { decision: "approved", note: "Auto-approved via batch — all checked fields matched the label." };
+  }
+  if (rec.key === "rejection") {
+    const probs = result.fields.filter((f) => f.verdict === "fail").map((f) => FIELD_LABELS[f.field]).join(", ");
+    return { decision: "rejected", note: `Auto-rejected via batch — ${probs || "a required element is missing or conflicts"}.` };
+  }
+  const probs = result.fields.filter((f) => f.verdict === "warn").map((f) => FIELD_LABELS[f.field]).join(", ");
+  return { decision: "needs_info", note: `Flagged by batch for a human check — ${probs || "verify by eye"}.` };
 }
