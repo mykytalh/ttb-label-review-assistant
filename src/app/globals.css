@@ -2000,10 +2000,11 @@ select:focus {
 .result-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 .result-top .result-field { flex: none; }
 .result-msg { margin: 0; font-size: var(--text-xs); color: var(--base); max-width: 60ch; }
-.result-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-top: 2px; }
-.result-cmp { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.result-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-1); padding-top: var(--space-3); border-top: 1px solid color-mix(in srgb, var(--ink) 9%, transparent); }
+.result-cmp { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .result-cmp-k { font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; color: var(--base); }
 .result-cmp-v { font-family: var(--mono); font-size: var(--text-xs); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 560px) { .result-compare { grid-template-columns: 1fr; gap: var(--space-2); } }
 
 @media (max-width: 600px) {
   .result-row { flex-wrap: wrap; }
