@@ -22,6 +22,7 @@ import { decisionLabel, getDecision, setDecision, getStoredResult, storeResult, 
 /** Fetch a committed label image and base64-encode it for /api/review. */
 async function imageToBase64(url: string): Promise<string> {
   const res = await fetch(url);
+  if (!res.ok) throw new Error("Label image could not be loaded.");
   const bytes = new Uint8Array(await res.arrayBuffer());
   let binary = "";
   for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
@@ -96,7 +97,7 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
   }, [lightbox]);
 
   const runVerification = useCallback(async () => {
-    if (!app) return;
+    if (!app || verifying) return; // ignore a second trigger while one is in flight
     setVerifying(true);
     setVerifyError(null);
     try {
@@ -120,7 +121,7 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
     } finally {
       setVerifying(false);
     }
-  }, [app, id]);
+  }, [app, id, verifying]);
 
   function record(d: DecisionType) {
     setSavingDecision(d);
