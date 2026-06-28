@@ -127,7 +127,12 @@ Where the brief left gaps, these were filled deliberately:
 - **Bulk Auto-review is concurrency-bounded (2 parallel workers), not item-capped**
   — it runs over the whole selected set; the architecture (queue + bounded
   concurrency + cancellation + per-IP rate limit) is built for the stated
-  200–300 drops while keeping API spend and load predictable.
+  200–300 drops while keeping API spend and load predictable. The demo queue ships
+  20 representative records (every result status); a 300-drop run is the same code
+  path — at ~3.6s/label and 2 workers that's ~9 min unattended, auto-dispositioned,
+  with the summary routing the agent only to the exceptions. `BATCH_CONCURRENCY`
+  (`page.tsx`) is a single tunable; production raises it behind a shared rate-limit
+  store (see SECURITY.md).
 - **Retail bottle photos are a fair stand-in** for submitted label artwork when
   evaluating extraction accuracy — they are strictly harder (glare, curvature,
   angles) than flat artwork files.
