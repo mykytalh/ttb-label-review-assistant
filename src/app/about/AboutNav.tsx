@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 const SECTIONS = [
   { id: "how", label: "How the review works" },
+  { id: "scale", label: "Built for the volume" },
   { id: "engine", label: "Transcribe vs. judge" },
   { id: "data", label: "Where the data comes from" },
   { id: "limits", label: "Deliberate limitations" },

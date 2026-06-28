@@ -9,7 +9,7 @@ const STEPS = [
   {
     n: 1,
     title: "Open a case",
-    body: "Pick a pending application from the Review Queue. Its data and label artwork are already attached — nothing is typed by hand.",
+    body: "Pick a pending application from Label Approvals. Its data and label artwork are already attached — nothing is typed by hand.",
   },
   {
     n: 2,
@@ -68,6 +68,19 @@ export default function AboutPage() {
                 </li>
               ))}
             </ol>
+          </section>
+
+          <section id="scale" className="about-section">
+            <h2 className="about-h">Built for the volume</h2>
+            <p className="about-p">
+              Agents clear roughly 150,000 applications a year, and importers submit hundreds at a time — so the queue
+              is a triage funnel, not a to-do list. Select any number of applications (or all of them) and
+              {" "}<strong>Auto-review</strong> runs the same verification across the set in parallel, auto-dispositioning
+              each: clean → approved, failing → rejected, anything ambiguous → flagged for a human. An end-of-run
+              summary then routes you straight to the exceptions — so a 300-application run becomes
+              &ldquo;review these few,&rdquo; not three hundred. The agent stays in control; nothing is decided that
+              can&rsquo;t be reopened and overridden.
+            </p>
           </section>
 
           <section id="engine" className="about-section">
