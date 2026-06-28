@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Custom Test Mode — the secondary, ad-hoc path.
  *
@@ -8,8 +6,13 @@
  * flow: upload a photo, optionally enter the application fields, and verify. Kept
  * but demoted out of the primary path.
  */
+import type { Metadata } from "next";
 import Link from "next/link";
 import SingleReview from "@/components/SingleReview";
+
+export const metadata: Metadata = {
+  title: "Custom Test Mode · TTB Label Review Console",
+};
 
 export default function CustomTestModePage() {
   return (
